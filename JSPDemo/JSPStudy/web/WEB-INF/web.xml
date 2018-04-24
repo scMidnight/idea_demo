@@ -3,4 +3,26 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
+    <display-name>JSPStudy</display-name>
+    <servlet>
+        <servlet-name>config</servlet-name>
+        <jsp-file>/configObject/config.jsp</jsp-file>
+        <init-param>
+            <param-name>username</param-name>
+            <param-value>root</param-value>
+        </init-param>
+        <init-param>
+            <param-name>password</param-name>
+            <param-value>000000</param-value>
+        </init-param>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>config</servlet-name>
+        <url-pattern>/configObject/*</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <!--单位：分钟 -->
+        <session-timeout>10</session-timeout>
+    </session-config>
 </web-app>
