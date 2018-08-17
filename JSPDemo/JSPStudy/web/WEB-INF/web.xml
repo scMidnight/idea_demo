@@ -16,7 +16,25 @@
             <param-value>000000</param-value>
         </init-param>
     </servlet>
+
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>servlet.LoginServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>CheckServlet</servlet-name>
+        <servlet-class>servlet.CheckServlet</servlet-class>
+    </servlet>
     
+    <servlet-mapping>
+        <servlet-name>CheckServlet</servlet-name>
+        <url-pattern>/checkServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/loginServlet</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>config</servlet-name>
         <url-pattern>/configObject/*</url-pattern>
