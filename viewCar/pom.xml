@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>person</groupId>
+  <artifactId>viewCar</artifactId>
+  <version>1.0</version>
+  <modules>
+    <module>car-module</module>
+    <module>car-web</module>
+  </modules>
+  <packaging>pom</packaging>
+
+  <name>viewCar</name>
+  <!-- FIXME change it to the project's website -->
+  <url>http://www.example.com</url>
+
+  <properties>
+    <car-project.version>1.0</car-project.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+    <!-- jdbc driver begin -->
+    <mysql.version>5.1.34</mysql.version>
+    <!-- jdbc driver end -->
+    <!-- spring hibernate jpa begin -->
+    <hibernate.version>4.2.11.Final</hibernate.version>
+    <hibernate-validator.version>4.2.0.Final</hibernate-validator.version>
+    <hibernate-commons-annotations>4.0.2.Final</hibernate-commons-annotations>
+    <hibernate-jpa-2.0-api>1.0.1.Final</hibernate-jpa-2.0-api>
+    <spring.version>3.1.1.RELEASE</spring.version>
+    <spring-security.version>3.1.2.RELEASE</spring-security.version>
+    <persistence.version>1.0</persistence.version>
+    <javassist.version>3.12.0.GA</javassist.version>
+    <!-- spring hibernate jpa end -->
+    <!-- apache common -->
+    <poi.version>3.9</poi.version>
+    <commons-lang.version>2.6</commons-lang.version>
+    <commons-lang3.version>3.1</commons-lang3.version>
+    <commons-beanutils.version>1.7.0</commons-beanutils.version>
+    <!-- freemarker -->
+    <freemarker.version>2.3.19</freemarker.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+
+  </build>
+</project>
