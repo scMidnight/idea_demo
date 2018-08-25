@@ -2,25 +2,39 @@
     <div class="layui-side-scroll">
         <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
         <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-            <li class="layui-nav-item layui-nav-itemed">
-                <a class="" href="javascript:;">所有商品</a>
-                <dl class="layui-nav-child">
-                    <dd><a href="javascript:;">列表一</a></dd>
-                    <dd><a href="javascript:;">列表二</a></dd>
-                    <dd><a href="javascript:;">列表三</a></dd>
-                    <dd><a href="">超链接</a></dd>
-                </dl>
-            </li>
-            <li class="layui-nav-item">
-                <a href="javascript:;">解决方案</a>
-                <dl class="layui-nav-child">
-                    <dd><a href="javascript:;">列表一</a></dd>
-                    <dd><a href="javascript:;">列表二</a></dd>
-                    <dd><a href="">超链接</a></dd>
-                </dl>
-            </li>
-            <li class="layui-nav-item"><a href="">云市场</a></li>
-            <li class="layui-nav-item"><a href="">发布商品</a></li>
+            <#list tree as t>
+                <li class="layui-nav-item">
+                    <#if (t.obj.functionUrl)?? && (t.obj.functionUrl == '#')>
+                        <a class="" href="javascript:void(0);">${t.obj.functionName}</a>
+                    </#if>
+                    <#if (t.children)?? && (t.children?size>0)>
+                        <dl class="layui-nav-child">
+                            <#list t.children as child>
+                                <dd><a href="${base}${child.obj.functionUrl}">${child.obj.functionName}</a></dd>
+                            </#list>
+                        </dl>
+                    </#if>
+                </li>
+            </#list>
+            <!--<li class="layui-nav-item layui-nav-itemed">-->
+                <!--<a class="" href="javascript:;">所有商品</a>-->
+                <!--<dl class="layui-nav-child">-->
+                    <!--<dd><a href="javascript:;">列表一</a></dd>-->
+                    <!--<dd><a href="javascript:;">列表二</a></dd>-->
+                    <!--<dd><a href="javascript:;">列表三</a></dd>-->
+                    <!--<dd><a href="">超链接</a></dd>-->
+                <!--</dl>-->
+            <!--</li>-->
+            <!--<li class="layui-nav-item">-->
+                <!--<a href="javascript:;">解决方案</a>-->
+                <!--<dl class="layui-nav-child">-->
+                    <!--<dd><a href="javascript:;">列表一</a></dd>-->
+                    <!--<dd><a href="javascript:;">列表二</a></dd>-->
+                    <!--<dd><a href="">超链接</a></dd>-->
+                <!--</dl>-->
+            <!--</li>-->
+            <!--<li class="layui-nav-item"><a href="">云市场</a></li>-->
+            <!--<li class="layui-nav-item"><a href="">发布商品</a></li>-->
         </ul>
     </div>
 </div>

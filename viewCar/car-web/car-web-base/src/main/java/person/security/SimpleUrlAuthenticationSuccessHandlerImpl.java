@@ -52,11 +52,11 @@ public class SimpleUrlAuthenticationSuccessHandlerImpl extends SimpleUrlAuthenti
             TreeSet<TblFunctionBean> functionBeans = roleBean.getFunctions();
             for (TblFunctionBean functionBean : functionBeans) {
                 if(functionSet.add(functionBean.getId())) {
-                    if (functionBean.getId().length() == 3 && functionBean.getFunctionLevel().equals("1")) {
+                    if (functionBean.getId().length() == 4 && functionBean.getFunctionLevel().equals("1")) {
                         first.add(functionBean);
-                    } else if (functionBean.getId().length() == 6 && functionBean.getFunctionLevel().equals("2")) {
+                    } else if (functionBean.getId().length() == 7 && functionBean.getFunctionLevel().equals("2")) {
                         second.add(functionBean);
-                    } else if (functionBean.getId().length() == 6 && functionBean.getFunctionLevel().equals("3")) {
+                    } else if (functionBean.getId().length() == 10 && functionBean.getFunctionLevel().equals("3")) {
                         third.add(functionBean);
                     }
                 }
