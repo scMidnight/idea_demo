@@ -42,6 +42,12 @@
     <commons-beanutils.version>1.7.0</commons-beanutils.version>
     <!-- freemarker -->
     <freemarker.version>2.3.19</freemarker.version>
+    <!-- alibaba druid -->
+    <druid.version>0.2.20</druid.version>
+    <!-- 辅助依赖包 -->
+    <cglib.version>2.2</cglib.version>
+    <aspectj.version>1.6.9</aspectj.version>
+    <jodd.version>3.3.7</jodd.version>
   </properties>
 
   <dependencies>

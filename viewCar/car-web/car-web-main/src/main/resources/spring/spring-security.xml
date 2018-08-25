@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+       xmlns:beans="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+    <!-- 该路径下的资源不用过滤 -->
+    <http pattern="/resources/**" security="none"/>
+    <http pattern="/error/**" security="none"/>
+    <http pattern="/login" security="none"/>
+    <http pattern="/loginFail" security="none"/>
+
+    <http name="basicAdminMgr" auto-config="false" access-denied-page="/error/noAuthority.htm" use-expressions="true"
+          entry-point-ref="authenticationEntryPoint">
+        <custom-filter position="FORM_LOGIN_FILTER" ref="loginFilter" />
+        <custom-filter before="FILTER_SECURITY_INTERCEPTOR" ref="myFilter"/>
+        <!-- 防止session固话攻击 -->
+        <session-management session-fixation-protection="none" session-authentication-error-url="/error/noAuthority.html" invalid-session-url="/error/sessionOut.html" />
+        <!-- session相关管理 -->
+        <session-management  session-authentication-strategy-ref="sas" />
+        <!-- logout -->
+        <!-- logout-url LogoutFilter要读取的url,也就是指定spring security拦截的注销url -->
+        <!-- logout-success-url 用户退出后要被重定向的url -->
+        <!-- invalidate-session 默认为true,用户在退出后Http session失效 -->
+        <!-- success-handler-ref 对一个LogoutSuccessHandler的引用,用来自定义退出成功后的操作success-handler-ref="logoutSuccessHandler" -->
+        <logout invalidate-session="true" logout-url="/basic/j_spring_security_logout" logout-success-url="/login" />
+    </http>
+
+    <!-- 登录入口 -->
+    <beans:bean id="authenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <beans:property name="loginFormUrl" value="/login" />
+    </beans:bean>
+
+    <!-- session注册器 -->
+    <beans:bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" />
+
+    <!-- 登出之后 -->
+    <beans:bean id="logoutSuccessHandler" class="person.security.service.impl.LogoutSuccessHandler">
+        <beans:property name="redirctUrl" value="http://emanage.mofcom.gov.cn/loginGov.html" />
+    </beans:bean>
+
+    <!-- 国际化 -->
+    <beans:bean id="messageSource"
+                class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <!-- 如果不加载自己的国际化文件，去加载 Security 内部的国际化文件classpath:org/springframework/unsecurity/messages_zh_CN -->
+        <beans:property name="basename" value="classpath:messages_zh_CN" />
+    </beans:bean>
+
+    <!-- 登录验证 -->
+    <beans:bean id="loginFilter" class="person.security.UsernamePasswordAuthenticationFilter">
+        <!-- 处理登录的action -->
+        <beans:property name="filterProcessesUrl" value="/userLogin/check"/>
+        <!-- 登录成功控制 -->
+        <!--<beans:property name="authenticationSuccessHandler" ref="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler"></beans:property>-->
+        <beans:property name="authenticationSuccessHandler" ref="loginLogAuthenticationSuccessHandler"></beans:property>
+        <!-- 登录失败控制 -->
+        <beans:property name="authenticationFailureHandler" ref="simpleUrlAuthenticationFailureHandler"></beans:property>
+        <beans:property name="authenticationManager" ref="myAuthenticationManager"></beans:property>
+        <beans:property name="sessionAuthenticationStrategy" ref="sas"></beans:property>
+    </beans:bean>
+
+    <!-- 登录成功 -->
+    <beans:bean id="loginLogAuthenticationSuccessHandler" class="person.security.SimpleUrlAuthenticationSuccessHandlerImpl">
+        <beans:property name="defaultTargetUrl" value="/index"></beans:property>
+        <beans:property name="userSessionManager" ref="userSessionManager"></beans:property>
+    </beans:bean>
+    <!-- 自定义userSessionManager请进行修改自定义的class -->
+    <beans:bean id="userSessionManager" class="person.security.service.impl.UserSessionManagerImpl"></beans:bean>
+    <!-- 登录失败 -->
+    <beans:bean id="simpleUrlAuthenticationFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+        <beans:property name="defaultFailureUrl" value="/loginFail"></beans:property>
+    </beans:bean>
+    <!-- session管理策略 -->
+    <beans:bean id="sas" class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
+        <beans:constructor-arg name="sessionRegistry" ref="sessionRegistry" />
+        <beans:property name="maximumSessions" value="-1" />
+        <!-- 防止session攻击 -->
+        <beans:property name="alwaysCreateSession" value="true" />
+        <beans:property name="migrateSessionAttributes" value="false" />
+        <!--  同一个帐号 同时只能一个人登录 -->
+        <beans:property name="exceptionIfMaximumExceeded"  value="false" />
+    </beans:bean>
+
+    <beans:bean id="myFilter" class="person.security.SecurityInterceptor">
+        <beans:property name="authenticationManager" ref="myAuthenticationManager" />
+        <!-- 访问决策器，决定某个用户具有的角色，是否有足够的权限去访问某个资源 -->
+        <beans:property name="accessDecisionManager" ref="myAccessDecisionManager" />
+        <!-- 资源源数据定义，即定义某一资源可以被哪些角色访问 -->
+        <beans:property name="securityMetadataSource" ref="mySecurityMetadataSource" />
+    </beans:bean>
+
+    <!--验证配置，认证管理器，实现用户认证的入口，主要实现UserDetailsService接口即可 这玩意儿好像是个拦截器 -->
+    <authentication-manager alias="myAuthenticationManager">
+        <authentication-provider user-service-ref="myUserDetailServiceImpl">
+            <!--如果用户的密码采用加密的话 <password-encoder hash="md5" /> -->
+            <!-- 自定义加密方式 -->
+            <password-encoder ref="carPasswordEncode"></password-encoder>
+        </authentication-provider>
+    </authentication-manager>
+
+    <beans:bean id="myAccessDecisionManager" class="person.security.service.impl.AccessDecisionManagerImpl"></beans:bean>
+
+    <!--在这个类中，你就可以从数据库中读入用户的密码，角色信息，是否锁定，账号是否过期等 -->
+    <beans:bean id="myUserDetailServiceImpl" class="person.security.service.impl.UserDetailServiceImpl" />
+
+    <!--资源数据定义，将所有的资源和权限对应关系建立起来，即定义某一资源可以被哪些角色访问 -->
+    <beans:bean id="mySecurityMetadataSource" class="person.security.service.impl.SecurityMetadataSourceServiceImpl" />
+
+    <beans:bean id="carPasswordEncode" class="person.util.carPasswordEncode"></beans:bean>
+</beans:beans>
