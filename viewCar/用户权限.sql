@@ -1,22 +1,22 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : mysql
-Source Server Version : 50717
+Source Server         : MySql Local
+Source Server Version : 50139
 Source Host           : localhost:3306
 Source Database       : learn
 
 Target Server Type    : MYSQL
-Target Server Version : 50717
+Target Server Version : 50139
 File Encoding         : 65001
 
-Date: 2018-08-26 01:04:21
+Date: 2018-08-26 13:25:52
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for tbl_function
+-- Table structure for `tbl_function`
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_function`;
 CREATE TABLE `tbl_function` (
@@ -31,18 +31,19 @@ CREATE TABLE `tbl_function` (
 -- ----------------------------
 -- Records of tbl_function
 -- ----------------------------
-INSERT INTO `tbl_function` VALUES ('F001', '所有商品', '所有商品', '1', '#');
-INSERT INTO `tbl_function` VALUES ('F001001', '列表一', '列表一', '2', '/test');
-INSERT INTO `tbl_function` VALUES ('F001002', '列表二', '列表二', '2', '/test');
-INSERT INTO `tbl_function` VALUES ('F001003', '列表三', '列表三', '2', '/test');
-INSERT INTO `tbl_function` VALUES ('F002', '解决方案', '解决方案', '1', '#');
-INSERT INTO `tbl_function` VALUES ('F002001', '列表一', '列表一', '2', '/test');
-INSERT INTO `tbl_function` VALUES ('F002002', '列表二', '列表二', '2', '/test');
-INSERT INTO `tbl_function` VALUES ('F003', '云市场', '云市场', '1', '#');
-INSERT INTO `tbl_function` VALUES ('F004', '发布商品', '发布商品', '1', '#');
+INSERT INTO `tbl_function` VALUES ('F001', '数据管理', '数据管理', '1', '#');
+INSERT INTO `tbl_function` VALUES ('F001001', '上传数据', '上传数据', '2', '/test');
+INSERT INTO `tbl_function` VALUES ('F001002', '数据列表', '数据列表', '2', '/test');
+INSERT INTO `tbl_function` VALUES ('F002', '数据统计', '数据统计', '1', '#');
+INSERT INTO `tbl_function` VALUES ('F002001', '数据统计', '数据统计', '2', '/test');
+INSERT INTO `tbl_function` VALUES ('F003', '检测预警', '检测预警', '1', '#');
+INSERT INTO `tbl_function` VALUES ('F004', '批量导出', '批量导出', '1', '#');
+INSERT INTO `tbl_function` VALUES ('F005', '黑名单管理', '黑名单管理', '1', '#');
+INSERT INTO `tbl_function` VALUES ('F006', '车系管理', '车系管理', '1', '#');
+INSERT INTO `tbl_function` VALUES ('F006001', '车系列表', '车系列表', '2', '#');
 
 -- ----------------------------
--- Table structure for tbl_role
+-- Table structure for `tbl_role`
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_role`;
 CREATE TABLE `tbl_role` (
@@ -58,7 +59,7 @@ CREATE TABLE `tbl_role` (
 INSERT INTO `tbl_role` VALUES ('1', '管理员', '管理员');
 
 -- ----------------------------
--- Table structure for tbl_rolefunction
+-- Table structure for `tbl_rolefunction`
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_rolefunction`;
 CREATE TABLE `tbl_rolefunction` (
@@ -71,17 +72,17 @@ CREATE TABLE `tbl_rolefunction` (
 -- ----------------------------
 INSERT INTO `tbl_rolefunction` VALUES ('1', 'F001');
 INSERT INTO `tbl_rolefunction` VALUES ('1', 'F001001');
-INSERT INTO `tbl_rolefunction` VALUES ('1', 'F001001');
 INSERT INTO `tbl_rolefunction` VALUES ('1', 'F001002');
-INSERT INTO `tbl_rolefunction` VALUES ('1', 'F001003');
 INSERT INTO `tbl_rolefunction` VALUES ('1', 'F002');
 INSERT INTO `tbl_rolefunction` VALUES ('1', 'F002001');
-INSERT INTO `tbl_rolefunction` VALUES ('1', 'F002002');
 INSERT INTO `tbl_rolefunction` VALUES ('1', 'F003');
 INSERT INTO `tbl_rolefunction` VALUES ('1', 'F004');
+INSERT INTO `tbl_rolefunction` VALUES ('1', 'F005');
+INSERT INTO `tbl_rolefunction` VALUES ('1', 'F006');
+INSERT INTO `tbl_rolefunction` VALUES ('1', 'F006001');
 
 -- ----------------------------
--- Table structure for tbl_user
+-- Table structure for `tbl_user`
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_user`;
 CREATE TABLE `tbl_user` (
@@ -99,7 +100,7 @@ CREATE TABLE `tbl_user` (
 INSERT INTO `tbl_user` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'test@qq.com', '测试');
 
 -- ----------------------------
--- Table structure for tbl_userrole
+-- Table structure for `tbl_userrole`
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_userrole`;
 CREATE TABLE `tbl_userrole` (

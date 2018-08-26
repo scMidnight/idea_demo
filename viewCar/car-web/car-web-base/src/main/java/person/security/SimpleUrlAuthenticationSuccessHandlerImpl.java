@@ -35,7 +35,7 @@ public class SimpleUrlAuthenticationSuccessHandlerImpl extends SimpleUrlAuthenti
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         UserDetailModel user = (UserDetailModel) authentication.getPrincipal();
-        request.getSession().setAttribute("user_name", user.getUsername());
+        request.getSession().setAttribute("user_name", user.getUserName());
         request.getSession().setAttribute("user", user);
 
         List<TblFunctionBean> first = new ArrayList<TblFunctionBean>();
