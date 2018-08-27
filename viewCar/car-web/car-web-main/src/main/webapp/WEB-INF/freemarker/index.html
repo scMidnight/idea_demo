@@ -5,130 +5,45 @@
     <#include "/common/left.html">
     <div class="layui-body">
         <div style="padding: 15px;">
+            <blockquote class="layui-elem-quote">
+                <form class="layui-form" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">搜索类型：</label>
+                        <div class="layui-input-inline">
+                            <select name="selectType" lay-verify="required" lay-filter="test">
+                                <option value="">请选择搜索类型</option>
+                                <option value="brandName">品牌名称</option>
+                                <option value="tradeName">厂商名称</option>
+                                <option value="carSysName">车系名称</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </blockquote>
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>车系列表</legend>
+            </fieldset>
             <table class="layui-hide" id="demo"></table>
-        <!-- 内容主体区域 -->
-            <!--内容主体区域-->
-            <!--<br><br>-->
-            <!--<blockquote class="layui-elem-quote">-->
-                <!--layui 之所以赢得如此多人的青睐，更多是在于它“前后台系统通吃”的能力。既可编织出绚丽的前台页面，又可满足繁杂的后台功能需求。-->
-                <!--<br>layui 后台布局， 致力于让每一位开发者都能轻松搭建自己的后台模板。-->
-            <!--</blockquote>-->
-
-            <!--<a href="" class="layui-btn layui-btn-big">获取该布局代码</a>-->
-
-            <!--<br><br><br><br>-->
-            <!--下面是充数内容，为的是出现滚动条<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>充数内容<br>-->
         </div>
     </div>
     <#include "/common/footer.html">
 </div>
 <#include "/common/js.html">
 <script>
-    layui.use('table', function(){
+    layui.use(['table','form'], function(){
         var table = layui.table;
-
+        var form = layui.form;
         //展示已知数据
         table.render({
             elem: '#demo'
+            ,url:'${base}/data'
+            ,method:'post'
             ,cols: [[ //标题栏
-                {field: 'id', title: 'ID', width: 80, sort: true}
-                ,{field: 'username', title: '用户名', width: 120}
-                ,{field: 'email', title: '邮箱', minWidth: 150}
-                ,{field: 'sign', title: '签名', minWidth: 160}
-                ,{field: 'sex', title: '性别', width: 80}
-                ,{field: 'city', title: '城市', width: 100}
-                ,{field: 'experience', title: '积分', width: 80, sort: true}
+                {field: 'brandName', title: '品牌名称'}
+                ,{field: 'tradeName', title: '厂商名称'}
+                ,{field: 'carSysName', title: '车系名称'}
+                ,{field: 'carSysId', title: '车系ID', sort: true}
             ]]
-            ,data: [{
-                "id": "10001"
-                ,"username": "杜甫"
-                ,"email": "xianxin@layui.com"
-                ,"sex": "男"
-                ,"city": "浙江杭州"
-                ,"sign": "人生恰似一场修行"
-                ,"experience": "116"
-                ,"ip": "192.168.0.8"
-                ,"logins": "108"
-                ,"joinTime": "2016-10-14"
-            }, {
-                "id": "10002"
-                ,"username": "李白"
-                ,"email": "xianxin@layui.com"
-                ,"sex": "男"
-                ,"city": "浙江杭州"
-                ,"sign": "人生恰似一场修行"
-                ,"experience": "12"
-                ,"ip": "192.168.0.8"
-                ,"logins": "106"
-                ,"joinTime": "2016-10-14"
-                ,"LAY_CHECKED": true
-            }, {
-                "id": "10003"
-                ,"username": "王勃"
-                ,"email": "xianxin@layui.com"
-                ,"sex": "男"
-                ,"city": "浙江杭州"
-                ,"sign": "人生恰似一场修行"
-                ,"experience": "65"
-                ,"ip": "192.168.0.8"
-                ,"logins": "106"
-                ,"joinTime": "2016-10-14"
-            }, {
-                "id": "10004"
-                ,"username": "贤心"
-                ,"email": "xianxin@layui.com"
-                ,"sex": "男"
-                ,"city": "浙江杭州"
-                ,"sign": "人生恰似一场修行"
-                ,"experience": "666"
-                ,"ip": "192.168.0.8"
-                ,"logins": "106"
-                ,"joinTime": "2016-10-14"
-            }, {
-                "id": "10005"
-                ,"username": "贤心"
-                ,"email": "xianxin@layui.com"
-                ,"sex": "男"
-                ,"city": "浙江杭州"
-                ,"sign": "人生恰似一场修行"
-                ,"experience": "86"
-                ,"ip": "192.168.0.8"
-                ,"logins": "106"
-                ,"joinTime": "2016-10-14"
-            }, {
-                "id": "10006"
-                ,"username": "贤心"
-                ,"email": "xianxin@layui.com"
-                ,"sex": "男"
-                ,"city": "浙江杭州"
-                ,"sign": "人生恰似一场修行"
-                ,"experience": "12"
-                ,"ip": "192.168.0.8"
-                ,"logins": "106"
-                ,"joinTime": "2016-10-14"
-            }, {
-                "id": "10007"
-                ,"username": "贤心"
-                ,"email": "xianxin@layui.com"
-                ,"sex": "男"
-                ,"city": "浙江杭州"
-                ,"sign": "人生恰似一场修行"
-                ,"experience": "16"
-                ,"ip": "192.168.0.8"
-                ,"logins": "106"
-                ,"joinTime": "2016-10-14"
-            }, {
-                "id": "10008"
-                ,"username": "贤心"
-                ,"email": "xianxin@layui.com"
-                ,"sex": "男"
-                ,"city": "浙江杭州"
-                ,"sign": "人生恰似一场修行"
-                ,"experience": "106"
-                ,"ip": "192.168.0.8"
-                ,"logins": "106"
-                ,"joinTime": "2016-10-14"
-            }]
             //,skin: 'line' //表格风格
             ,even: true //隔行换色
             ,page: true //是否显示分页

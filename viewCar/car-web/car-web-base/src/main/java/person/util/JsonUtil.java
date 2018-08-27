@@ -1,5 +1,6 @@
 package person.util;
 
+import com.google.gson.Gson;
 import net.sf.ezmorph.object.DateMorpher;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -158,4 +159,15 @@ public class JsonUtil {
         bean.setInfo(info);
         return bean;
     }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/8/27 16:06
+     * @param bean
+     * @Description 将对象转换为json字符串
+     */
+    public static String beanToJsonString(Object bean) {
+        return new Gson().toJson(bean);
+    }
+
 }
