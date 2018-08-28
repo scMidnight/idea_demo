@@ -1,22 +1,22 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : MySql Local
-Source Server Version : 50139
+Source Server         : mysql
+Source Server Version : 50717
 Source Host           : localhost:3306
 Source Database       : learn
 
 Target Server Type    : MYSQL
-Target Server Version : 50139
+Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-08-28 22:49:14
+Date: 2018-08-28 23:56:51
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for `tbl_car_system`
+-- Table structure for tbl_car_system
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_car_system`;
 CREATE TABLE `tbl_car_system` (
@@ -163,11 +163,6 @@ INSERT INTO `tbl_car_system` VALUES ('1110', '国金汽车', '304', '陕西通�
 INSERT INTO `tbl_car_system` VALUES ('1111', '广汽新能源', '313', '广汽新能源', '492', '传祺GA3S PHEV', '4255', '0');
 INSERT INTO `tbl_car_system` VALUES ('1112', '广汽新能源', '313', '广汽新能源', '492', '传祺GS4新能源', '4256', '0');
 INSERT INTO `tbl_car_system` VALUES ('1113', '广汽新能源', '313', '广汽新能源', '492', '传祺GE3', '4291', '0');
-INSERT INTO `tbl_car_system` VALUES ('1114', '', '', '', '', '', '', '0');
-INSERT INTO `tbl_car_system` VALUES ('1115', '', '', '', '', '', '', '0');
-INSERT INTO `tbl_car_system` VALUES ('1116', '', '', '', '', '', '', '0');
-INSERT INTO `tbl_car_system` VALUES ('1117', '', '', '', '', '', '', '0');
-INSERT INTO `tbl_car_system` VALUES ('1118', '', '', '', '', '', '', '0');
 INSERT INTO `tbl_car_system` VALUES ('112', '雪铁龙', '72', '东风雪铁龙', '37', '天逸 C5 AIRCROSS', '4370', '0');
 INSERT INTO `tbl_car_system` VALUES ('113', '标致', '13', '东风标致', '38', '标致308', '877', '0');
 INSERT INTO `tbl_car_system` VALUES ('114', '标致', '13', '东风标致', '38', '标致408', '987', '0');
@@ -1154,7 +1149,7 @@ INSERT INTO `tbl_car_system` VALUES ('998', '英菲尼迪', '73', '东风英菲�
 INSERT INTO `tbl_car_system` VALUES ('999', '五十铃', '167', '江西五十铃', '394', 'D-MAX', '3562', '0');
 
 -- ----------------------------
--- Table structure for `tbl_function`
+-- Table structure for tbl_function
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_function`;
 CREATE TABLE `tbl_function` (
@@ -1181,7 +1176,7 @@ INSERT INTO `tbl_function` VALUES ('F006', '车系管理', '车系管理', '1', 
 INSERT INTO `tbl_function` VALUES ('F006001', '车系列表', '车系列表', '2', '/carSystem/info');
 
 -- ----------------------------
--- Table structure for `tbl_role`
+-- Table structure for tbl_role
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_role`;
 CREATE TABLE `tbl_role` (
@@ -1197,7 +1192,7 @@ CREATE TABLE `tbl_role` (
 INSERT INTO `tbl_role` VALUES ('1', '管理员', '管理员');
 
 -- ----------------------------
--- Table structure for `tbl_rolefunction`
+-- Table structure for tbl_rolefunction
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_rolefunction`;
 CREATE TABLE `tbl_rolefunction` (
@@ -1220,7 +1215,7 @@ INSERT INTO `tbl_rolefunction` VALUES ('1', 'F006');
 INSERT INTO `tbl_rolefunction` VALUES ('1', 'F006001');
 
 -- ----------------------------
--- Table structure for `tbl_user`
+-- Table structure for tbl_user
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_user`;
 CREATE TABLE `tbl_user` (
@@ -1238,7 +1233,7 @@ CREATE TABLE `tbl_user` (
 INSERT INTO `tbl_user` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'test@qq.com', '测试');
 
 -- ----------------------------
--- Table structure for `tbl_userrole`
+-- Table structure for tbl_userrole
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_userrole`;
 CREATE TABLE `tbl_userrole` (

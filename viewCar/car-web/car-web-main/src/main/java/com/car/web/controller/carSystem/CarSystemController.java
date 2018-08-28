@@ -1,6 +1,7 @@
 package com.car.web.controller.carSystem;
 
 import jodd.util.StringUtil;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -12,12 +13,17 @@ import person.db.bean.TableJsonBean;
 import person.db.bean.TblCarSystemBean;
 import person.db.entity.Page;
 import person.handler.CarSystemHandler;
+import person.util.ExcelUtil;
 import person.util.IdUtils;
 import person.util.JsonUtil;
 import person.util.UpOrDownloadUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,8 +136,19 @@ public class CarSystemController {
         String fileName = "车系数据表"+System.currentTimeMillis()+".xls";
         //sheet名
         String sheetName = "车系信息";
-
-        System.out.println("这是导出");
+        String[][] contents = new String[carSystemBeans.size()][title.length];
+        for (int i = 0; i < carSystemBeans.size(); i++) {
+            TblCarSystemBean tblCarSystemBean = carSystemBeans.get(i);
+            contents[i][0] = tblCarSystemBean.getBrandId();
+            contents[i][1] = tblCarSystemBean.getBrandName();
+            contents[i][2] = tblCarSystemBean.getTradeId();
+            contents[i][3] = tblCarSystemBean.getTradeName();
+            contents[i][4] = tblCarSystemBean.getCarSysId();
+            contents[i][5] = tblCarSystemBean.getCarSysName();
+        }
+        //创建HSSFWorkbook
+        HSSFWorkbook wb = ExcelUtil.getHSSFWorkbook(sheetName, title, contents, null);
+        upOrDownloadUtil.downLodaCarExcel(fileName, request, response, ExcelUtil.wbToInputstream(wb));
         return null;
     }
 }

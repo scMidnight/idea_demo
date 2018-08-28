@@ -6,14 +6,14 @@ import java.io.Serializable;
  * Created by SunChang on 2018/8/27
  */
 public class TblCarSystemBean implements Serializable {
-    private String id;
-    private String brandName;
-    private String brandId;
-    private String tradeName;
-    private String tradeId;
-    private String carSysName;
-    private String carSysId;
-    private String isDel;
+    private String id;//主键
+    private String brandName;//品牌口称
+    private String brandId;//品牌ID
+    private String tradeName;//厂商名称
+    private String tradeId;//厂商ID
+    private String carSysName;//车系名称
+    private String carSysId;//车系ID
+    private String isDel;//是否删除0否1是
 
     public String getId() {
         return id;
