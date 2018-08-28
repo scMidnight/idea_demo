@@ -25,31 +25,9 @@ import java.util.Map;
 @Controller
 public class IndexAction {
 
-    @Autowired
-    CarSystemHandler carSystemHandler;
-
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index(HttpServletRequest request, ModelMap modelMap) {
         return "/index";
     }
 
-    @RequestMapping(value = "/data", produces="application/json;charset=UTF-8")
-    @ResponseBody
-    public Object list(Page<TblCarSystemBean> page, HttpServletRequest request, ModelMap map) {
-        String pageNo = request.getParameter("page");//page是当前页码
-        String limit = request.getParameter("limit");//limit是每页数据量
-        String key = request.getParameter("key");//得到前台选中的值
-        String hql = "SELECT t FROM TblCarSystem t WHERE t.isDel = '0' ";
-        Map<String,Object> valueMap = new HashMap<String, Object>();
-        String where = "";
-        if(StringUtil.isNotBlank(key)) {
-            String val = request.getParameter("selectedVal");
-            where = " AND t." + key + " like '%" + val + "%'";
-        }
-        page.setPageNo(Integer.parseInt(pageNo));
-        page.setPageSize(Integer.parseInt(limit));
-        Page<TblCarSystemBean> pageResult = carSystemHandler.queryByPageFilter(page,hql + where, valueMap);
-        TableJsonBean tableJsonBean = new TableJsonBean("0", "", String.valueOf(pageResult.getTotalCount()), pageResult.getResult());
-        return JsonUtil.beanToJsonString(tableJsonBean);
-    }
 }

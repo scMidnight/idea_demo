@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50139
 File Encoding         : 65001
 
-Date: 2018-08-27 18:57:15
+Date: 2018-08-28 22:49:14
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -1178,7 +1178,7 @@ INSERT INTO `tbl_function` VALUES ('F003', '检测预警', '检测预警', '1', 
 INSERT INTO `tbl_function` VALUES ('F004', '批量导出', '批量导出', '1', '#');
 INSERT INTO `tbl_function` VALUES ('F005', '黑名单管理', '黑名单管理', '1', '#');
 INSERT INTO `tbl_function` VALUES ('F006', '车系管理', '车系管理', '1', '#');
-INSERT INTO `tbl_function` VALUES ('F006001', '车系列表', '车系列表', '2', '#');
+INSERT INTO `tbl_function` VALUES ('F006001', '车系列表', '车系列表', '2', '/carSystem/info');
 
 -- ----------------------------
 -- Table structure for `tbl_role`

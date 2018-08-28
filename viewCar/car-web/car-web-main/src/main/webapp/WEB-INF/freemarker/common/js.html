@@ -1,6 +1,10 @@
 <script src="${base}/resources/js/jq.min.js"></script>
-<script src="${base}/resources/layui.all.js"></script>
+<script src="${base}/resources/layui.js"></script>
 <script type="text/javascript">
+    layui.use('element', function(){
+        var element = layui.element;
+
+    });
     function isNull(str) {
         if(str == null || str == undefined || str.length == 0 || str == "") {
             return true;

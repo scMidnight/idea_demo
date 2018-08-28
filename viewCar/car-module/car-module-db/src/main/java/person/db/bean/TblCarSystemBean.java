@@ -6,6 +6,7 @@ import java.io.Serializable;
  * Created by SunChang on 2018/8/27
  */
 public class TblCarSystemBean implements Serializable {
+    private String id;
     private String brandName;
     private String brandId;
     private String tradeName;
@@ -13,6 +14,14 @@ public class TblCarSystemBean implements Serializable {
     private String carSysName;
     private String carSysId;
     private String isDel;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getBrandName() {
         return brandName;

@@ -43,4 +43,19 @@ public class CarSystemHandlerImpl implements CarSystemHandler {
         page.setResult(beanList);
         return page;
     }
+
+    @Override
+    public void removeCarSystemInfo(String id) throws Exception {
+        carSystemService.removeCarSystemInfo(id);
+    }
+
+    @Override
+    public void addCarSystemInfo(TblCarSystemBean carSystemBean) throws Exception {
+        carSystemService.addCarSystemInfo(carSystemBean);
+    }
+
+    @Override
+    public List<TblCarSystemBean> queryAll() {
+        return carSystemService.queryAll();
+    }
 }
