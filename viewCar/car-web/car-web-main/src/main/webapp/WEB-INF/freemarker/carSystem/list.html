@@ -147,10 +147,17 @@
     function carSystemAdd() {
         window.location = "${base}/carSystem/info/add";
     }
+    var t;
     function exportExcel() {
+        var loading = layer.load(0,{shade: [0.4,'#000']});
         var $a = $("#exportExcel");
         $a.attr("href", "${base}/carSystem/info/exportExcel");
         $("#exportExcel span").trigger('click');
+        t=setTimeout(function () { closeLoad(loading) },1000);
+    }
+    function closeLoad(index) {
+        layer.close(index);
+        clearTimeout(t);
     }
 </script>
 <#include "/common/bodyEnd.html">
