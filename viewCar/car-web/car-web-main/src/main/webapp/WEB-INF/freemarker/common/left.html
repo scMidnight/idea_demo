@@ -7,7 +7,7 @@
                     <#if (t.obj.functionUrl)?? && (t.obj.functionUrl == '#')>
                         <a class="" href="javascript:void(0);">${t.obj.functionName}</a>
                     <#elseif (t.obj.functionUrl)?? && (t.obj.functionUrl?length>1)>
-                        <a href="${base}${child.obj.functionUrl}">${child.obj.functionName}</a>
+                        <a href="${base}${t.obj.functionUrl}">${t.obj.functionName}</a>
                     </#if>
                     <#if (t.children)?? && (t.children?size>0)>
                         <dl class="layui-nav-child">
