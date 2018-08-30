@@ -1,5 +1,7 @@
 package com.car.web.utils;
 
+import jodd.util.StringUtil;
+
 import java.io.*;
 
 /**
@@ -19,20 +21,40 @@ public class TxtUtil {
         StringBuilder str = new StringBuilder();
         String r = br.readLine();
         while(r != null) {
-            str.append(r).append("\n");
+            str.append(r).append("\r\n");
             r = br.readLine();
         }
         return str;
     }
 
-    public static void writeTxt() throws IOException {
+    /**
+     * @Author SunChang
+     * @Date 2018/8/30 16:54
+     * @param
+     * @Description 计算有多少行
+     */
+    public static int lineNum(StringBuilder sb) {
+        if(StringUtil.isNotBlank(sb.toString())) {
+            String[] strArr = sb.toString().split("\n");
+            return strArr.length;
+        }else {
+            return 0;
+        }
+    }
+
+    public static void writeTxt(String content) throws IOException {
         String path = TxtUtil.class.getClassLoader().getResource("blackList.txt").getPath();
         File file = new File(path);
         file.createNewFile();  //创建新文件
         PrintWriter fw = new PrintWriter(file);
         BufferedWriter out = new BufferedWriter(fw);
-        for (int i = 0; i < 2; i++) {
-            fw.write("我会写入文件啦\r\n"); // \r\n即为换行
+        if(StringUtil.isNotBlank(content)) {
+            String[] strArr = content.split("\n");
+            for (int i = 0; i < strArr.length; i++) {
+                fw.write(strArr[i] + "\r\n");
+            }
+        }else {
+            fw.write("");
         }
         fw.flush(); // 把缓存区内容压入文件
         fw.close(); // 最后记得关闭文件
@@ -40,7 +62,7 @@ public class TxtUtil {
 
     public static void main(String[] args) {
         try {
-            writeTxt();
+            writeTxt("123\n12");
             StringBuilder str = readTxt();
             System.out.println(str);
         } catch (IOException e) {

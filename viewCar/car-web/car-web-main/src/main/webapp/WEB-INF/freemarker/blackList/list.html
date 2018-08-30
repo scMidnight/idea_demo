@@ -10,12 +10,18 @@
                     黑名单管理
                 </legend>
             </fieldset>
-            <div class="layui-form">
+            <blockquote class="layui-elem-quote">
+                当前状态：
+            </blockquote>
+            <div class="layui-form layui-form-pane">
                 <div class="layui-form-item layui-form-text">
-                    <label class="layui-form-label">黑名单列表</label>
+                    <label class="layui-form-label" style="width: 180px;">黑名单&emsp;合计：${lineNum!''}个</label>
                     <div class="layui-input-block">
-                        <textarea name="desc" rows="25" style="width: 145px;" placeholder="请输入内容" class="layui-textarea">${conten!''}</textarea>
+                        <textarea name="blackList" rows="18" style="width: 180px;" placeholder="请输入黑名单手机号" class="layui-textarea">${conten!''}</textarea>
                     </div>
+                </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo" onclick="javascript:saveBackList()">保存</button>
                 </div>
             </div>
         </div>
@@ -25,6 +31,32 @@
 <#include "/common/js.html">
 <!-- 自定义 js -->
 <script>
-
+    var layer;
+    layui.use(['layer'], function () {
+        layer = layui.layer;
+    });
+    function saveBackList() {
+        var blackList = $("textarea[name='blackList']").val();
+        var loading;
+        $.ajax({
+            url:"${base}/blackList",
+            data:{blackList:blackList},
+            dataType:"json",
+            type:"post",
+            beforeSend:function(XMLHttpRequest) {
+                loading = layer.load(0,{shade: [0.4,'#000']});
+            },
+            success:function (result) {
+                if(result.status == "y") {
+                    layer.close(loading);
+                    location.reload();
+                }else{
+                    layer.alert(result.msg);
+                }
+            },
+            complete:function (XMLHttpRequest, textStatus) {
+            }
+        });
+    }
 </script>
 <#include "/common/bodyEnd.html">
