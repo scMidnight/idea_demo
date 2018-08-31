@@ -102,7 +102,7 @@ public class UserUtil {
     /**
      * 获取用户
      */
-    public static UserDetailModel getUser(String code) {
+    public static UserDetailModel getUser() {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
         if (checkLogin(authentication)) {

@@ -32,6 +32,7 @@ public class UserDetailModel extends User implements UserDetails {
     private String email;
     private String userName;
     private TreeSet<TblRoleBean> roles;
+    private String isBlack;
 
     public String getId() {
         return id;
@@ -80,5 +81,13 @@ public class UserDetailModel extends User implements UserDetails {
 
     public void setRoles(TreeSet<TblRoleBean> roles) {
         this.roles = roles;
+    }
+
+    public String getIsBlack() {
+        return isBlack;
+    }
+
+    public void setIsBlack(String isBlack) {
+        this.isBlack = isBlack;
     }
 }

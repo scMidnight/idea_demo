@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import person.util.MessageBean;
+import person.util.UserUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -31,6 +32,7 @@ public class BlackListController {
             StringBuilder sb = TxtUtil.readTxt();
             modelMap.put("conten", sb.toString());
             modelMap.put("lineNum", TxtUtil.lineNum(sb));
+            modelMap.put("isBlack", UserUtil.getUser().getIsBlack());
         } catch (IOException e) {
             System.err.println("解析错误:" + e.getMessage());
         }

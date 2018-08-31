@@ -46,6 +46,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         user.setRoles(userBean.getRoles());
         user.setUserCode(userBean.getUserCode());
         user.setUserName(userBean.getUserName());
+        user.setIsBlack(userBean.getIsBlack());
         return user;
     }
 

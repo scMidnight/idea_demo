@@ -14,6 +14,7 @@ public class TblUserBean implements Serializable {
     private String email;
     private String userName;
     private TreeSet<TblRoleBean> roles;
+    private String isBlack;//是否开启黑名单1是0否
 
     public String getId() {
         return id;
@@ -61,5 +62,13 @@ public class TblUserBean implements Serializable {
 
     public void setRoles(TreeSet<TblRoleBean> roles) {
         this.roles = roles;
+    }
+
+    public String getIsBlack() {
+        return isBlack;
+    }
+
+    public void setIsBlack(String isBlack) {
+        this.isBlack = isBlack;
     }
 }

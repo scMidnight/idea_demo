@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50139
 File Encoding         : 65001
 
-Date: 2018-08-30 17:01:17
+Date: 2018-08-31 16:56:59
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -1233,13 +1233,14 @@ CREATE TABLE `tbl_user` (
   `password` varchar(50) NOT NULL DEFAULT '',
   `email` varchar(50) DEFAULT '',
   `username` varchar(50) DEFAULT NULL,
+  `is_black` varchar(1) NOT NULL DEFAULT '1' COMMENT '是否开启黑名单1是0否',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbl_user
 -- ----------------------------
-INSERT INTO `tbl_user` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'test@qq.com', '测试');
+INSERT INTO `tbl_user` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'test@qq.com', '测试', '1');
 
 -- ----------------------------
 -- Table structure for `tbl_userrole`

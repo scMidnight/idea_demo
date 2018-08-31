@@ -18,6 +18,7 @@ public class TblUser extends IdEntity {
     private String email;
     private String userName;
     private TreeSet<TblRole> roles;
+    private String isBlack;//是否开启黑名单1是0否
 
     @Column(name = "usercode")
     public String getUserCode() {
@@ -62,5 +63,14 @@ public class TblUser extends IdEntity {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    @Column(name = "IS_BLACK")
+    public String getIsBlack() {
+        return isBlack;
+    }
+
+    public void setIsBlack(String isBlack) {
+        this.isBlack = isBlack;
     }
 }
