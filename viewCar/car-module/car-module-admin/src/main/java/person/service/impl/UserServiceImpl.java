@@ -33,4 +33,19 @@ public class UserServiceImpl extends CommonServiceImpl implements UserService {
             return null;
         }
     }
+
+    @Override
+    public void updateUserIsBlack(String userId, String isBlack) {
+        TblUser tblUser = this.get(TblUser.class, userId);
+        tblUser.setIsBlack(isBlack);
+        super.saveOrUpdate(tblUser);
+    }
+
+    @Override
+    public TblUserBean loadByUserId(String userId) {
+        TblUser tblUser = this.get(TblUser.class, userId);
+        TblUserBean userBean = new TblUserBean();
+        BeanUtils.copyProperties(tblUser, userBean);
+        return userBean;
+    }
 }

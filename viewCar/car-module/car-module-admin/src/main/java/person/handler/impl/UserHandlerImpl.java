@@ -19,4 +19,14 @@ public class UserHandlerImpl implements UserHandler {
     public TblUserBean loadByUsername(String userCode) {
         return userService.loadByUsername(userCode);
     }
+
+    @Override
+    public void updateUserIsBlack(String userId, String isBlack) {
+        userService.updateUserIsBlack(userId, isBlack);
+    }
+
+    @Override
+    public TblUserBean loadByUserId(String userId) {
+        return userService.loadByUserId(userId);
+    }
 }

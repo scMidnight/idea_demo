@@ -7,4 +7,8 @@ import person.db.bean.TblUserBean;
  */
 public interface UserHandler {
     TblUserBean loadByUsername(String userCode);
+
+    void updateUserIsBlack(String userId, String isBlack);
+
+    TblUserBean loadByUserId(String userId);
 }

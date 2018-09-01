@@ -1,11 +1,15 @@
 package com.car.web.controller.blackList;
 
 import com.car.web.utils.TxtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import person.db.bean.TblUserBean;
+import person.handler.UserHandler;
+import person.model.UserDetailModel;
 import person.util.MessageBean;
 import person.util.UserUtil;
 
@@ -18,6 +22,8 @@ import java.io.IOException;
 @Controller
 public class BlackListController {
 
+    @Autowired
+    UserHandler userHandler;
 
     /**
      * @Author SunChang
@@ -29,10 +35,11 @@ public class BlackListController {
     @RequestMapping(value = "/blackList", method = RequestMethod.GET)
     public String blackListGet(HttpServletRequest request, ModelMap modelMap) {
         try {
+            TblUserBean userBean = userHandler.loadByUserId(UserUtil.getUser().getId());
             StringBuilder sb = TxtUtil.readTxt();
             modelMap.put("conten", sb.toString());
             modelMap.put("lineNum", TxtUtil.lineNum(sb));
-            modelMap.put("isBlack", UserUtil.getUser().getIsBlack());
+            modelMap.put("isBlack", userBean.getIsBlack());
         } catch (IOException e) {
             System.err.println("解析错误:" + e.getMessage());
         }
@@ -61,4 +68,18 @@ public class BlackListController {
         return messageBean;
     }
 
+    @RequestMapping(value = "/blackList/switch", method = RequestMethod.POST)
+    @ResponseBody
+    public MessageBean blackStatus(HttpServletRequest request) {
+        String isBlack = request.getParameter("isBlack");
+        MessageBean messageBean = new MessageBean();
+        try {
+            userHandler.updateUserIsBlack(UserUtil.getUserId(), isBlack);
+            messageBean.setStatus("y");
+        } catch (Exception e) {
+            System.err.println("更新状态有误：" + e.getMessage());
+            messageBean.setMsg("更新状态有误，请联系管理员。");
+        }
+        return messageBean;
+    }
 }
