@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import person.db.bean.TableJsonBean;
+import person.db.bean.JsonBean;
 import person.db.bean.TblCarSystemBean;
 import person.db.entity.Page;
 import person.handler.CarSystemHandler;
@@ -61,8 +61,8 @@ public class CarSystemController {
         page.setPageNo(Integer.parseInt(pageNo));
         page.setPageSize(Integer.parseInt(limit));
         Page<TblCarSystemBean> pageResult = carSystemHandler.queryByPageFilter(page,hql + where, valueMap);
-        TableJsonBean tableJsonBean = new TableJsonBean("0", "", String.valueOf(pageResult.getTotalCount()), pageResult.getResult());
-        return JsonUtil.beanToJsonString(tableJsonBean);
+        JsonBean jsonBean = new JsonBean("0", "", String.valueOf(pageResult.getTotalCount()), pageResult.getResult());
+        return JsonUtil.beanToJsonString(jsonBean);
     }
 
     /**

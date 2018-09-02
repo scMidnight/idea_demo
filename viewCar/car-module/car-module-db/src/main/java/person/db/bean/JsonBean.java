@@ -8,13 +8,13 @@ import java.util.List;
  * Created by SunChang on 2018/8/27
  * 查询后返回的列表json格式的对应bean
  */
-public class TableJsonBean {
+public class JsonBean {
     private String code;//数据状态，默认0
     private String msg;//返回信息
     private String count;//数据总数
     private List data;//数据内容
 
-    public TableJsonBean(String code, String msg, String count, List data) {
+    public JsonBean(String code, String msg, String count, List data) {
         this.code = code;
         this.msg = msg;
         this.count = count;

@@ -2,13 +2,17 @@ package person.util;
 
 import com.sun.corba.se.spi.orbutil.fsm.Input;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+import person.db.bean.TblFileBean;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -127,5 +131,31 @@ public class UpOrDownloadUtil {
                 e.printStackTrace();
             }
         }
+    }
+
+    public List<TblFileBean> uploadFile(MultipartFile[] files, HttpServletRequest request, String rootPath) throws Exception {
+        List<TblFileBean> fileBeans = new ArrayList<>();
+        String fileName = "";
+        String filePath = "";
+        File folder = new File(rootPath);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        for (MultipartFile file : files) {
+            if(!file.isEmpty()) {
+                TblFileBean fileBean = new TblFileBean();
+                fileName = getRandomFileName();
+                filePath = rootPath + fileName;
+                file.transferTo(new File(filePath));//springMVC自带上传文件方法，非加密。
+				//saveFile(filePath, file.getBytes());//自定义保存不加密文件方法
+                //============================================================
+                fileBean.setFileName(fileName);
+                fileBean.setFileNameBak(file.getOriginalFilename());
+                fileBean.setFilePath(filePath);
+                fileBean.setId(IdUtils.randomString());
+                fileBeans.add(fileBean);
+            }
+        }
+        return fileBeans;
     }
 }
