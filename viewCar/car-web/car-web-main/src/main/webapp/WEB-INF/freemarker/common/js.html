@@ -1,9 +1,10 @@
 <script src="${base}/resources/js/jq.min.js"></script>
 <script src="${base}/resources/layui.js"></script>
 <script type="text/javascript">
-    layui.use('element', function(){
+    var util;
+    layui.use(['element','util'], function(){
         var element = layui.element;
-
+        util = layui.util;
     });
     function isNull(str) {
         if(str == null || str == undefined || str.length == 0 || str == "") {

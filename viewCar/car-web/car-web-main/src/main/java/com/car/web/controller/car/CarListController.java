@@ -9,15 +9,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import person.db.bean.CarListBean;
 import person.db.bean.JsonBean;
+import person.db.bean.TblCarSystemBean;
 import person.db.bean.TblFileBean;
+import person.db.entity.Page;
 import person.handler.FileHandler;
 import person.util.JsonUtil;
 import person.util.UpOrDownloadUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class CarListController {
@@ -71,5 +77,48 @@ public class CarListController {
     @RequestMapping(value = "/car/list", method = RequestMethod.GET)
     public String carListGet(HttpServletRequest request, ModelMap modelMap) {
         return "/car/list";
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/8/30 16:21
+     * @param request
+    * @param modelMap
+     * @Description 文件列表
+     */
+    @RequestMapping(value = "/car/list", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
+    @ResponseBody
+    public String carListPost(Page<TblFileBean> page, HttpServletRequest request) {
+        String pageNo = request.getParameter("page");//page是当前页码
+        String limit = request.getParameter("limit");//limit是每页数据量
+        String hql = "SELECT t FROM TblFile t WHERE 1 = 1";
+        Map<String,Object> valueMap = new HashMap<String, Object>();
+        String where = "";
+        page.setPageNo(Integer.parseInt(pageNo));
+        page.setPageSize(Integer.parseInt(limit));
+        Page<TblFileBean> pageResult = fileHandler.queryByPageFilter(page,hql + where, valueMap);
+        List<CarListBean> carListBeans = new ArrayList<CarListBean>();
+        if(!pageResult.getResult().isEmpty()) {
+            for (TblFileBean fileBean : pageResult.getResult()) {
+                CarListBean carListBean = new CarListBean();
+                if(fileBean.getStatus().equals("0")) {
+                    carListBean.setFileBean(fileBean);
+                    carListBean.setFileCount("0");
+                    carListBean.setSumCount("0");
+                    carListBean.setProblemCount("0");
+                    carListBean.setTaskRepeatCount("0");
+                    carListBean.setCarSysRepeatCount("0");
+                    carListBean.setBigLibraryRepeatCount("0");
+                    carListBean.setBlackHitRepeatCount("0");
+                    carListBean.setNumberErrCount("0");
+                    carListBean.setIdFailedCount("0");
+                }else {
+
+                }
+                carListBeans.add(carListBean);
+            }
+        }
+        JsonBean jsonBean = new JsonBean("0", "", String.valueOf(pageResult.getTotalCount()), carListBeans);
+        return JsonUtil.beanToJsonString(jsonBean);
     }
 }

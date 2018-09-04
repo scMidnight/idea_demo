@@ -41,17 +41,54 @@
                     </div>
                 </div>
             </blockquote>
+            <table class="layui-hide" id="carList"></table>
         </div>
     </div>
     <#include "/common/footer.html">
 </div>
 <#include "/common/js.html">
+<script type="text/html" id="fileNameBak">
+    {{d.fileBean.fileNameBak}}
+</script>
+<script type="text/html" id="uploadDate">
+    {{util.toDateString(d.fileBean.uploadDate)}}
+</script>
+<script type="text/html" id="operate">
+    {{# if (d.fileBean.status == '0')  { }}
+        <a class="layui-btn layui-btn-xs" lay-event="checkPackage">检查整理</a>
+    {{# } else { }}
+        <a class="layui-btn layui-btn-xs" lay-event="checkAgainPackage">重新检查</a>
+        <a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
+    {{# } }}
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delPackage">删除</a>
+</script>
 <!-- 自定义 js -->
 <script>
-    layui.use(['form'], function () {
-        var form = layui.form;
+    layui.use(['form','table','util'], function () {
+        var form = layui.form,table = layui.table,util = layui.util;
         form.on('submit(baocun)', function (data) {
             layer.load(0,{shade: [0.4,'#000']});
+        });
+        table.render({
+            elem: '#carList'
+            ,url: '${base}/car/list'
+            ,method:'post'
+            ,cols: [[
+                {field:'fileNameBak', title:'文件包名', width:200, templet:'#fileNameBak'}
+                ,{field:'uploadDate', title:'上传时间', width:160, templet:'#uploadDate'}
+                ,{field:'fileCount', title:'文件总数', width:90}
+                ,{field:'sumCount', title:'合计条数', width:90}
+                ,{field:'problemCount', title:'问题条数', width:90}
+                ,{field:'taskRepeatCount', title:'任务重复', width:90}
+                ,{field:'carSysRepeatCount', title:'车系重复', width:90}
+                ,{field:'bigLibraryRepeatCount', title:'大库重复', width:90}
+                ,{field:'blackHitRepeatCount', title:'黑名单命中', width:100}
+                ,{field:'numberErrCount', title:'号段错误', width:90}
+                ,{field:'idFailedCount', title:'id转失败', width:90}
+                ,{field:'right', title:'操作', toolbar:'#operate', fixed:'right'}
+            ]]
+            ,even: true //隔行换色
+            ,page: true
         });
     });
 </script>

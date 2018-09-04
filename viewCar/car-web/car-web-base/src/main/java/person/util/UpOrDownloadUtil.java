@@ -153,6 +153,7 @@ public class UpOrDownloadUtil {
                 fileBean.setFileNameBak(file.getOriginalFilename());
                 fileBean.setFilePath(filePath);
                 fileBean.setId(IdUtils.randomString());
+                fileBean.setStatus("0");
                 fileBeans.add(fileBean);
             }
         }

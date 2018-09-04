@@ -13,6 +13,7 @@ public class TblFile extends IdEntity {
     private String fileNameBak;//附件原名称
     private String filePath;//附件路径
     private Date uploadDate;//上传时间
+    private String status;//状态：状态：0 待整理，1 已整理
 
     @Column(name = "FILE_NAME")
     public String getFileName() {
@@ -48,5 +49,14 @@ public class TblFile extends IdEntity {
 
     public void setUploadDate(Date uploadDate) {
         this.uploadDate = uploadDate;
+    }
+
+    @Column(name = "STATUS")
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

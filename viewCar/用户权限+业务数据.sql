@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-09-02 23:17:17
+Date: 2018-09-05 00:15:05
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -1158,20 +1158,24 @@ INSERT INTO `tbl_car_system` VALUES ('D2D2A7234B375F305AB4EE038EFC2AC3', '1', '1
 INSERT INTO `tbl_car_system` VALUES ('DA2F8E83963B2C951CC45C9DA14A26F4', '1', '1', '1', '1', '1', '1', '0');
 
 -- ----------------------------
--- Table structure for tbl_file
+-- Table structure for tbl_file_detail
 -- ----------------------------
-DROP TABLE IF EXISTS `tbl_file`;
-CREATE TABLE `tbl_file` (
+DROP TABLE IF EXISTS `tbl_file_detail`;
+CREATE TABLE `tbl_file_detail` (
   `id` varchar(35) NOT NULL COMMENT '主键',
-  `FILE_NAME` varchar(255) DEFAULT NULL COMMENT '文件名称',
-  `FILE_NAME_BAK` varchar(255) DEFAULT NULL COMMENT '文件原名称',
-  `FILE_PATH` varchar(255) DEFAULT NULL COMMENT '附件路径',
-  `UPLOAD_DATE` datetime DEFAULT NULL COMMENT '上传时间',
+  `package_name` varchar(255) DEFAULT NULL COMMENT '包名',
+  `file_name` varchar(255) DEFAULT NULL COMMENT '文件名',
+  `task_id` varchar(255) DEFAULT NULL COMMENT '任务ID',
+  `name` varchar(255) DEFAULT NULL COMMENT '姓名',
+  `phone` varchar(255) DEFAULT NULL COMMENT '手机号',
+  `area` varchar(255) DEFAULT NULL COMMENT '地区',
+  `car_sys` varchar(255) DEFAULT NULL COMMENT '车系',
+  `status` varchar(255) DEFAULT NULL COMMENT '状态：0 大库重复，1 任务重复，2 车系重复，3 黑名单命中，4 号段错误，5 ID转失败',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of tbl_file
+-- Records of tbl_file_detail
 -- ----------------------------
 
 -- ----------------------------

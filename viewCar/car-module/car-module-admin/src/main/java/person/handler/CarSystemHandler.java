@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public interface CarSystemHandler {
     /**
-     * 分页查询工作日报表信息
+     * 分页查询
      * @param page
      * @param values
      * @return
