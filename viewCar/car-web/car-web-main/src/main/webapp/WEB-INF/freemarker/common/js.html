@@ -13,4 +13,18 @@
             return false;
         }
     }
+    function full(num) {
+        if(num < 10) {
+            return "0" + num;
+        }
+        return num;
+    }
+    var dateStr = function (n) {
+        var now = new Date;
+        var nowStrEnd = now.getFullYear() + "-" + full(now.getMonth()+1) + "-" + full(now.getDate());
+        now.setDate(now.getDate() - n);
+        var nowStr = now.getFullYear() + "-" + full(now.getMonth()+1) + "-" + full(now.getDate()) + " ~ ";
+        nowStr += nowStrEnd;
+        return nowStr;
+    }
 </script>

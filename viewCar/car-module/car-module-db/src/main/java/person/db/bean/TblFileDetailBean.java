@@ -1,6 +1,7 @@
 package person.db.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class TblFileDetailBean implements Serializable {
     private String id;
@@ -11,7 +12,8 @@ public class TblFileDetailBean implements Serializable {
     private String phone;//手机
     private String area;//地区
     private String carSys;//车系
-    private String status;//状态：0 大库重复，1 任务重复，2 车系重复，3 黑名单命中，4 号段错误，5 ID转失败
+    private String status;//状态：0 正常，1 大库重复，2 任务重复，3 车系重复，4 黑名单命中，5 号段错误，6 ID转失败
+    private TblFileBean fileBean;//文件表
 
     public String getId() {
         return id;
@@ -83,5 +85,13 @@ public class TblFileDetailBean implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public TblFileBean getFileBean() {
+        return fileBean;
+    }
+
+    public void setFileBean(TblFileBean fileBean) {
+        this.fileBean = fileBean;
     }
 }

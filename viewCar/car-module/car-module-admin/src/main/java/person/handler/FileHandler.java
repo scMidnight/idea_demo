@@ -18,4 +18,6 @@ public interface FileHandler {
     void addAttachment(TblFileBean fileBean);
 
     void batchAddAttachment(List<TblFileBean> fileBeans);
+
+    TblFileBean queryById(String id);
 }

@@ -52,4 +52,9 @@ public class FileHandlerImpl implements FileHandler {
     public void batchAddAttachment(List<TblFileBean> fileBeans) {
         fileService.batchAddAttachment(fileBeans);
     }
+
+    @Override
+    public TblFileBean queryById(String id) {
+        return fileService.queryById(id);
+    }
 }

@@ -14,7 +14,9 @@ import person.db.bean.JsonBean;
 import person.db.bean.TblCarSystemBean;
 import person.db.bean.TblFileBean;
 import person.db.entity.Page;
+import person.handler.FileDetailHandler;
 import person.handler.FileHandler;
+import person.util.FileUtil;
 import person.util.JsonUtil;
 import person.util.UpOrDownloadUtil;
 
@@ -30,6 +32,9 @@ public class CarListController {
 
     @Autowired
     FileHandler fileHandler;
+
+    @Autowired
+    FileDetailHandler fileDetailHandler;
 
     /**
      * @Author SunChang
@@ -120,5 +125,21 @@ public class CarListController {
         }
         JsonBean jsonBean = new JsonBean("0", "", String.valueOf(pageResult.getTotalCount()), carListBeans);
         return JsonUtil.beanToJsonString(jsonBean);
+    }
+
+    /**
+     * 列表信息删除
+     **/
+    @RequestMapping(value = "/car/list/del", method = RequestMethod.POST)
+    @ResponseBody
+    public Object carListDel(String id) {
+        try {
+            TblFileBean fileBean = fileHandler.queryById(id);
+            FileUtil.delFile(fileBean.getFilePath());
+            fileDetailHandler.deleteAllAndFile("fileId", id);
+            return JsonUtil.toString("Y", "操作成功！");
+        } catch (Exception e) {
+            return JsonUtil.toString("N", "失败异常：" + e.getMessage());
+        }
     }
 }

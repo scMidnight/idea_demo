@@ -12,36 +12,36 @@
                 </legend>
             </fieldset>
             <blockquote class="layui-elem-quote">
-                <div class="layui-form">
+                <div class="layui-form" lay-filter="one">
                     <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label" style="width: 120px;">大库检查时段</label>
                             <div class="layui-input-inline" style="width: 200px;">
-                                <input type="text" name="dateBegin" id="dateBegin" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input" />
+                                <input type="text" name="dateStr" id="dateStr" placeholder=" ~ " readonly="" class="layui-input" />
                             </div>
-                            <div class="layui-form-mid">-</div>
-                            <div class="layui-input-inline" style="width: 200px;">
-                                <input type="text" name="dateEnd" id="dateEnd" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
-                            </div>
+                            <!--<div class="layui-form-mid">-</div>-->
+                            <!--<div class="layui-input-inline" style="width: 200px;">-->
+                                <!--<input type="text" name="dateEnd" id="dateEnd" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">-->
+                            <!--</div>-->
                         </div>
                         <div class="layui-inline">
                             <button type="button" class="layui-btn layui-btn-normal" id="shangchuan" >重新检查时间范围内数据包</button>
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label" style="width: 120px;">导出时需屏蔽数据</label>
+                        <label class="layui-form-label" style="width: 120px;">导出时屏蔽数据</label>
                         <div class="layui-input-block">
-                            <input type="checkbox" name="like[write]" title="大库重复" />
-                            <input type="checkbox" name="like[read]" title="任务重复" />
-                            <input type="checkbox" name="like[game]" title="车系重复">
-                            <input type="checkbox" name="like[write]" title="黑名单命中" />
-                            <input type="checkbox" name="like[read]" title="号段错误" />
-                            <input type="checkbox" name="like[game]" title="ID转失败" />
+                            <input type="checkbox" name="filter[bigLib]" title="大库重复" />
+                            <input type="checkbox" name="filter[task]" title="任务重复" />
+                            <input type="checkbox" name="filter[carSys]" title="车系重复">
+                            <input type="checkbox" name="filter[black]" title="黑名单命中" />
+                            <input type="checkbox" name="filter[number]" title="号段错误" />
+                            <input type="checkbox" name="filter[id]" title="ID转失败" />
                         </div>
                     </div>
                 </div>
             </blockquote>
-            <table class="layui-hide" id="carList"></table>
+            <table class="layui-hide" id="carList" lay-filter="carList"></table>
         </div>
     </div>
     <#include "/common/footer.html">
@@ -59,37 +59,83 @@
     {{# } else { }}
         <a class="layui-btn layui-btn-xs" lay-event="checkAgainPackage">重新检查</a>
         <a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
+        <a class="layui-btn layui-btn-xs" lay-event="exportPackage">导出</a>
     {{# } }}
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delPackage">删除</a>
 </script>
 <!-- 自定义 js -->
 <script>
-    layui.use(['form','table','util'], function () {
-        var form = layui.form,table = layui.table,util = layui.util;
+    var dateVal = "";
+    layui.use(['form','table','laydate'], function () {
+        var form = layui.form,table = layui.table,laydate = layui.laydate;
         form.on('submit(baocun)', function (data) {
             layer.load(0,{shade: [0.4,'#000']});
+        });
+        form.val('one',{
+            "filter[task]" : true
+            ,"filter[carSys]" : true
+            ,"filter[black]" : true
+            ,"filter[number]" : true
+            ,"filter[id]" : true
+        });
+        laydate.render({
+            elem:'#dateStr'
+            ,range: '~'
+            ,value: dateStr(90)
+            ,trigger: 'click'
+            ,theme: 'molv'
+            ,done: function (value, date, endDate) {
+                dateVal = value;
+            }
         });
         table.render({
             elem: '#carList'
             ,url: '${base}/car/list'
             ,method:'post'
+            ,height: 'full-400'
             ,cols: [[
-                {field:'fileNameBak', title:'文件包名', width:200, templet:'#fileNameBak'}
+                {field:'fileNameBak', title:'文件包名', width:300, templet:'#fileNameBak'}
                 ,{field:'uploadDate', title:'上传时间', width:160, templet:'#uploadDate'}
-                ,{field:'fileCount', title:'文件总数', width:90}
-                ,{field:'sumCount', title:'合计条数', width:90}
-                ,{field:'problemCount', title:'问题条数', width:90}
-                ,{field:'taskRepeatCount', title:'任务重复', width:90}
-                ,{field:'carSysRepeatCount', title:'车系重复', width:90}
-                ,{field:'bigLibraryRepeatCount', title:'大库重复', width:90}
-                ,{field:'blackHitRepeatCount', title:'黑名单命中', width:100}
-                ,{field:'numberErrCount', title:'号段错误', width:90}
-                ,{field:'idFailedCount', title:'id转失败', width:90}
-                ,{field:'right', title:'操作', toolbar:'#operate', fixed:'right'}
+                ,{field:'fileCount', title:'文件总数', align:'center'}
+                ,{field:'sumCount', title:'合计条数', align:'center'}
+                ,{field:'problemCount', title:'问题条数', align:'center'}
+                ,{field:'taskRepeatCount', title:'任务重复', align:'center'}
+                ,{field:'carSysRepeatCount', title:'车系重复', align:'center'}
+                ,{field:'bigLibraryRepeatCount', title:'大库重复', align:'center'}
+                ,{field:'blackHitRepeatCount', title:'黑名单命中', align:'center', width:100}
+                ,{field:'numberErrCount', title:'号段错误', align:'center'}
+                ,{field:'idFailedCount', title:'id转失败', align:'center'}
+                ,{field:'right', title:'操作', toolbar:'#operate', width:300, fixed:'right', align:'center'}
             ]]
             ,even: true //隔行换色
             ,page: true
         });
+        table.on('tool(carList)', function (obj) {
+            var $data = obj.data;
+            var layEvent = obj.event;
+            if(layEvent == 'delPackage') {
+                layer.confirm('您确定要删除此条数据吗？', {icon: 3}, function (index) {
+                    $.ajax({
+                        url:"${base}/car/list/del",
+                        data:{id:$data.fileBean.id},
+                        dataType:"json",
+                        type:"post",
+                        success:function (result) {
+                            obj.del();
+                            layer.close(index);
+                            if(result.status=="Y"){
+                                layer.msg('删除成功！', {
+                                    icon: 1,
+                                    time: 1000 //1秒关闭（如果不配置，默认是3秒）
+                                });
+                            }else{
+                                layer.alert(result.msg);
+                            }
+                        }
+                    });
+                });
+            }
+        })
     });
 </script>
 <#include "/common/bodyEnd.html">

@@ -8,6 +8,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "TBL_FILE_DETAIL")
 public class TblFileDetail extends IdEntity {
+    private String fileId;//文件表ID
     private String packageName;//包名
     private String fileName;//文件名
     private String taskId;//任务ID
@@ -15,7 +16,16 @@ public class TblFileDetail extends IdEntity {
     private String phone;//手机
     private String area;//地区
     private String carSys;//车系
-    private String status;//状态：0 大库重复，1 任务重复，2 车系重复，3 黑名单命中，4 号段错误，5 ID转失败
+    private String status;//状态：0 正常，1 大库重复，2 任务重复，3 车系重复，4 黑名单命中，5 号段错误，6 ID转失败
+
+    @Column(name = "FILE_ID")
+    public String getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
+    }
 
     @Column(name = "package_name")
     public String getPackageName() {

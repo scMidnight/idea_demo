@@ -33,4 +33,18 @@ public class FileServiceImpl extends CommonServiceImpl implements FileService {
         }
         super.batchSave(files);
     }
+
+    @Override
+    public TblFileBean queryById(String id) {
+        TblFile file = this.get(TblFile.class, id);
+        TblFileBean fileBean = new TblFileBean();
+        BeanUtils.copyProperties(file, fileBean);
+        return fileBean;
+    }
+
+    @Override
+    public void deleteFile(String id) {
+        TblFile file = this.get(TblFile.class, id);
+        super.delete(file);
+    }
 }
