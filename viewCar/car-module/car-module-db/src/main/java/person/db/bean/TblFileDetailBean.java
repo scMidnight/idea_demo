@@ -6,7 +6,6 @@ import java.util.List;
 public class TblFileDetailBean implements Serializable {
     private String id;
     private String fileId;//文件表ID
-    private String packageName;//包名
     private String fileName;//文件名
     private String taskId;//任务ID
     private String name;//姓名
@@ -31,14 +30,6 @@ public class TblFileDetailBean implements Serializable {
 
     public void setFileId(String fileId) {
         this.fileId = fileId;
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
     }
 
     public String getFileName() {

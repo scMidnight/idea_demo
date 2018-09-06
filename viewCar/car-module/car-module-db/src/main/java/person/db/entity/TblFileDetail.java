@@ -9,7 +9,6 @@ import javax.persistence.Table;
 @Table(name = "TBL_FILE_DETAIL")
 public class TblFileDetail extends IdEntity {
     private String fileId;//文件表ID
-    private String packageName;//包名
     private String fileName;//文件名
     private String taskId;//任务ID
     private String name;//姓名
@@ -26,15 +25,6 @@ public class TblFileDetail extends IdEntity {
 
     public void setFileId(String fileId) {
         this.fileId = fileId;
-    }
-
-    @Column(name = "package_name")
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
     }
 
     @Column(name = "file_name")

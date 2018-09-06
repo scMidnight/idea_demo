@@ -1,11 +1,17 @@
 package person.util;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by SunChang on 2018/9/5
  */
 public class FileUtil {
+
+    public static void main(String[] args) throws IOException {
+    }
 
     /**
      * @Author SunChang

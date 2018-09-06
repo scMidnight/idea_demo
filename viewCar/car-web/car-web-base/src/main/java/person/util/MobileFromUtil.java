@@ -52,10 +52,13 @@ public class MobileFromUtil {
                             Element element = elements.get(1);
                             Node node = element.childNode(1);
                             Node node1 = node.childNode(4);
+                            System.out.println(node1.childNodeSize());
                             if(node1.childNodeSize() == 4) {
                                 result = node1.childNode(2).childNode(1).toString();
                             }else if(node1.childNodeSize() == 6) {
-                                result = node1.childNode(4).childNode(0).attr("value");
+                                result = node1.childNode(4).childNode(0).toString();
+                            }else if(node1.childNodeSize() == 5) {
+                                result = node1.childNode(3).childNode(0).toString();
                             }
                             //result = element.childNode(1).childNode(4).childNode(2).childNode(1).toString();
                             //for (Element element : elements) {
@@ -75,6 +78,10 @@ public class MobileFromUtil {
 
 
     public static void main(String[] args) throws MalformedURLException {
-        System.out.println(getMobileFrom("18286809527"));
+        //System.out.println(getMobileFrom("18286809527"));
+        //System.out.println(getMobileFrom("15502119051"));
+        String a = "上海&nbsp;";
+        String[] b = a.split("&nbsp;");
+        System.out.println(b.length);
     }
 }

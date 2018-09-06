@@ -24,4 +24,10 @@ public interface FileDetailHandler {
      * @Description 通过字段名称查询到结果后进行指删除并删除对应的文件表，此方法有局限性，不建议大范围使用
      */
     void deleteAllAndFile(String propertyName, Object value);
+
+    void batchSaveFileDetailBeansAndUpdateFileStatus(List<TblFileDetailBean> fileDetailBeans);
+
+    List<TblFileDetailBean> queryByHql(String hql, Object... param);
+
+    List<TblFileDetailBean> queryByHqlOnErrCount(String fileId, String status);
 }

@@ -22,4 +22,19 @@ public class FileDetailHandlerImpl implements FileDetailHandler {
     public void deleteAllAndFile(String propertyName, Object value) {
         fileDetailService.deleteAllAndFile(propertyName, value);
     }
+
+    @Override
+    public void batchSaveFileDetailBeansAndUpdateFileStatus(List<TblFileDetailBean> fileDetailBeans) {
+        fileDetailService.batchSaveFileDetailBeansAndUpdateFileStatus(fileDetailBeans);
+    }
+
+    @Override
+    public List<TblFileDetailBean> queryByHql(String hql, Object... param) {
+        return fileDetailService.queryByHql(hql, param);
+    }
+
+    @Override
+    public List<TblFileDetailBean> queryByHqlOnErrCount(String fileId, String status) {
+        return fileDetailService.queryByHqlOnErrCount(fileId, status);
+    }
 }

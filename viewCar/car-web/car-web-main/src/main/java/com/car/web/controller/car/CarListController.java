@@ -3,6 +3,7 @@ package com.car.web.controller.car;
 import com.car.web.utils.Constants;
 import com.car.web.utils.TxtUtil;
 import jodd.util.StringUtil;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -21,7 +22,6 @@ import person.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -103,8 +103,8 @@ public class CarListController {
         if(null != pageResult.getResult() && !pageResult.getResult().isEmpty()) {
             for (TblFileBean fileBean : pageResult.getResult()) {
                 CarListBean carListBean = new CarListBean();
+                carListBean.setFileBean(fileBean);
                 if(fileBean.getStatus().equals("0")) {
-                    carListBean.setFileBean(fileBean);
                     carListBean.setFileCount("0");
                     carListBean.setSumCount("0");
                     carListBean.setProblemCount("0");
@@ -115,7 +115,16 @@ public class CarListController {
                     carListBean.setNumberErrCount("0");
                     carListBean.setIdFailedCount("0");
                 }else {
-
+                    String fileId = fileBean.getId();
+                    carListBean.setFileCount(String.valueOf(fileDetailHandler.queryByHql("FROM TblFileDetail t where t.fileId = ? group by t.fileName", fileId).size()));
+                    carListBean.setSumCount(String.valueOf(fileDetailHandler.queryByHql("FROM TblFileDetail t where t.fileId = ?", fileId).size()));
+                    carListBean.setProblemCount(String.valueOf(fileDetailHandler.queryByHql("from TblFileDetail t where t.fileId = ? and t.status != ?", fileId, "0").size()));
+                    carListBean.setTaskRepeatCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "2").size()));
+                    carListBean.setCarSysRepeatCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "3").size()));
+                    carListBean.setBigLibraryRepeatCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "1").size()));
+                    carListBean.setBlackHitRepeatCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "4").size()));
+                    carListBean.setNumberErrCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "5").size()));
+                    carListBean.setIdFailedCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "6").size()));
                 }
                 carListBeans.add(carListBean);
             }
@@ -141,7 +150,7 @@ public class CarListController {
     }
 
     /**
-     * 列表信息删除
+     * 整理文件
      **/
     @RequestMapping(value = "/car/list/checkPackage", method = RequestMethod.POST)
     @ResponseBody
@@ -151,16 +160,18 @@ public class CarListController {
             List<TblAreaBean> areaBeans = CacheManager.getInstance().getAreaAll();//地区码表
             List<TblCarSystemBean> carSystemBeans = CacheManager.getInstance().getCarSysAll();//车系码表
             TblFileBean fileBean = fileHandler.queryById(id);
+            FileUtils.deleteDirectory(new File(fileBean.getFilePath() + "a" + File.separatorChar));
             ZipUtil.unZip(fileBean.getFilePath(), fileBean.getFilePath() + "a" + File.separatorChar);
             List<String> listStr = getFilePaths(new File(fileBean.getFilePath() + "a" + File.separatorChar));
             List<TblFileDetailBean> fileDetailBeans = new ArrayList<TblFileDetailBean>();
             for (String s : listStr) {//循环文件
                 LinkedList<String> list = ExcelUtil.read(s);
                 for (int i = 0; i < list.size()-1; i++) {
-                    if(i >= 1) {
+                    if(i != 0) {
                         String[] vals = list.get(i).split("\t");
                         TblFileDetailBean fileDetailBean = getFileDetailBean(vals);
                         fileDetailBean.setFileName(list.getLast());
+                        fileDetailBean.setFileId(id);
                         if (StringUtil.isBlank(vals[0])
                                 || StringUtil.isBlank(vals[1])
                                 || StringUtil.isBlank(vals[2])
@@ -203,12 +214,13 @@ public class CarListController {
                         }
                         if(checkBigLib(fileDetailBean.getPhone())) {
                             fileDetailBean.setStatus("1");//大库重复
-                            fileDetailBeans.add(fileDetailBean);
                         }
+                        fileDetailBeans.add(fileDetailBean);
                     }
                 }
             }
             System.out.println(fileDetailBeans);
+            fileDetailHandler.batchSaveFileDetailBeansAndUpdateFileStatus(fileDetailBeans);
             return JsonUtil.toString("Y", "操作成功！");
         } catch (Exception e) {
             return JsonUtil.toString("N", "失败异常：" + e.getMessage());
@@ -262,9 +274,16 @@ public class CarListController {
      * @Description 通过号码归属地与提供的城市名比对，得出城市ID
      */
     public String checkCityId(List<TblAreaBean> areaBeans, String cityName, String mobileFrom) {
+        String[] mobileFroms = mobileFrom.split("&nbsp;");
+        String mobile = "";
+        if(mobileFroms.length > 1) {
+            mobile = mobileFroms[mobileFroms.length - 1];
+        }else {
+            mobile = mobileFroms[0];
+        }
         String id = "";
         for (TblAreaBean areaBean : areaBeans) {
-            if(areaBean.getCityName().contains(cityName) && areaBean.getCityName().contains(mobileFrom)) {
+            if(areaBean.getCityName().contains(cityName) && areaBean.getCityName().contains(mobile)) {
                 id = areaBean.getId();
                 break;
             }

@@ -24,5 +24,9 @@ public interface FileDetailService extends CommonService {
      */
     void deleteAllAndFile(String propertyName, Object value);
 
+    void batchSaveFileDetailBeansAndUpdateFileStatus(List<TblFileDetailBean> fileDetailBeans);
 
+    List<TblFileDetailBean> queryByHql(String hql, Object... param);
+
+    List<TblFileDetailBean> queryByHqlOnErrCount(String fileId, String status);
 }
