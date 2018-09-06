@@ -1,7 +1,11 @@
 package person.security.cache;
 
 import person.ApplicationContextUtils;
+import person.db.bean.TblAreaBean;
+import person.db.bean.TblCarSystemBean;
 import person.db.bean.TblFunctionBean;
+import person.handler.AreaHandler;
+import person.handler.CarSystemHandler;
 import person.handler.FunctionHandler;
 
 import java.util.List;
@@ -63,6 +67,14 @@ public class CacheManager {
         FunctionHandler functionHandler = (FunctionHandler) ApplicationContextUtils.getInstance().getBean("functionHandler");
         List<TblFunctionBean> entityList = functionHandler.queryAll();
         TblFunctionCache.getInstance().init(entityList);
+        //加载地区码表
+        AreaHandler areaHandler = (AreaHandler) ApplicationContextUtils.getInstance().getBean("areaHandler");
+        List<TblAreaBean> areaBeans = areaHandler.queryAll();
+        TblAreaCache.getInstance().init(areaBeans);
+        //加载车系信息
+        CarSystemHandler carSystemHandler = (CarSystemHandler) ApplicationContextUtils.getInstance().getBean("carSystemHandler");
+        List<TblCarSystemBean> carSystemBeans = carSystemHandler.queryAll();
+        TblCarSysCache.getInstance().init(carSystemBeans);
     }
 
     /**
@@ -90,4 +102,23 @@ public class CacheManager {
         return TblFunctionCache.getInstance().getChildList(code);
     }
 
+    /**
+     * @Author SunChang
+     * @Date 2018/9/6 19:31
+     * @param
+     * @Description 获取所有地区码表数据
+     */
+    public List<TblAreaBean> getAreaAll() {
+        return TblAreaCache.getInstance().getAll();
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/9/6 20:00
+     * @param
+     * @Description 获取所有车系数据
+     */
+    public List<TblCarSystemBean> getCarSysAll() {
+        return TblCarSysCache.getInstance().getAll();
+    }
 }

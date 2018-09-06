@@ -17,6 +17,7 @@ public class TblFileDetail extends IdEntity {
     private String area;//地区
     private String carSys;//车系
     private String status;//状态：0 正常，1 大库重复，2 任务重复，3 车系重复，4 黑名单命中，5 号段错误，6 ID转失败
+    private String errInfo;//错误描述，用来生成错误txt文件
 
     @Column(name = "FILE_ID")
     public String getFileId() {
@@ -96,5 +97,14 @@ public class TblFileDetail extends IdEntity {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Column(name = "err_info")
+    public String getErrInfo() {
+        return errInfo;
+    }
+
+    public void setErrInfo(String errInfo) {
+        this.errInfo = errInfo;
     }
 }

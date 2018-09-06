@@ -20,14 +20,26 @@ import java.util.zip.ZipFile;
  * Created by SunChang on 2018/9/5
  */
 public class ZipUtil {
-    public static void main(String[] args) {
-        unZip("D:\\car\\uploader\\bak");
+    public static void main(String[] args) throws IOException {
+        //unZip("D:\\car\\uploader\\bak\\123456789", "D:\\car\\uploader\\bak\\123456789a\\");
+        //LinkedList<String> list = read("D:\\car\\uploader\\bak\\123456789a\\0905数据\\0905-247-凯翼167911427670209-凯翼V3-全国.xlsx");
+        //for (int i = 0; i < list.size(); i++) {
+        //    String[] strs = list.get(i).split("\t");
+        //    System.out.println(strs);
+        //}
+        //String a = "0905-247-凯翼167911427670209-凯翼V3-全国.xlsx";
+        //System.out.println(a.substring(0, a.lastIndexOf(".")));
+        //System.out.println(a.substring(a.lastIndexOf(".") + 1, a.length()));
+        String a = "上海市";
+        String b = "上海市";
+        System.out.println(a.contains(b));
     }
 
-    public static void read(String file, InputStream stream) throws IOException {
+    public static LinkedList<String> read(String filePath) throws IOException {
         LinkedList<String> list = new LinkedList<>();
         Workbook wb = null;
-        String fileType = file.substring(file.lastIndexOf(".") + 1, file.length());
+        String fileType = filePath.substring(filePath.lastIndexOf(".") + 1, filePath.length());
+        InputStream stream = new FileInputStream(filePath);
         if (fileType.equals("xls")) {
             wb = new HSSFWorkbook(stream);
         } else if (fileType.equals("xlsx")) {
@@ -40,7 +52,6 @@ public class ZipUtil {
             String c = "";
             for (int i = 0; i < row.getLastCellNum(); i++) {
                 Cell cell = row.getCell(i);
-
                 String mobile = "";
                 if (cell != null) {
                     mobile = cell.toString();
@@ -58,41 +69,46 @@ public class ZipUtil {
             }
         }
         System.out.println(list);
+        return list;
     }
 
-    public static void unZip(String filePath) {
+    /**
+     * @Author SunChang
+     * @Date 2018/9/6 10:27
+     * @param zipPath
+    * @param targetPath
+     * @Description 放入待解压的文件的路径包括文件名
+     */
+    public static void unZip(String zipPath, String targetPath) {
         try {
             BufferedOutputStream dest = null;
             BufferedInputStream is = null;
             ZipEntry entry;
-            ZipFile zipFile = new ZipFile("D:\\car\\uploader\\bak\\0905数据.zip", Charset.forName("GBK"));
+            ZipFile zipFile = new ZipFile(zipPath, Charset.forName("GBK"));
             Enumeration e = zipFile.entries();
             while (e.hasMoreElements()) {
                 entry = (ZipEntry) e.nextElement();
-                System.out.println(entry.getName());
                 is = new BufferedInputStream(zipFile.getInputStream(entry));
-                String outPath = (filePath+entry.getName()).replaceAll("\\*", "/");
-                //判断路径是否存在,不存在则创建文件路径
-                File file = new File(outPath.substring(0, outPath.lastIndexOf('/')));
-                if(!file.exists()){
-                    file.mkdirs();
-                }
-                //判断文件全路径是否为文件夹,如果是上面已经上传,不需要解压
-                if(new File(outPath).isDirectory()){
-                    continue;
-                }
-                if(entry.getName().lastIndexOf(".xls") != -1 || entry.getName().lastIndexOf(".xlsx") != -1) {
-                    int count;
-                    byte data[] = new byte[2048];
-                    FileOutputStream fos = new FileOutputStream(outPath);
-                    dest = new BufferedOutputStream(fos, 2048);
-                    while ((count = is.read(data, 0, 2048)) != -1) {
-                        dest.write(data, 0, count);
+                String outPath = (targetPath + "原标-" + entry.getName()).replaceAll("\\*", "/");
+                if(entry.isDirectory()) {
+                    File file = new File(outPath);
+                    if(!file.exists()) {
+                        file.mkdirs();
+                    }
+                }else {
+                    if (entry.getName().lastIndexOf(".xls") != -1 || entry.getName().lastIndexOf(".xlsx") != -1) {
+                        int count;
+                        byte data[] = new byte[2048];
+                        FileOutputStream fos = new FileOutputStream(outPath);
+                        dest = new BufferedOutputStream(fos, 2048);
+                        while ((count = is.read(data, 0, 2048)) != -1) {
+                            dest.write(data, 0, count);
+                        }
+                        dest.flush();
+                        dest.close();
+                        is.close();
                     }
                 }
-                dest.flush();
-                dest.close();
-                is.close();
             }
         } catch (IOException e) {
             e.printStackTrace();

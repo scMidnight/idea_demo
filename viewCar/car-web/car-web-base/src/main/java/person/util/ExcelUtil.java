@@ -218,7 +218,6 @@ public class ExcelUtil {
             String c = "";
             for (int i = 0; i < row.getLastCellNum();i++) {
                 Cell cell = row.getCell(i);
-
                 String mobile = "";
                 if(cell !=null) {
                     mobile = cell.toString();
@@ -229,12 +228,14 @@ public class ExcelUtil {
                             break;
                     }
                 }
-                c = c + mobile.replace("\"", "").trim() + "\t";
+                mobile = mobile.replaceAll("\\s*", "");
+                c += mobile.replace("\"", "").trim() + "\t";
             }
             if (c.trim().length() > 0) {
                 list.add(c);
             }
         }
+        list.add(new File(filePath).getName());
         return list;
     }
 

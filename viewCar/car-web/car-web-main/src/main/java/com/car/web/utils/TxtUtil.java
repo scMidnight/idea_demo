@@ -3,6 +3,8 @@ package com.car.web.utils;
 import jodd.util.StringUtil;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by SunChang on 2018/8/30
@@ -25,6 +27,25 @@ public class TxtUtil {
             r = br.readLine();
         }
         return str;
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/9/6 19:09
+     * @param
+     * @Description 读取txt内容到list
+     */
+    public static List<String> readTxtToList() throws IOException {
+        List<String> list = new ArrayList<String>();
+        String path = TxtUtil.class.getClassLoader().getResource("blackList.txt").getPath();
+        BufferedReader br=new BufferedReader(new FileReader(path));
+        StringBuilder str = new StringBuilder();
+        String r = br.readLine();
+        while(r != null) {
+            list.add(r);
+            r = br.readLine();
+        }
+        return list;
     }
 
     /**

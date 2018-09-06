@@ -142,7 +142,7 @@ public class UpOrDownloadUtil {
             folder.mkdirs();
         }
         for (MultipartFile file : files) {
-            if(!file.isEmpty()) {
+            if(null != file && !file.isEmpty()) {
                 TblFileBean fileBean = new TblFileBean();
                 fileName = getRandomFileName();
                 filePath = rootPath + fileName;

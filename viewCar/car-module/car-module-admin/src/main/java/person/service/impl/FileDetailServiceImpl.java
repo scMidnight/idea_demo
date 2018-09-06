@@ -23,7 +23,7 @@ public class FileDetailServiceImpl extends CommonServiceImpl implements FileDeta
     public List<TblFileDetailBean> findByProperty(String propertyName, Object value) {
         List<TblFileDetail> fileDetails = super.findByProperty(TblFileDetail.class, propertyName, value);
         List<TblFileDetailBean> fileDetailBeans = new ArrayList<TblFileDetailBean>();
-        if(!fileDetails.isEmpty()) {
+        if(null != fileDetails && !fileDetails.isEmpty()) {
             for (TblFileDetail fileDetail : fileDetails) {
                 TblFileDetailBean fileDetailBean = new TblFileDetailBean();
                 BeanUtils.copyProperties(fileDetail, fileDetailBean);
@@ -38,7 +38,7 @@ public class FileDetailServiceImpl extends CommonServiceImpl implements FileDeta
     @Override
     public void deleteAllAndFile(String propertyName, Object value) {
         List<TblFileDetail> fileDetails = super.findByProperty(TblFileDetail.class, propertyName, value);
-        if(!fileDetails.isEmpty()) {
+        if(null != fileDetails && !fileDetails.isEmpty()) {
             super.deleteAllEntitie(fileDetails);
         }
         fileService.deleteFile(value.toString());
