@@ -1,22 +1,22 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : MySql Local
-Source Server Version : 50139
+Source Server         : mysql
+Source Server Version : 50717
 Source Host           : localhost:3306
 Source Database       : learn
 
 Target Server Type    : MYSQL
-Target Server Version : 50139
+Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-09-06 21:05:41
+Date: 2018-09-07 00:33:22
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for `tbl_area`
+-- Table structure for tbl_area
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_area`;
 CREATE TABLE `tbl_area` (
@@ -428,7 +428,7 @@ INSERT INTO `tbl_area` VALUES ('659009', '659009', '昆玉市', '新疆维吾尔
 INSERT INTO `tbl_area` VALUES ('659900', '659900', '其他地区', '新疆维吾尔自治区');
 
 -- ----------------------------
--- Table structure for `tbl_car_system`
+-- Table structure for tbl_car_system
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_car_system`;
 CREATE TABLE `tbl_car_system` (
@@ -1569,7 +1569,7 @@ INSERT INTO `tbl_car_system` VALUES ('D2D2A7234B375F305AB4EE038EFC2AC3', '1', '1
 INSERT INTO `tbl_car_system` VALUES ('DA2F8E83963B2C951CC45C9DA14A26F4', '1', '1', '1', '1', '1', '1', '0');
 
 -- ----------------------------
--- Table structure for `tbl_file`
+-- Table structure for tbl_file
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_file`;
 CREATE TABLE `tbl_file` (
@@ -1588,13 +1588,12 @@ CREATE TABLE `tbl_file` (
 INSERT INTO `tbl_file` VALUES ('CDDA870AD0ABCC2B9F8708E12D5FF933', '9891420180906142013924', '0905数据.zip', 'D:/car/uploader/bak/9891420180906142013924', '2018-09-06 14:20:13', '0');
 
 -- ----------------------------
--- Table structure for `tbl_file_detail`
+-- Table structure for tbl_file_detail
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_file_detail`;
 CREATE TABLE `tbl_file_detail` (
   `id` varchar(35) NOT NULL COMMENT '主键',
   `file_id` varchar(35) NOT NULL COMMENT '文件表ID',
-  `package_name` varchar(255) DEFAULT NULL COMMENT '包名',
   `file_name` varchar(255) DEFAULT NULL COMMENT '文件名',
   `task_id` varchar(255) DEFAULT NULL COMMENT '任务ID',
   `name` varchar(255) DEFAULT NULL COMMENT '姓名',
@@ -1603,7 +1602,8 @@ CREATE TABLE `tbl_file_detail` (
   `car_sys` varchar(255) DEFAULT NULL COMMENT '车系',
   `status` varchar(255) DEFAULT NULL COMMENT '状态：0 正常，1 大库重复，2 任务重复，3 车系重复，4 黑名单命中，5 号段错误，6 ID转失败',
   `err_info` varchar(255) DEFAULT NULL COMMENT '错误描述，用来生成错误txt文件',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `file_detail_file_id_index` (`file_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -1611,7 +1611,7 @@ CREATE TABLE `tbl_file_detail` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `tbl_function`
+-- Table structure for tbl_function
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_function`;
 CREATE TABLE `tbl_function` (
@@ -1638,7 +1638,7 @@ INSERT INTO `tbl_function` VALUES ('F006', '车系管理', '车系管理', '1', 
 INSERT INTO `tbl_function` VALUES ('F006001', '车系列表', '车系列表', '2', '/carSystem/info');
 
 -- ----------------------------
--- Table structure for `tbl_role`
+-- Table structure for tbl_role
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_role`;
 CREATE TABLE `tbl_role` (
@@ -1654,7 +1654,7 @@ CREATE TABLE `tbl_role` (
 INSERT INTO `tbl_role` VALUES ('1', '管理员', '管理员');
 
 -- ----------------------------
--- Table structure for `tbl_rolefunction`
+-- Table structure for tbl_rolefunction
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_rolefunction`;
 CREATE TABLE `tbl_rolefunction` (
@@ -1677,7 +1677,7 @@ INSERT INTO `tbl_rolefunction` VALUES ('1', 'F006');
 INSERT INTO `tbl_rolefunction` VALUES ('1', 'F006001');
 
 -- ----------------------------
--- Table structure for `tbl_user`
+-- Table structure for tbl_user
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_user`;
 CREATE TABLE `tbl_user` (
@@ -1696,7 +1696,7 @@ CREATE TABLE `tbl_user` (
 INSERT INTO `tbl_user` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'test@qq.com', '测试', '1');
 
 -- ----------------------------
--- Table structure for `tbl_userrole`
+-- Table structure for tbl_userrole
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_userrole`;
 CREATE TABLE `tbl_userrole` (
