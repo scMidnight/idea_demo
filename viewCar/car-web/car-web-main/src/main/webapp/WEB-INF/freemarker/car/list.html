@@ -42,6 +42,7 @@
                 </div>
             </blockquote>
             <table class="layui-hide" id="carList" lay-filter="carList"></table>
+            <a id = "exportPackage" style="display: none" href=""><span>exportPackage</span></a>
         </div>
     </div>
     <#include "/common/footer.html">
@@ -66,15 +67,13 @@
 <!-- 自定义 js -->
 <script>
     var dateVal = "";
+    var t;
+    function closeLoad(index) {
+        layer.close(index);
+        clearTimeout(t);
+    }
     layui.use(['form','table','laydate'], function () {
         var form = layui.form,table = layui.table,laydate = layui.laydate;
-        // form.val('one',{
-        //     "filter[task]" : true
-        //     ,"filter[carSys]" : true
-        //     ,"filter[black]" : true
-        //     ,"filter[number]" : true
-        //     ,"filter[id]" : true
-        // });
         laydate.render({
             elem:'#dateStr'
             ,range: '~'
@@ -142,24 +141,28 @@
                     arr[i] = $(this).val();
                 });
                 loading = layer.load(0,{shade: [0.4,'#000']});
-                $.ajax({
-                    url:"${base}/car/list/exportPackage",
-                    data:{id:$data.fileBean.id, arrs:arr.join(",")},
-                    dataType:"json",
-                    type:"post",
-                    success:function (result) {
-                        if(result.status=="Y"){
-                            layer.close(loading);
-                            tableIns.reload({
-                                page:{
-                                    curr:1
-                                }
-                            });
-                        }else{
-                            layer.alert(result.msg);
-                        }
-                    }
-                });
+                var $a = $("#exportPackage");
+                $a.attr("href", "${base}/car/list/exportPackage?id=" + $data.fileBean.id + "&arrs=" + arr.join(","));
+                $("#exportPackage span").trigger('click');
+                getExportPackageRes(loading);
+                // $.ajax({
+                //     url:"${base}/car/list/exportPackage",
+                //     data:{id:$data.fileBean.id, arrs:arr.join(",")},
+                //     dataType:"json",
+                //     type:"post",
+                //     success:function (result) {
+                //         if(result.status=="Y"){
+                //             layer.close(loading);
+                //             tableIns.reload({
+                //                 page:{
+                //                     curr:1
+                //                 }
+                //             });
+                //         }else{
+                //             layer.alert(result.msg);
+                //         }
+                //     }
+                // });
             }
             if(layEvent == 'delPackage') {
                 layer.confirm('您确定要删除此条数据吗？', {icon: 3}, function (index) {
@@ -183,7 +186,31 @@
                     });
                 });
             }
-        })
+        });
+        function getExportPackageRes(index) {
+            if(!isNull(t)) {
+                clearTimeout(t);
+            }
+            var res;
+            $.ajax({
+                url:'${base}/car/list/exportPackageRes',
+                dataType: "json",
+                type:"get",
+                async:false,
+                success:function (result) {
+                    if(result.status=="Y") {
+                        res = true;
+                    }else {
+                        res = false;
+                    }
+                }
+            });
+            if(res){
+                closeLoad(index);
+            }else {
+                t = setTimeout(function () { getExportPackageRes(index); }, 2000);
+            }
+        }
     });
 </script>
 <#include "/common/bodyEnd.html">

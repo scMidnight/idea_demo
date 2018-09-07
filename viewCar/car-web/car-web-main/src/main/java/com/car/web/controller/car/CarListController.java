@@ -199,6 +199,7 @@ public class CarListController {
 
     @RequestMapping(value = "/car/list/exportPackage", method = RequestMethod.GET)
     public Object carListExportPackage(HttpServletRequest request, HttpServletResponse response) {
+        Constants.pubMap.put(UserUtil.getUserId() + "ExportPackage", false);//记录公共变量当前用户导出包是否成功
         TblFileBean fileBean = fileHandler.queryById(request.getParameter("id"));
         String dirPath = fileBean.getFilePath() + "a" + File.separatorChar;
         String arrs = request.getParameter("arrs");
@@ -261,11 +262,28 @@ public class CarListController {
         }
         UpOrDownloadUtil up = new UpOrDownloadUtil();
         String[] zipNames = fileBean.getFileNameBak().split("\\.");
-        String zipName = zipNames[0] + "-ok" + zipNames[1];
+        String zipName = zipNames[0] + "-ok." + zipNames[1];
         up.downLoadZip(zipName, request, response, dirPath);
+        try {
+            FileUtils.deleteDirectory(new File(dirPath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Constants.pubMap.put(UserUtil.getUserId() + "ExportPackage", true);
         return JsonUtil.toString("Y", "操作成功！");
     }
 
+    @RequestMapping(value = "/car/list/exportPackageRes", method = RequestMethod.GET)
+    @ResponseBody
+    public Object getCarListExportPackageRes(HttpServletRequest request, HttpServletResponse response) {
+        boolean res = (boolean) Constants.pubMap.get(UserUtil.getUserId() + "ExportPackage");
+        if(res) {
+            Constants.pubMap.remove(UserUtil.getUserId() + "ExportPackage");
+            return JsonUtil.toString("Y", "操作成功！");
+        }else {
+            return JsonUtil.toString("N", "无结果");
+        }
+    }
     /**
      * @Author SunChang
      * @Date 2018/9/6 16:35
