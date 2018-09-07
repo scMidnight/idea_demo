@@ -1,6 +1,5 @@
 package com.car.web.controller.blackList;
 
-import com.car.web.utils.TxtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -9,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import person.db.bean.TblUserBean;
 import person.handler.UserHandler;
-import person.model.UserDetailModel;
 import person.util.MessageBean;
+import person.util.TxtUtil;
 import person.util.UserUtil;
 
 import javax.servlet.http.HttpServletRequest;

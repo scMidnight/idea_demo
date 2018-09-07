@@ -144,7 +144,7 @@ public class CarSystemController {
         }
         //创建HSSFWorkbook
         HSSFWorkbook wb = ExcelUtil.getHSSFWorkbook(sheetName, title, contents, null);
-        upOrDownloadUtil.downLodaCarExcel(fileName, request, response, ExcelUtil.wbToInputstream(wb));
+        upOrDownloadUtil.downLoadCarExcel(fileName, request, response, ExcelUtil.wbToInputstream(wb));
         return null;
     }
 }

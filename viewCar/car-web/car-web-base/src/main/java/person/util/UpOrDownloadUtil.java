@@ -93,22 +93,70 @@ public class UpOrDownloadUtil {
         return rannum + str;// 当前时间
     }
 
-    public void downLodaCarExcel(String fileName, HttpServletRequest request, HttpServletResponse response, InputStream sbs) {
+    /**
+     * @Author SunChang
+     * @Date 2018/9/7 16:45
+     * @param isIe
+    * @param fileName
+     * @Description 等到编码后的文件名称，避免前台乱码
+     */
+    public static String getFileName(boolean isIe, String fileName) throws UnsupportedEncodingException {
+        if(isIe) {
+            fileName = URLEncoder.encode(fileName, "utf-8");
+            if(fileName.contains("+")) {
+                fileName = fileName.replace("+","%20");//encode后空格会变+号，而%20是utf-8的加号编码
+            }
+            if(fileName.length() > 150) {
+                fileName = new String(fileName.getBytes("GB2312"), "ISO8859-1");
+                fileName = StringUtils.replace(fileName, " ", "%20");
+            }
+        } else {
+            fileName = new String(fileName.getBytes("GB2312"), "ISO8859-1");
+        }
+        return fileName;
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/9/7 16:42
+     * @param fileName
+    * @param request
+    * @param response
+    * @param filePath
+     * @Description 下载转ID后的zip包
+     */
+    public void downLoadZip(String fileName, HttpServletRequest request, HttpServletResponse response, String filePath) {
+        boolean isIe = isMSBrowser(request);
+        try {
+            fileName = getFileName(isIe, fileName);
+            //response.reset();//清空response,暂且可不用;
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition", "attachment;fileName=\"" + fileName + "\"");
+            File file = new File(filePath);
+            File[] files = file.listFiles();
+            ZipUtil.zipFiles(response.getOutputStream(), "", files);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/9/7 16:42
+     * @param fileName
+    * @param request
+    * @param response
+    * @param sbs
+     * @Description 下载车系excel
+     */
+    public void downLoadCarExcel(String fileName, HttpServletRequest request, HttpServletResponse response, InputStream sbs) {
         boolean isIe = isMSBrowser(request);
         OutputStream os = null;
         try {
-            if(isIe) {
-                fileName = URLEncoder.encode(fileName, "utf-8");
-                if(fileName.contains("+")) {
-                    fileName = fileName.replace("+","%20");//encode后空格会变+号，而%20是utf-8的加号编码
-                }
-                if(fileName.length() > 150) {
-                    fileName = new String(fileName.getBytes("GB2312"), "ISO8859-1");
-                    fileName = StringUtils.replace(fileName, " ", "%20");
-                }
-            } else {
-                fileName = new String(fileName.getBytes("GB2312"), "ISO8859-1");
-            }
+            fileName = getFileName(isIe, fileName);
             //response.reset();//清空response,暂且可不用;
             response.setCharacterEncoding("utf-8");
             response.setContentType("multipart/form-data");
@@ -133,6 +181,14 @@ public class UpOrDownloadUtil {
         }
     }
 
+    /**
+     * @Author SunChang
+     * @Date 2018/9/7 16:42
+     * @param files
+    * @param request
+    * @param rootPath
+     * @Description 多文件上传
+     */
     public List<TblFileBean> uploadFile(MultipartFile[] files, HttpServletRequest request, String rootPath) throws Exception {
         List<TblFileBean> fileBeans = new ArrayList<>();
         String fileName = "";

@@ -1,7 +1,6 @@
 package com.car.web.controller.car;
 
 import com.car.web.utils.Constants;
-import com.car.web.utils.TxtUtil;
 import jodd.util.StringUtil;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import person.Thread.CheckPackageThread;
 import person.db.bean.*;
 import person.db.entity.Page;
 import person.handler.FileDetailHandler;
@@ -22,7 +22,11 @@ import person.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Controller
 public class CarListController {
@@ -160,71 +164,106 @@ public class CarListController {
             List<TblAreaBean> areaBeans = CacheManager.getInstance().getAreaAll();//地区码表
             List<TblCarSystemBean> carSystemBeans = CacheManager.getInstance().getCarSysAll();//车系码表
             TblFileBean fileBean = fileHandler.queryById(id);
-            FileUtils.deleteDirectory(new File(fileBean.getFilePath() + "a" + File.separatorChar));
-            ZipUtil.unZip(fileBean.getFilePath(), fileBean.getFilePath() + "a" + File.separatorChar);
+            ZipUtil.unZip(fileBean.getFilePath(), fileBean.getFilePath() + "a" + File.separatorChar);//解压原包
             List<String> listStr = getFilePaths(new File(fileBean.getFilePath() + "a" + File.separatorChar));
             List<TblFileDetailBean> fileDetailBeans = new ArrayList<TblFileDetailBean>();
-            for (String s : listStr) {//循环文件
-                LinkedList<String> list = ExcelUtil.read(s);
-                for (int i = 0; i < list.size()-1; i++) {
-                    if(i != 0) {
-                        String[] vals = list.get(i).split("\t");
-                        TblFileDetailBean fileDetailBean = getFileDetailBean(vals);
-                        fileDetailBean.setFileName(list.getLast());
-                        fileDetailBean.setFileId(id);
-                        if (StringUtil.isBlank(vals[0])
-                                || StringUtil.isBlank(vals[1])
-                                || StringUtil.isBlank(vals[2])
-                                || StringUtil.isBlank(vals[3])
-                                || StringUtil.isBlank(vals[6])) {
-                            fileDetailBean.setStatus("6");
-                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：ID转失败");
-                            fileDetailBeans.add(fileDetailBean);
-                            continue;
-                        }
-                        String mobileFrom = MobileFromUtil.getMobileFrom(vals[1]);//得到归属地
-                        String cityId = checkCityId(areaBeans, vals[2], mobileFrom);//判断城市ID
-                        if (StringUtil.isNotBlank(cityId)) {
-                            fileDetailBean.setArea(cityId);
-                        }else {
-                            fileDetailBean.setStatus("5");//号段错误
-                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：号段错误，文件中是" + vals[2] + "，根据号码查询后为：" + mobileFrom);
-                            fileDetailBeans.add(fileDetailBean);
-                            continue;
-                        }
-                        if(isBlack(blacks, fileDetailBean.getPhone())) {
-                            fileDetailBean.setStatus("4");//黑名单命中
-                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：黑名单命中");
-                            fileDetailBeans.add(fileDetailBean);
-                            continue;
-                        }
-                        String carSysId = getCarSysId(carSystemBeans, vals[3]);
-                        fileDetailBean.setCarSys(carSysId);
-                        if(checkCarSys(carSysId, fileDetailBean.getPhone())) {
-                            fileDetailBean.setStatus("3");//车系重复
-                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：车系重复");
-                            fileDetailBeans.add(fileDetailBean);
-                            continue;
-                        }
-                        if(checkTask(fileDetailBean.getTaskId(), fileDetailBean.getPhone())) {
-                            fileDetailBean.setStatus("2");//任务重复
-                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：任务重复");
-                            fileDetailBeans.add(fileDetailBean);
-                            continue;
-                        }
-                        if(checkBigLib(fileDetailBean.getPhone())) {
-                            fileDetailBean.setStatus("1");//大库重复
-                        }
-                        fileDetailBeans.add(fileDetailBean);
-                    }
+            /*创建可用线程数量的固定线程池*/
+            ExecutorService exe =  Executors.newFixedThreadPool(10);
+            //存储线程的返回值
+            List<Future<List<TblFileDetailBean>>> results = new LinkedList<Future<List<TblFileDetailBean>>>();
+            for (String s : listStr) {
+                CheckPackageThread checkPackageThread = new CheckPackageThread(fileBean.getId(), fileDetailHandler, blacks, areaBeans, carSystemBeans, s);
+                Future<List<TblFileDetailBean>> result = exe.submit(checkPackageThread);
+                results.add(result);
+            }
+            exe.shutdown();
+            while (true) {
+                if(exe.isTerminated()) {
+                    System.out.println("=================== all thread end ======================");
+                    break;
                 }
+                System.out.println("=================== wait......... ======================");
+                Thread.sleep(500);
+            }
+            for (Future<List<TblFileDetailBean>> result : results) {
+                fileDetailBeans.addAll(result.get());
             }
             System.out.println(fileDetailBeans);
             fileDetailHandler.batchSaveFileDetailBeansAndUpdateFileStatus(fileDetailBeans);
+            FileUtils.deleteDirectory(new File(fileBean.getFilePath() + "a" + File.separatorChar));
             return JsonUtil.toString("Y", "操作成功！");
         } catch (Exception e) {
             return JsonUtil.toString("N", "失败异常：" + e.getMessage());
         }
+    }
+
+    @RequestMapping(value = "/car/list/exportPackage", method = RequestMethod.GET)
+    public Object carListExportPackage(HttpServletRequest request, HttpServletResponse response) {
+        TblFileBean fileBean = fileHandler.queryById(request.getParameter("id"));
+        String dirPath = fileBean.getFilePath() + "a" + File.separatorChar;
+        String arrs = request.getParameter("arrs");
+        ZipUtil.unZip(fileBean.getFilePath(), dirPath);//解压原包
+        renameFiles(new File(dirPath));//把原始文件重命名
+        String hql = "FROM TblFileDetail t where t.fileId = ?";
+        String where = " and t.status not in (";
+        String where1 = "";
+        if(StringUtil.isNotBlank(arrs) && arrs.length() > 1) {
+            String[] arrs1 = arrs.split(",");
+            for (int i = 0; i < arrs1.length; i++) {
+                String s = arrs1[i];
+                if(CarUtil.isInteger(s)) {
+                    where1 += "'" + s + "',";
+                }
+            }
+        }
+        if(StringUtil.isNotBlank(where1)) {
+            where1 = where1.substring(0, where1.length() - 1);
+            hql = hql + where + where1 + ")";
+        }
+        List<String[]> dataList = new ArrayList<String[]>();
+        //excel标题
+        String [] title = {"姓名", "手机号", "城市ID", "车系ID", "车型ID", "经销商ID"};
+        //先查分文件的数据
+        List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.queryByHql(hql + " group by t.fileName", fileBean.getId());
+        for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+            dataList.add(title);
+            //查询单个文件的数据
+            List<TblFileDetailBean> fileDetailBeans1 = fileDetailHandler.queryByHql(hql + " and t.fileName = ?", fileBean.getId(), fileDetailBean.getFileName());
+            if(null != fileDetailBeans1 && !fileDetailBeans1.isEmpty()) {
+                for (TblFileDetailBean tblFileDetailBean : fileDetailBeans1) {
+                    String[] temps = {tblFileDetailBean.getName(),tblFileDetailBean.getPhone(),tblFileDetailBean.getArea(), tblFileDetailBean.getCarSys(), "", ""};
+                    dataList.add(temps);
+                }
+                String outPath = newPath(dirPath);
+                File file = new File(outPath);
+                if(!file.exists()) {
+                    file.mkdirs();
+                }
+                outPath += "ID-" + fileDetailBean.getFileName();
+                try {
+                    ExcelUtil.write(outPath, dataList);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                dataList.clear();
+            }
+        }
+        //错误的数据
+        List<TblFileDetailBean> errFilDetailBean = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.fileId = ? and t.status != ?", fileBean.getId(), "0");
+        String errInfo = "";
+        for (TblFileDetailBean fileDetailBean : errFilDetailBean) {
+            errInfo += fileDetailBean.getErrInfo() + "\n";
+        }
+        try {
+            TxtUtil.writeTxt(errInfo, dirPath + "报错文件.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        UpOrDownloadUtil up = new UpOrDownloadUtil();
+        String[] zipNames = fileBean.getFileNameBak().split("\\.");
+        String zipName = zipNames[0] + "-ok" + zipNames[1];
+        up.downLoadZip(zipName, request, response, dirPath);
+        return JsonUtil.toString("Y", "操作成功！");
     }
 
     /**
@@ -249,134 +288,50 @@ public class CarListController {
 
     /**
      * @Author SunChang
-     * @Date 2018/9/6 18:57
-     * @param strs
-     * @Description 对filedetailBean赋初值
+     * @Date 2018/9/7 14:16
+     * @param file
+     * @Description 重命名文件
      */
-    public TblFileDetailBean getFileDetailBean(String[] strs) {
-        TblFileDetailBean fileDetailBean = new TblFileDetailBean();
-        fileDetailBean.setId(IdUtils.randomString());
-        fileDetailBean.setName(strs[0]);
-        fileDetailBean.setPhone(strs[1]);
-        fileDetailBean.setArea(strs[2]);
-        fileDetailBean.setCarSys(strs[3]);
-        fileDetailBean.setTaskId(strs[6]);
-        fileDetailBean.setStatus("0");
-        return fileDetailBean;
+    public void renameFiles(File file) {
+        File[] fs = file.listFiles();
+        for (File f : fs) {
+            if(f.isDirectory()) {
+                renameFiles(f);
+            }
+            if(f.isFile()) {
+                String filePath = f.getPath();
+                FileUtil.renameFile(filePath.substring(0, filePath.lastIndexOf(File.separatorChar) + 1), f.getName(), "原-" + f.getName());
+            }
+        }
     }
 
     /**
      * @Author SunChang
-     * @Date 2018/9/6 19:52
-     * @param areaBeans
-    * @param cityName
-    * @param mobileFrom
-     * @Description 通过号码归属地与提供的城市名比对，得出城市ID
+     * @Date 2018/9/7 15:31
+     * @param path
+     * @Description 获取新包的路径
      */
-    public String checkCityId(List<TblAreaBean> areaBeans, String cityName, String mobileFrom) {
-        String[] mobileFroms = mobileFrom.split("&nbsp;");
-        String mobile = "";
-        if(mobileFroms.length > 1) {
-            mobile = mobileFroms[mobileFroms.length - 1];
-        }else {
-            mobile = mobileFroms[0];
-        }
-        String id = "";
-        for (TblAreaBean areaBean : areaBeans) {
-            if(areaBean.getCityName().contains(cityName) && areaBean.getCityName().contains(mobile)) {
-                id = areaBean.getId();
+    public static String newPath(String path) {
+        File file = new File(path);
+        File[] files = file.listFiles();
+        String p = "";
+        for (File file1 : files) {
+            if(file1.isDirectory()) {
+                p = file1.getPath();
                 break;
             }
         }
-        return id;
+        String[] ps = p.split("\\\\");
+        ps[ps.length - 1] = "ID" + ps[ps.length - 1].substring(2, ps[ps.length - 1].length());
+        String ret = "";
+        for (int i = 0; i < ps.length; i++) {
+            ret += ps[i] + File.separatorChar;
+        }
+        return ret;
     }
 
-    /**
-     * @Author SunChang
-     * @Date 2018/9/6 20:08
-     * @param blacks
-    * @param phone
-     * @Description 检测号码是否在黑名单中
-     */
-    public boolean isBlack(List<String> blacks, String phone) {
-        boolean isBlack = false;
-        for (String black : blacks) {
-            if(black.equals(phone)) {
-                isBlack = true;
-                break;
-            }
-        }
-        return isBlack;
+    public static void main(String[] args) {
+        System.out.println(newPath("D:/car/uploader/bak/9891420180906142013924a/"));
     }
 
-    /**
-     * @Author SunChang
-     * @Date 2018/9/6 20:15
-     * @param carSystemBeans
-    * @param carSysName
-     * @Description 根据车系名称获取车系ID
-     */
-    public String getCarSysId(List<TblCarSystemBean> carSystemBeans, String carSysName) {
-        String carSysId = "";
-        for (TblCarSystemBean carSystemBean : carSystemBeans) {
-            if(carSystemBean.getCarSysName().contains(carSysName)) {
-                carSysId = carSystemBean.getCarSysId();
-                break;
-            }
-        }
-        return carSysId;
-    }
-
-    /**
-     * @Author SunChang
-     * @Date 2018/9/6 20:24
-     * @param carSysId
-    * @param taskId
-     * @Description 检测库中相同车系数据中手机号也是相同 的数据为车系重复数据
-     */
-    public boolean checkCarSys(String carSysId, String phone) {
-        boolean isCarSys = false;
-        List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.findByProperty("carSys", carSysId);
-        for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
-            if(fileDetailBean.getPhone().equals(phone)) {
-                isCarSys = true;
-                break;
-            }
-        }
-        return isCarSys;
-    }
-
-    /**
-     * @Author SunChang
-     * @Date 2018/9/6 20:29
-     * @param taskId
-    * @param phone
-     * @Description 检测库中相同任务ID号中重复的手机号数据
-     */
-    public boolean checkTask(String taskId, String phone) {
-        boolean isTask = false;
-        List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.findByProperty("taskId", taskId);
-        for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
-            if(fileDetailBean.getPhone().equals(phone)) {
-                isTask = true;
-                break;
-            }
-        }
-        return isTask;
-    }
-
-    /**
-     * @Author SunChang
-     * @Date 2018/9/6 20:38
-     * @param phone
-     * @Description 检测库中手机号重复的数据为大库重复
-     */
-    public boolean checkBigLib(String phone) {
-        boolean isBigLib = false;
-        List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.findByProperty("phone", phone);
-        if(null != fileDetailBeans && !fileDetailBeans.isEmpty()) {
-            isBigLib = true;
-        }
-        return isBigLib;
-    }
 }

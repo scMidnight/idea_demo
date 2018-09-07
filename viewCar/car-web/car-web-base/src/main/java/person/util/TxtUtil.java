@@ -1,4 +1,4 @@
-package com.car.web.utils;
+package person.util;
 
 import jodd.util.StringUtil;
 
@@ -65,8 +65,12 @@ public class TxtUtil {
 
     public static void writeTxt(String content) throws IOException {
         String path = TxtUtil.class.getClassLoader().getResource("blackList.txt").getPath();
+        writeTxt(content, path);
+    }
+
+    public static void writeTxt(String content, String path) throws IOException {
         File file = new File(path);
-        file.createNewFile();  //创建新文件
+        file.createNewFile();//创建新文件
         PrintWriter fw = new PrintWriter(file);
         BufferedWriter out = new BufferedWriter(fw);
         if(StringUtil.isNotBlank(content)) {

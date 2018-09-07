@@ -67,6 +67,8 @@ public class FileDetailServiceImpl extends CommonServiceImpl implements FileDeta
             for (TblFileDetail fileDetail : fileDetails) {
                 TblFileDetailBean fileDetailBean = new TblFileDetailBean();
                 BeanUtils.copyProperties(fileDetail, fileDetailBean);
+                TblFileBean fileBean = fileService.queryById(fileDetail.getFileId());
+                fileDetailBean.setFileBean(fileBean);
                 fileDetailBeans.add(fileDetailBean);
             }
         }
