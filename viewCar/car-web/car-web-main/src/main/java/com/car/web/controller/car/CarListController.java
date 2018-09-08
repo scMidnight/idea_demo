@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import person.Thread.CheckPackageThread;
 import person.db.bean.*;
 import person.db.entity.Page;
-import person.db.entity.TblFileDetail;
 import person.handler.FileDetailHandler;
 import person.handler.FileHandler;
 import person.security.cache.CacheManager;
@@ -189,7 +188,30 @@ public class CarListController {
             for (Future<List<TblFileDetailBean>> result : results) {
                 fileDetailBeans.addAll(result.get());
             }
-            System.out.println(fileDetailBeans);
+            for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                for (TblFileDetailBean detailBean : fileDetailBeans) {
+                    if(fileDetailBean.getId() != detailBean.getId()) {
+                        if(fileDetailBean.getCarSys().equals(detailBean.getCarSys()) &&
+                                fileDetailBean.getPhone().equals(detailBean.getPhone())) {//车第重复
+                            fileDetailBean.setStatus("3");
+                            fileDetailBean.setErrInfo(fileDetailBean.getErrInfo() + "错误，状态：车系重复");
+                            break;
+                        }
+                        if (fileDetailBean.getTaskId().equals(detailBean.getTaskId())) {
+                            if (fileDetailBean.getPhone().equals(detailBean.getPhone())) {
+                                fileDetailBean.setStatus("2");
+                                fileDetailBean.setErrInfo(fileDetailBean.getErrInfo() + "错误，状态：任务重复");
+                                break;
+                            }
+                        }
+                        if(fileDetailBean.getPhone().equals(detailBean.getPhone())) {//大库重复
+                            fileDetailBean.setStatus("1");
+                            fileDetailBean.setErrInfo(fileDetailBean.getErrInfo() + "错误，状态：大库重复");
+                            break;
+                        }
+                    }
+                }
+            }
             fileDetailHandler.batchSaveFileDetailBeansAndUpdateFileStatus(fileDetailBeans);
             FileUtils.deleteDirectory(new File(fileBean.getFilePath() + "a" + File.separatorChar));
             return JsonUtil.toString("Y", "操作成功！");
@@ -272,13 +294,15 @@ public class CarListController {
         //错误的数据
         List<TblFileDetailBean> errFilDetailBean = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.fileId = ? and t.status != ?", fileBean.getId(), "0");
         String errInfo = "";
-        for (TblFileDetailBean fileDetailBean : errFilDetailBean) {
-            errInfo += fileDetailBean.getErrInfo() + "\n";
-        }
-        try {
-            TxtUtil.writeTxt(errInfo, dirPath + "报错文件.txt");
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(null != errFilDetailBean) {
+            for (TblFileDetailBean fileDetailBean : errFilDetailBean) {
+                errInfo += fileDetailBean.getErrInfo() + "\n";
+            }
+            try {
+                TxtUtil.writeTxt(errInfo, dirPath + "报错文件.txt");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         UpOrDownloadUtil up = new UpOrDownloadUtil();
         String[] zipNames = fileBean.getFileNameBak().split("\\.");
@@ -375,8 +399,130 @@ public class CarListController {
         return ret;
     }
 
+    @RequestMapping(value = "/car/list/errInfo", method = RequestMethod.GET)
+    public String carerrInfoGet(HttpServletRequest request, ModelMap modelMap) {
+        modelMap.put("errCode", request.getParameter("err"));
+        modelMap.put("fileId", request.getParameter("fileId"));
+        return "/car/errInfo";
+    }
+
+    @RequestMapping(value = "/car/list/errInfo", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
+    @ResponseBody
+    public String carerrInfoPost(HttpServletRequest request, ModelMap modelMap) {
+        String errCode = request.getParameter("errCode");
+        String fileId = request.getParameter("fileId");
+
+        if(StringUtil.isNotBlank(errCode)) {
+            if(StringUtil.isBlank(errCode) || StringUtil.isBlank(fileId)) {
+                JsonBean jsonBean = new JsonBean("0", "", "0", null);
+                return JsonUtil.beanToJsonString(jsonBean);
+            }
+            String hql = "FROM TblFileDetail t where t.fileId = ? and t.status = ?";
+            List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.queryByHql(hql, fileId, errCode);
+            CarUtil.updateCarSysAndAreaName(fileDetailBeans);
+            JsonBean jsonBean = new JsonBean("0", "", String.valueOf(fileDetailBeans.size()), fileDetailBeans);
+            return JsonUtil.beanToJsonString(jsonBean);
+        }else {
+            JsonBean jsonBean = new JsonBean("0", "", "0", null);
+            return JsonUtil.beanToJsonString(jsonBean);
+        }
+    }
+
+    @RequestMapping(value = "/car/list/info", method = RequestMethod.GET)
+    public String carInfoGet(HttpServletRequest request, ModelMap modelMap) {
+        modelMap.put("fileId", request.getParameter("fileId"));
+        return "/car/info";
+    }
+
+    @RequestMapping(value = "/car/list/info", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
+    @ResponseBody
+    public String carInfoPost(HttpServletRequest request, ModelMap modelMap) {
+        String fileId = request.getParameter("fileId");
+        String arrs = request.getParameter("arrs");
+        if(StringUtil.isNotBlank(arrs)) {
+            if(arrs.contains("history")) {
+                arrs = arrs.replaceAll("history", "0");
+            }else {
+                arrs += ",'0'";
+            }
+            String hql = "FROM TblFileDetail t where t.fileId = ? and t.status in (" + arrs + ")";
+            List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.queryByHql(hql, fileId);
+            LinkedList<TblFileDetailBean> linkedList = new LinkedList<TblFileDetailBean>();
+            if (null != fileDetailBeans && fileDetailBeans.size() > 0) {
+                for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                    if (fileDetailBean.getStatus().equals("1")) {//大库重复
+                        fileDetailBean.setColor("shenlan");
+                        linkedList.add(fileDetailBean);
+                        if(arrs.contains("history")) {
+                            List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("phone", fileDetailBean.getPhone());
+                            for (TblFileDetailBean temp : temps) {
+                                temp.setColor("qianlan");
+                            }
+                            linkedList.addAll(temps);
+                        }
+                    }
+                }
+                for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                    if (fileDetailBean.getStatus().equals("2")) {//任务重复
+                        fileDetailBean.setColor("hong");
+                        linkedList.add(fileDetailBean);
+                    }
+                }
+                for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                    if(fileDetailBean.getStatus().equals("3")) {//车系重复
+                        fileDetailBean.setColor("shenhuang");
+                        linkedList.add(fileDetailBean);
+                        if(arrs.contains("history")) {
+                            List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("carSys", fileDetailBean.getCarSys());
+                            for (TblFileDetailBean temp : temps) {
+                                if(fileDetailBean.getPhone().equals(temp.getPhone())) {
+                                    temp.setColor("qianhuang");
+                                    linkedList.add(temp);
+                                }
+                            }
+                        }
+                    }
+                }
+                for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                    if(fileDetailBean.getStatus().equals("5")) {//号段错误
+                        fileDetailBean.setColor("zise");
+                        linkedList.add(fileDetailBean);
+                    }
+                }
+                for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                    if(fileDetailBean.getStatus().equals("4")) {//黑名单命中
+                        fileDetailBean.setColor("heise");
+                        linkedList.add(fileDetailBean);
+                    }
+                }
+                for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                    if(fileDetailBean.getStatus().equals("6")) {//ID转失败
+                        fileDetailBean.setColor("huise");
+                        linkedList.add(fileDetailBean);
+                    }
+                }
+                for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                    if(fileDetailBean.getStatus().equals("0")) {
+                        linkedList.add(fileDetailBean);
+                    }
+                }
+            }
+            CarUtil.updateCarSysAndAreaName(linkedList);
+            JsonBean jsonBean = new JsonBean("0", "", String.valueOf(linkedList.size()), linkedList);
+            return JsonUtil.beanToJsonString(jsonBean);
+        }else {
+            String hql = "FROM TblFileDetail t where t.fileId = ? and t.status = ?";
+            List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.queryByHql(hql, fileId, "0");
+            CarUtil.updateCarSysAndAreaName(fileDetailBeans);
+            JsonBean jsonBean = new JsonBean("0", "", String.valueOf(fileDetailBeans.size()), fileDetailBeans);
+            return JsonUtil.beanToJsonString(jsonBean);
+        }
+    }
+
     public static void main(String[] args) {
-        System.out.println(newPath("D:/car/uploader/bak/9891420180906142013924a/"));
+        //System.out.println(newPath("D:/car/uploader/bak/9891420180906142013924a/"));
+        String a = "history,1,2,3,4,5,6";
+        System.out.println(a.substring(8, a.length()));
     }
 
 }

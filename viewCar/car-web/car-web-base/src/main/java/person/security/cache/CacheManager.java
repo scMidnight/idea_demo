@@ -9,6 +9,7 @@ import person.handler.CarSystemHandler;
 import person.handler.FunctionHandler;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * *************************************************************************
@@ -120,5 +121,13 @@ public class CacheManager {
      */
     public List<TblCarSystemBean> getCarSysAll() {
         return TblCarSysCache.getInstance().getAll();
+    }
+
+    public Map<String, String> getCarMap() {
+        return TblCarSysCache.getInstance().getMapAll();
+    }
+
+    public Map<String, String> getAreaMap() {
+        return TblAreaCache.getInstance().getMapAll();
     }
 }

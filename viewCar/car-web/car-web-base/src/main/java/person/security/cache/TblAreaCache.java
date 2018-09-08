@@ -4,12 +4,15 @@ import person.db.bean.TblAreaBean;
 import person.db.bean.TblFunctionBean;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by SunChang on 2018/9/6
  */
 public class TblAreaCache {
+    private static Map<String, String> cacheMap = new HashMap<String, String>();
     private static List<TblAreaBean> cacheList = new ArrayList<TblAreaBean>();
     private static TblAreaCache cache = null;
 
@@ -27,6 +30,7 @@ public class TblAreaCache {
     public void init(List<TblAreaBean> list) {
         if(null != list && !list.isEmpty()) {
             for (TblAreaBean areaBean : list) {
+                cacheMap.put(areaBean.getAreaCode(), areaBean.getCityName());
                 cacheList.add(areaBean);
             }
         }
@@ -36,6 +40,7 @@ public class TblAreaCache {
      */
     public void clear(){
         cacheList.clear();
+        cacheMap.clear();
     }
 
     /**
@@ -53,5 +58,9 @@ public class TblAreaCache {
      */
     public List<TblAreaBean> getAll(){
         return cacheList;
+    }
+
+    public Map<String, String> getMapAll() {
+        return cacheMap;
     }
 }

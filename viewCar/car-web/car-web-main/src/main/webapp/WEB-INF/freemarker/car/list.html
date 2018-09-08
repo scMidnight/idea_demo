@@ -19,10 +19,6 @@
                             <div class="layui-input-inline" style="width: 200px;">
                                 <input type="text" name="dateStr" id="dateStr" placeholder=" ~ " readonly="" class="layui-input" />
                             </div>
-                            <!--<div class="layui-form-mid">-</div>-->
-                            <!--<div class="layui-input-inline" style="width: 200px;">-->
-                                <!--<input type="text" name="dateEnd" id="dateEnd" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">-->
-                            <!--</div>-->
                         </div>
                         <div class="layui-inline">
                             <button type="button" class="layui-btn layui-btn-normal" id="shangchuan" >重新检查时间范围内数据包</button>
@@ -97,42 +93,42 @@
                 ,{field:'problemCount', title:'问题条数', align:'center'}
                 ,{field:'taskRepeatCount', title:'任务重复', align:'center', templet: function (d) {
                         if(d.taskRepeatCount > 0) {
-                            return "<a href=\"javascript:void(0)\" class=\"layui-table-link\">" + d.taskRepeatCount + "</a>";
+                            return "<a href=\"javascript:void(0);\" onclick=\"errInfo('2', '" + d.fileBean.id + "')\" class=\"layui-table-link\">" + d.taskRepeatCount + "</a>";
                         }else {
                             return d.taskRepeatCount;
                         }
                     }}
                 ,{field:'carSysRepeatCount', title:'车系重复', align:'center', templet: function (d) {
                         if(d.carSysRepeatCount > 0) {
-                            return "<a href=\"javascript:void(0);\" class=\"layui-table-link\">" + d.carSysRepeatCount + "</a>";
+                            return "<a href=\"javascript:void(0);\" onclick=\"errInfo('3', '" + d.fileBean.id + "')\" class=\"layui-table-link\">" + d.carSysRepeatCount + "</a>";
                         }else {
                             return d.carSysRepeatCount;
                         }
                     }}
                 ,{field:'bigLibraryRepeatCount', title:'大库重复', align:'center', templet: function (d) {
                         if(d.bigLibraryRepeatCount > 0) {
-                            return "<a href=\"javascript:void(0);\" class=\"layui-table-link\">" + d.bigLibraryRepeatCount + "</a>";
+                            return "<a href=\"javascript:void(0);\" onclick=\"errInfo('1', '" + d.fileBean.id + "')\" class=\"layui-table-link\">" + d.bigLibraryRepeatCount + "</a>";
                         }else {
                             return d.bigLibraryRepeatCount;
                         }
                     }}
                 ,{field:'blackHitRepeatCount', title:'黑名单命中', align:'center', templet: function (d) {
                         if(d.blackHitRepeatCount > 0) {
-                            return "<a href=\"javascript:void(0);\" class=\"layui-table-link\">" + d.blackHitRepeatCount + "</a>";
+                            return "<a href=\"javascript:void(0);\" onclick=\"errInfo('4', '" + d.fileBean.id + "')\" class=\"layui-table-link\">" + d.blackHitRepeatCount + "</a>";
                         }else {
                             return d.blackHitRepeatCount;
                         }
                     }}
                 ,{field:'numberErrCount', title:'号段错误', align:'center', templet: function (d) {
                         if(d.numberErrCount > 0) {
-                            return "<a href=\"javascript:void(0);\" class=\"layui-table-link\">" + d.numberErrCount + "</a>";
+                            return "<a href=\"javascript:void(0);\" onclick=\"errInfo('5', '" + d.fileBean.id + "')\" class=\"layui-table-link\">" + d.numberErrCount + "</a>";
                         }else {
                             return d.numberErrCount;
                         }
                     }}
                 ,{field:'idFailedCount', title:'ID转失败', align:'center', templet: function (d) {
                         if(d.idFailedCount > 0) {
-                            return "<a href=\"javascript:void(0);\" class=\"layui-table-link\">" + d.idFailedCount + "</a>";
+                            return "<a href=\"javascript:void(0);\" onclick=\"errInfo('6', '" + d.fileBean.id + "')\" class=\"layui-table-link\">" + d.idFailedCount + "</a>";
                         }else {
                             return d.idFailedCount;
                         }
@@ -196,6 +192,9 @@
                     }
                 });
             }
+            if(layEvent == 'detail') {
+                window.location = "${base}/car/list/info?fileId=" + $data.fileBean.id;
+            }
             if(layEvent == 'exportPackage') {
                 var arr = new Array();
                 $("input:checkbox[name='filter']:checked").each(function (i) {
@@ -255,5 +254,8 @@
             }
         }
     });
+    function errInfo(code, fileId) {
+        window.location = "${base}/car/list/errInfo?err=" + code + "&fileId=" + fileId;
+    }
 </script>
 <#include "/common/bodyEnd.html">

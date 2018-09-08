@@ -3,12 +3,15 @@ package person.security.cache;
 import person.db.bean.TblCarSystemBean;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by SunChang on 2018/9/6
  */
 public class TblCarSysCache {
+    private static Map<String, String> cacheMap = new HashMap<String, String>();
     private static List<TblCarSystemBean> cacheList = new ArrayList<TblCarSystemBean>();
     private static TblCarSysCache cache = null;
 
@@ -25,6 +28,7 @@ public class TblCarSysCache {
     public void init(List<TblCarSystemBean> list) {
         if(null != list && !list.isEmpty()) {
             for (TblCarSystemBean carSystemBean : list) {
+                cacheMap.put(carSystemBean.getCarSysId(), carSystemBean.getCarSysName());
                 cacheList.add(carSystemBean);
             }
         }
@@ -35,6 +39,7 @@ public class TblCarSysCache {
      */
     public void clear(){
         cacheList.clear();
+        cacheMap.clear();
     }
 
     /**
@@ -52,5 +57,9 @@ public class TblCarSysCache {
      */
     public List<TblCarSystemBean> getAll(){
         return cacheList;
+    }
+
+    public Map<String, String> getMapAll() {
+        return cacheMap;
     }
 }

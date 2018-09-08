@@ -1,0 +1,161 @@
+<#include "/common/head.html">
+<#include "/common/bodyStart.html">
+<div class="layui-layout layui-layout-admin">
+    <#include "/common/headContent.html">
+    <#include "/common/left.html">
+    <div class="layui-body">
+        <div style="padding: 15px;">
+            <blockquote class="layui-elem-quote">
+                <div class="layui-form" lay-filter="one">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label" >查看筛选</label>
+                            <div class="layui-input-block">
+                                <input type="checkbox" name="filter" value="history" title="展开查看历史数据" checked />
+                                <input type="checkbox" name="filter" value="'1'" title="大库重复" checked />
+                                <input type="checkbox" name="filter" value="'2'" title="任务重复" checked />
+                                <input type="checkbox" name="filter" value="'3'" title="车系重复" checked />
+                                <input type="checkbox" name="filter" value="'4'" title="黑名单命中" checked />
+                                <input type="checkbox" name="filter" value="'5'" title="号段错误" checked />
+                                <input type="checkbox" name="filter" value="'6'" title="ID转失败" checked />
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="button" class="layui-btn layui-btn-normal" id="seachInfo" data-type="reload">查询</button>
+                        </div>
+                    </div>
+                </div>
+            </blockquote>
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>
+                    详情
+                    <a class="layui-btn layui-btn-normal" href="javascript:history.back(-1);">返回数据列表</a>
+                </legend>
+            </fieldset>
+            <table class="layui-hide" id="infoList" lay-filter="infoList"></table>
+        </div>
+    </div>
+    <#include "/common/footer.html">
+</div>
+<#include "/common/js.html">
+<script type="text/html" id="fileNameBak">
+    {{d.fileBean.fileNameBak}}
+</script>
+<script type="text/html" id="status">
+    {{# if (d.status == '1')  { }}
+    大库重复
+    {{# } else if(d.status == '2') { }}
+    任务重复
+    {{# } else if(d.status == '3') { }}
+    车系重复
+    {{# } else if(d.status == '4') { }}
+    黑名单命中
+    {{# } else if(d.status == '5') { }}
+    号段错误
+    {{# } else if(d.status == '6') { }}
+    ID转失败
+    {{# } else { }}
+    -
+    {{# } }}
+</script>
+<script type="text/html" id="description">
+    {{# if (d.status == '1')  { }}
+    大库重复
+    {{# } else if(d.status == '2') { }}
+    任务重复
+    {{# } else if(d.status == '3') { }}
+    车系重复
+    {{# } else if(d.status == '4') { }}
+    黑名单命中
+    {{# } else if(d.status == '5') { }}
+    号段错误
+    {{# } else if(d.status == '6') { }}
+    ID转失败
+    {{# } else { }}
+    -
+    {{# } }}
+</script>
+<script type="text/html" id="toolbar">
+    <div class="layui-btn-container" style="font-size: 15px;">
+        <span id="countNum"></span>
+    </div>
+</script>
+<!-- 自定义 js -->
+<script>
+    var arrs = function () {
+        var arr = new Array();
+        $("input:checkbox[name='filter']:checked").each(function (i) {
+            arr[i] = $(this).val();
+        });
+        return arr;
+    };
+    function fullColor(i, backGroundColor, fontColor) {
+        $(".layui-table-main tr[data-index='" + i + "']").css('background-color', backGroundColor);
+        $(".layui-table-main tr[data-index='" + i + "']").css('color', fontColor);
+    }
+    var fileId = "${fileId!''}";
+    layui.use(['table','form'], function () {
+       var table = layui.table, form = layui.form;
+        var tableIns = table.render({
+            elem: '#infoList'
+            ,url: '${base}/car/list/info'
+            ,method:'post'
+            ,toolbar: '#toolbar'
+            ,defaultToolbar: []
+            ,cols: [[
+                {field:'fileNameBak', title:'文件包名', templet:'#fileNameBak', align:'center'}
+                ,{field:'fileName', title:'文件名', width:360, align:'center'}
+                ,{field:'taskId', title:'任务ID', align:'center'}
+                ,{field:'name', title:'姓名', align:'center'}
+                ,{field:'phone', title:'手机号', align:'center'}
+                ,{field:'area', title:'地区', align:'center'}
+                ,{field:'carSys', title:'车系', align:'center'}
+                ,{field:'status', title:'状态', templet:'#status', align:'center'}
+                ,{title:'说明', templet:'#description'}
+            ]]
+            ,even: true //隔行换色
+            ,where:{
+                fileId: fileId
+                ,arrs: arrs().join(',')
+            }
+            ,done: function (res, curr, count) {
+                $("#countNum").text("合计：" + count + "条");
+                for(var i = 0; i< res.data.length; i++) {
+                    var dat = res.data[i];
+                    if(!isNull(dat.color)) {
+                        if(dat.color == "shenlan") {
+                            fullColor(i, "#000080", "#FFFFFF");
+                        }else if(dat.color == "qianlan") {
+                            fullColor(i, "#ADD8E6", "#000000");
+                        }else if(dat.color == "hong") {
+                            fullColor(i, "#FF0000", "#FFFFFF");
+                        }else if(dat.color == "shenhuang") {
+                            fullColor(i, "#B8860B", "#000000");
+                        }else if(dat.color == "qianhuang") {
+                            fullColor(i, "#EEE8AA", "#000000");
+                        }else if(dat.color == "zise") {
+                            fullColor(i, "#800080", "#FFFFFF");
+                        }else if(dat.color == "heise") {
+                            fullColor(i, "#000000", "#FFFFFF");
+                        }else if(dat.color == "huise") {
+                            fullColor(i, "#808080", "#000000");
+                        }
+
+                    }
+                }
+            }
+        });
+        $("#seachInfo").on("click", function () {
+            var type = $(this).data('type');
+            if(!isNull(type) && type == 'reload') {
+                tableIns.reload({
+                    where:{
+                        fileId: fileId
+                        ,arrs: arrs().join(',')
+                    }
+                });
+            }
+        })
+    });
+</script>
+<#include "/common/bodyEnd.html">

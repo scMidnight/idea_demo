@@ -1,11 +1,14 @@
 package person.util;
 
+import jodd.util.StringUtil;
 import person.db.bean.TblAreaBean;
 import person.db.bean.TblCarSystemBean;
 import person.db.bean.TblFileDetailBean;
 import person.handler.FileDetailHandler;
+import person.security.cache.CacheManager;
 
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -154,5 +157,17 @@ public class CarUtil {
     public static boolean isInteger(String str) {
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
         return pattern.matcher(str).matches();
+    }
+
+    public static void updateCarSysAndAreaName(List list) {
+        if(null != list && list.size() > 0) {
+            Map<String, String> areaMap = CacheManager.getInstance().getAreaMap();
+            Map<String, String> carMap = CacheManager.getInstance().getCarMap();
+            for (Object obj : list) {
+                TblFileDetailBean fileDetailBean = (TblFileDetailBean) obj;
+                fileDetailBean.setArea(StringUtil.isNotBlank(areaMap.get(fileDetailBean.getArea()))?areaMap.get(fileDetailBean.getArea()):fileDetailBean.getArea());
+                fileDetailBean.setCarSys(StringUtil.isNotBlank(carMap.get(fileDetailBean.getCarSys()))?carMap.get(fileDetailBean.getCarSys()):fileDetailBean.getCarSys());
+            }
+        }
     }
 }

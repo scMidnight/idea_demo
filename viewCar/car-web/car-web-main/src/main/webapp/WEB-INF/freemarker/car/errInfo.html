@@ -1,0 +1,67 @@
+<#include "/common/head.html">
+<#include "/common/bodyStart.html">
+<div class="layui-layout layui-layout-admin">
+    <#include "/common/headContent.html">
+    <#include "/common/left.html">
+    <div class="layui-body">
+        <div style="padding: 15px;">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>
+                    错误详情
+                    <a class="layui-btn layui-btn-normal" href="javascript:history.back(-1);">返回数据列表</a>
+                </legend>
+            </fieldset>
+            <table class="layui-hide" id="errList" lay-filter="errList"></table>
+        </div>
+    </div>
+    <#include "/common/footer.html">
+</div>
+<#include "/common/js.html">
+<script type="text/html" id="fileNameBak">
+    {{d.fileBean.fileNameBak}}
+</script><script type="text/html" id="status">
+    {{# if (d.status == '1')  { }}
+    大库重复
+    {{# } else if(d.status == '2') { }}
+    任务重复
+    {{# } else if(d.status == '3') { }}
+    车系重复
+    {{# } else if(d.status == '4') { }}
+    黑名单命中
+    {{# } else if(d.status == '5') { }}
+    号段错误
+    {{# } else if(d.status == '6') { }}
+    ID转失败
+    {{# } else { }}
+    状态异常
+    {{# } }}
+</script>
+<!-- 自定义 js -->
+<script>
+    var errCode = "${errCode!''}";
+    var fileId = "${fileId!''}";
+    layui.use(['table'], function () {
+       var table = layui.table;
+        table.render({
+            elem: '#errList'
+            ,url: '${base}/car/list/errInfo'
+            ,method:'post'
+            ,cols: [[
+                {field:'fileNameBak', title:'文件包名', fixed:'left', templet:'#fileNameBak', align:'center'}
+                ,{field:'fileName', title:'文件名', width:360, fixed:'left', align:'center'}
+                ,{field:'taskId', title:'任务ID', align:'center'}
+                ,{field:'name', title:'姓名', align:'center'}
+                ,{field:'phone', title:'手机号', align:'center'}
+                ,{field:'area', title:'地区', align:'center'}
+                ,{field:'carSys', title:'车系', align:'center'}
+                ,{field:'status', title:'状态', templet:'#status', align:'center'}
+            ]]
+            ,even: true //隔行换色
+            ,where:{
+                errCode: errCode
+                ,fileId: fileId
+            }
+        });
+    });
+</script>
+<#include "/common/bodyEnd.html">

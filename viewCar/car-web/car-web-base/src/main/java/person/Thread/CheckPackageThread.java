@@ -88,7 +88,10 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                     }
                     if(CarUtil.checkBigLib(fileDetailBean.getPhone(), fileDetailHandler)) {
                         fileDetailBean.setStatus("1");//大库重复
+                        fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：大库重复");
+                        continue;
                     }
+                    fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行");
                     fileDetailBeans1.add(fileDetailBean);
                 }
             }
