@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import person.Thread.CheckPackageThread;
 import person.db.bean.*;
 import person.db.entity.Page;
+import person.db.entity.TblFileDetail;
 import person.handler.FileDetailHandler;
 import person.handler.FileHandler;
 import person.security.cache.CacheManager;
@@ -197,6 +198,25 @@ public class CarListController {
         }
     }
 
+    /**
+     * 重新整理文件
+     **/
+    @RequestMapping(value = "/car/list/checkAgainPackage", method = RequestMethod.POST)
+    @ResponseBody
+    public Object carListCheckAgainPackage(String id) {
+        TblFileBean fileBean = fileHandler.queryById(id);
+        List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.findByProperty("fileId", id);
+        fileDetailHandler.batchDel(fileDetailBeans);
+        return carListcheckPackage(id);
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/9/8 14:00
+     * @param request
+    * @param response
+     * @Description 导出转id后的包
+     */
     @RequestMapping(value = "/car/list/exportPackage", method = RequestMethod.GET)
     public Object carListExportPackage(HttpServletRequest request, HttpServletResponse response) {
         Constants.pubMap.put(UserUtil.getUserId() + "ExportPackage", false);//记录公共变量当前用户导出包是否成功
@@ -273,6 +293,13 @@ public class CarListController {
         return JsonUtil.toString("Y", "操作成功！");
     }
 
+    /**
+     * @Author SunChang
+     * @Date 2018/9/8 14:00
+     * @param request
+    * @param response
+     * @Description 获得下载转id包的结果做前台用户体验
+     */
     @RequestMapping(value = "/car/list/exportPackageRes", method = RequestMethod.GET)
     @ResponseBody
     public Object getCarListExportPackageRes(HttpServletRequest request, HttpServletResponse response) {

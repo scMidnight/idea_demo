@@ -37,4 +37,9 @@ public class FileDetailHandlerImpl implements FileDetailHandler {
     public List<TblFileDetailBean> queryByHqlOnErrCount(String fileId, String status) {
         return fileDetailService.queryByHqlOnErrCount(fileId, status);
     }
+
+    @Override
+    public void batchDel(List<TblFileDetailBean> fileDetailBeans) {
+        fileDetailService.batchDel(fileDetailBeans);
+    }
 }

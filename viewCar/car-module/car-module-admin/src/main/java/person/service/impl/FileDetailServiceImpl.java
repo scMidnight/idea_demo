@@ -88,4 +88,15 @@ public class FileDetailServiceImpl extends CommonServiceImpl implements FileDeta
         }
         return fileDetailBeans;
     }
+
+    @Override
+    public void batchDel(List<TblFileDetailBean> fileDetailBeans) {
+        List<TblFileDetail> fileDetails = new ArrayList<TblFileDetail>();
+        for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+            TblFileDetail fileDetail = new TblFileDetail();
+            BeanUtils.copyProperties(fileDetailBean, fileDetail);
+            fileDetails.add(fileDetail);
+        }
+        super.deleteAllEntitie(fileDetails);
+    }
 }

@@ -30,4 +30,12 @@ public interface FileDetailHandler {
     List<TblFileDetailBean> queryByHql(String hql, Object... param);
 
     List<TblFileDetailBean> queryByHqlOnErrCount(String fileId, String status);
+
+    /**
+     * @Author SunChang
+     * @Date 2018/9/8 14:08
+     * @param fileDetailBeans
+     * @Description 批量删除
+     */
+    void batchDel(List<TblFileDetailBean> fileDetailBeans);
 }

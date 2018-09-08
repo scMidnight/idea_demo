@@ -95,12 +95,48 @@
                 ,{field:'fileCount', title:'文件总数', align:'center'}
                 ,{field:'sumCount', title:'合计条数', align:'center'}
                 ,{field:'problemCount', title:'问题条数', align:'center'}
-                ,{field:'taskRepeatCount', title:'任务重复', align:'center'}
-                ,{field:'carSysRepeatCount', title:'车系重复', align:'center'}
-                ,{field:'bigLibraryRepeatCount', title:'大库重复', align:'center'}
-                ,{field:'blackHitRepeatCount', title:'黑名单命中', align:'center'}
-                ,{field:'numberErrCount', title:'号段错误', align:'center'}
-                ,{field:'idFailedCount', title:'ID转失败', align:'center'}
+                ,{field:'taskRepeatCount', title:'任务重复', align:'center', templet: function (d) {
+                        if(d.taskRepeatCount > 0) {
+                            return "<a href=\"javascript:void(0)\" class=\"layui-table-link\">" + d.taskRepeatCount + "</a>";
+                        }else {
+                            return d.taskRepeatCount;
+                        }
+                    }}
+                ,{field:'carSysRepeatCount', title:'车系重复', align:'center', templet: function (d) {
+                        if(d.carSysRepeatCount > 0) {
+                            return "<a href=\"javascript:void(0);\" class=\"layui-table-link\">" + d.carSysRepeatCount + "</a>";
+                        }else {
+                            return d.carSysRepeatCount;
+                        }
+                    }}
+                ,{field:'bigLibraryRepeatCount', title:'大库重复', align:'center', templet: function (d) {
+                        if(d.bigLibraryRepeatCount > 0) {
+                            return "<a href=\"javascript:void(0);\" class=\"layui-table-link\">" + d.bigLibraryRepeatCount + "</a>";
+                        }else {
+                            return d.bigLibraryRepeatCount;
+                        }
+                    }}
+                ,{field:'blackHitRepeatCount', title:'黑名单命中', align:'center', templet: function (d) {
+                        if(d.blackHitRepeatCount > 0) {
+                            return "<a href=\"javascript:void(0);\" class=\"layui-table-link\">" + d.blackHitRepeatCount + "</a>";
+                        }else {
+                            return d.blackHitRepeatCount;
+                        }
+                    }}
+                ,{field:'numberErrCount', title:'号段错误', align:'center', templet: function (d) {
+                        if(d.numberErrCount > 0) {
+                            return "<a href=\"javascript:void(0);\" class=\"layui-table-link\">" + d.numberErrCount + "</a>";
+                        }else {
+                            return d.numberErrCount;
+                        }
+                    }}
+                ,{field:'idFailedCount', title:'ID转失败', align:'center', templet: function (d) {
+                        if(d.idFailedCount > 0) {
+                            return "<a href=\"javascript:void(0);\" class=\"layui-table-link\">" + d.idFailedCount + "</a>";
+                        }else {
+                            return d.idFailedCount;
+                        }
+                    }}
                 ,{field:'right', title:'操作', toolbar:'#operate', width:260, fixed:'right', align:'center'}
             ]]
             ,even: true //隔行换色
@@ -135,6 +171,31 @@
                     }
                 });
             }
+            if(layEvent == 'checkAgainPackage') {
+                loading = layer.load(0,{shade: [0.4,'#000']});
+                $.ajax({
+                    url:"${base}/car/list/checkAgainPackage",
+                    data:{id:$data.fileBean.id},
+                    dataType:"json",
+                    type:"post",
+                    success:function (result) {
+                        if(result.status=="Y"){
+                            layer.msg('重新整理完毕！', {
+                                icon: 1,
+                                time: 1000 //1秒关闭（如果不配置，默认是3秒）
+                            });
+                            layer.close(loading);
+                            tableIns.reload({
+                                page:{
+                                    curr:1
+                                }
+                            });
+                        }else{
+                            layer.alert(result.msg);
+                        }
+                    }
+                });
+            }
             if(layEvent == 'exportPackage') {
                 var arr = new Array();
                 $("input:checkbox[name='filter']:checked").each(function (i) {
@@ -145,24 +206,6 @@
                 $a.attr("href", "${base}/car/list/exportPackage?id=" + $data.fileBean.id + "&arrs=" + arr.join(","));
                 $("#exportPackage span").trigger('click');
                 getExportPackageRes(loading);
-                // $.ajax({
-                //     url:"${base}/car/list/exportPackage",
-                //     data:{id:$data.fileBean.id, arrs:arr.join(",")},
-                //     dataType:"json",
-                //     type:"post",
-                //     success:function (result) {
-                //         if(result.status=="Y"){
-                //             layer.close(loading);
-                //             tableIns.reload({
-                //                 page:{
-                //                     curr:1
-                //                 }
-                //             });
-                //         }else{
-                //             layer.alert(result.msg);
-                //         }
-                //     }
-                // });
             }
             if(layEvent == 'delPackage') {
                 layer.confirm('您确定要删除此条数据吗？', {icon: 3}, function (index) {
@@ -208,7 +251,7 @@
             if(res){
                 closeLoad(index);
             }else {
-                t = setTimeout(function () { getExportPackageRes(index); }, 2000);
+                t = setTimeout(function () { getExportPackageRes(index); }, 1000);
             }
         }
     });
