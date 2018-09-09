@@ -61,7 +61,8 @@
 
     <!-- 登录成功 -->
     <beans:bean id="loginLogAuthenticationSuccessHandler" class="person.security.SimpleUrlAuthenticationSuccessHandlerImpl">
-        <beans:property name="defaultTargetUrl" value="/index"></beans:property>
+        <!--<beans:property name="defaultTargetUrl" value="/index"></beans:property>-->
+        <beans:property name="defaultTargetUrl" value="/car/list"></beans:property>
         <beans:property name="userSessionManager" ref="userSessionManager"></beans:property>
     </beans:bean>
     <!-- 自定义userSessionManager请进行修改自定义的class -->

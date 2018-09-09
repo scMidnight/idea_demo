@@ -19,4 +19,6 @@ public interface FileService extends CommonService {
      * @Description 根据ID进行删除
      */
     void deleteFile(String id);
+
+    List<TblFileBean> queryByHql(String hql, Object... param);
 }

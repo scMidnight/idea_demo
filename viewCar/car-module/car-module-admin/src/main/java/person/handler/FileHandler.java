@@ -20,4 +20,6 @@ public interface FileHandler {
     void batchAddAttachment(List<TblFileBean> fileBeans);
 
     TblFileBean queryById(String id);
+
+    List<TblFileBean> queryByHql(String hql, Object... param);
 }

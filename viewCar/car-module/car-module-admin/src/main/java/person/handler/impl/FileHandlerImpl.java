@@ -57,4 +57,9 @@ public class FileHandlerImpl implements FileHandler {
     public TblFileBean queryById(String id) {
         return fileService.queryById(id);
     }
+
+    @Override
+    public List<TblFileBean> queryByHql(String hql, Object... param) {
+        return fileService.queryByHql(hql, param);
+    }
 }

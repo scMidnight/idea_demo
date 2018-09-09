@@ -1,4 +1,5 @@
 <#include "/common/head.html">
+<link rel="stylesheet" href="${base}/resources/css/loading.css">
 <#include "/common/bodyStart.html">
 <div class="layui-layout layui-layout-admin">
     <#include "/common/headContent.html">
@@ -21,7 +22,7 @@
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <button type="button" class="layui-btn layui-btn-normal" id="shangchuan" >重新检查时间范围内数据包</button>
+                            <button type="button" class="layui-btn layui-btn-normal" id="checkAgain" data-type="checkAgain">重新检查时间范围内数据包</button>
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -39,6 +40,20 @@
             </blockquote>
             <table class="layui-hide" id="carList" lay-filter="carList"></table>
             <a id = "exportPackage" style="display: none" href=""><span>exportPackage</span></a>
+        </div>
+    </div>
+    <div id="loading">
+        <div id="loading-center">
+            <div id="loading-center-absolute" align="center">
+                <div class="object" id="object_one"></div>
+                <div class="object" id="object_two"></div>
+                <div class="object" id="object_three"></div>
+                <div class="layui-progress layui-progress-big" lay-showPercent="true" style="margin-top:140px;" lay-filter="bar">
+                    <div class="layui-progress-bar" lay-percent="1%"></div>
+                </div>
+                <button id="close" type="button" class="layui-btn layui-btn-danger" style="margin-top:45px;">取消</button>
+            </div>
+
         </div>
     </div>
     <#include "/common/footer.html">
@@ -62,14 +77,45 @@
 </script>
 <!-- 自定义 js -->
 <script>
+    var host = window.location.host;
+    var ws = null;
+    var userCode = "${userCode!''}";
+    if('WebSocket' in window) {
+        ws = new WebSocket("ws://" + host + "/websocket/" + userCode);
+    }else {
+        alert("浏览器版本过低！");
+    }
+    //连接发生错误的回调方法
+    ws.onerror = function (ev) {
+        console.log("WebSocket连接发生错误");
+    };
+    //连接成功建立的回调方法
+    ws.onopen = function (ev) {
+        // 使用 send() 方法发送数据
+        // ws.send("发送数据");
+        console.log("WebSocket连接成功");
+    };
+    // 断开 web socket 连接成功触发事件
+    ws.onclose = function () {
+        console.log("连接已关闭...");
+    };
+    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    window.onbeforeunload = function () {
+        ws.close();
+    };
     var dateVal = "";
     var t;
     function closeLoad(index) {
         layer.close(index);
         clearTimeout(t);
     }
-    layui.use(['form','table','laydate'], function () {
-        var form = layui.form,table = layui.table,laydate = layui.laydate;
+    layui.use(['form','table','laydate','element'], function () {
+        var form = layui.form,table = layui.table,laydate = layui.laydate, element = layui.element;
+        // 接收服务端数据时触发事件
+        ws.onmessage = function (evt) {
+            var received_msg = evt.data;
+            element.progress('bar', received_msg);
+        };
         laydate.render({
             elem:'#dateStr'
             ,range: '~'
@@ -253,6 +299,55 @@
                 t = setTimeout(function () { getExportPackageRes(index); }, 1000);
             }
         }
+        $("#checkAgain").on("click", function () {
+            var dateStr = $("input[name='dateStr']").val();
+            if(isNull(dateStr)) {
+                layer.alert("请填入时间范围！");
+                return;
+            }
+            var type = $(this).data('type');
+            if(!isNull(type) && type == 'checkAgain') {
+                $("#close").show();
+                loading.style.display="block";
+                $.ajax({
+                    url:'${base}/car/list/checkAgain',
+                    dataType: 'json',
+                    type:'post',
+                    data:{dateStr:dateStr},
+                    success:function (result) {
+                        if(result.status=="Y") {
+                            layer.msg(result.msg, {
+                                icon: 1,
+                                time: 1000 //1秒关闭（如果不配置，默认是3秒）
+                            });
+                            tableIns.reload({
+                                page:{
+                                    curr:1
+                                }
+                            });
+                        }else {
+                            layer.alert(result.msg);
+                        }
+                        loading.style.display="none";   //隐藏遮罩层
+                    }
+                })
+            }
+        });
+        $("#close").click(function() {
+            $(this).hide();
+            $.ajax({
+                url:'${base}/car/list/checkAgain/cancel',
+                dataType: "json",
+                type:"get",
+                success:function (result) {
+                    if(result.status=="Y") {
+
+                    }else {
+
+                    }
+                }
+            });
+        })
     });
     function errInfo(code, fileId) {
         window.location = "${base}/car/list/errInfo?err=" + code + "&fileId=" + fileId;

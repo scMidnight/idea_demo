@@ -1,7 +1,9 @@
 package com.car.web.controller.car;
 
 import com.car.web.utils.Constants;
+import com.sun.corba.se.impl.orbutil.closure.Constant;
 import jodd.util.StringUtil;
+import net.sf.json.JSONObject;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,11 +20,15 @@ import person.handler.FileDetailHandler;
 import person.handler.FileHandler;
 import person.security.cache.CacheManager;
 import person.util.*;
+import person.util.webSocket.MyClient;
+import person.util.webSocket.WebSocket;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -82,6 +88,7 @@ public class CarListController {
      */
     @RequestMapping(value = "/car/list", method = RequestMethod.GET)
     public String carListGet(HttpServletRequest request, ModelMap modelMap) {
+        modelMap.put("userCode", UserUtil.getName());
         return "/car/list";
     }
 
@@ -439,43 +446,53 @@ public class CarListController {
     public String carInfoPost(HttpServletRequest request, ModelMap modelMap) {
         String fileId = request.getParameter("fileId");
         String arrs = request.getParameter("arrs");
+        String where = arrs;
         if(StringUtil.isNotBlank(arrs)) {
-            if(arrs.contains("history")) {
-                arrs = arrs.replaceAll("history", "0");
+            if(where.contains("history")) {
+                where = arrs.replaceAll("history", "0");
             }else {
-                arrs += ",'0'";
+                where += ",'0'";
             }
-            String hql = "FROM TblFileDetail t where t.fileId = ? and t.status in (" + arrs + ")";
+            String hql = "FROM TblFileDetail t where t.fileId = ? and t.status in (" + where + ")";
             List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.queryByHql(hql, fileId);
             LinkedList<TblFileDetailBean> linkedList = new LinkedList<TblFileDetailBean>();
             if (null != fileDetailBeans && fileDetailBeans.size() > 0) {
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
                     if (fileDetailBean.getStatus().equals("1")) {//大库重复
+                        fileDetailBean.setErrInfo("本包数据");
                         fileDetailBean.setColor("shenlan");
                         linkedList.add(fileDetailBean);
                         if(arrs.contains("history")) {
                             List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("phone", fileDetailBean.getPhone());
                             for (TblFileDetailBean temp : temps) {
-                                temp.setColor("qianlan");
+                                if(!temp.getId().equals(fileDetailBean.getId())) {
+                                    temp.setStatus("1");
+                                    temp.setErrInfo("历史数据");
+                                    temp.setColor("qianlan");
+                                    linkedList.add(temp);
+                                }
                             }
-                            linkedList.addAll(temps);
                         }
                     }
                 }
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
                     if (fileDetailBean.getStatus().equals("2")) {//任务重复
+                        fileDetailBean.setErrInfo("任务重复");
                         fileDetailBean.setColor("hong");
                         linkedList.add(fileDetailBean);
                     }
                 }
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
                     if(fileDetailBean.getStatus().equals("3")) {//车系重复
+                        fileDetailBean.setErrInfo("本包数据");
                         fileDetailBean.setColor("shenhuang");
                         linkedList.add(fileDetailBean);
                         if(arrs.contains("history")) {
                             List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("carSys", fileDetailBean.getCarSys());
                             for (TblFileDetailBean temp : temps) {
-                                if(fileDetailBean.getPhone().equals(temp.getPhone())) {
+                                if(!temp.getId().equals(fileDetailBean.getId()) && fileDetailBean.getPhone().equals(temp.getPhone())) {
+                                    temp.setStatus("3");
+                                    temp.setErrInfo("历史数据");
                                     temp.setColor("qianhuang");
                                     linkedList.add(temp);
                                 }
@@ -485,24 +502,28 @@ public class CarListController {
                 }
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
                     if(fileDetailBean.getStatus().equals("5")) {//号段错误
+                        fileDetailBean.setErrInfo("号段错误");
                         fileDetailBean.setColor("zise");
                         linkedList.add(fileDetailBean);
                     }
                 }
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
                     if(fileDetailBean.getStatus().equals("4")) {//黑名单命中
+                        fileDetailBean.setErrInfo("黑名单命中");
                         fileDetailBean.setColor("heise");
                         linkedList.add(fileDetailBean);
                     }
                 }
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
                     if(fileDetailBean.getStatus().equals("6")) {//ID转失败
+                        fileDetailBean.setErrInfo("ID转失败");
                         fileDetailBean.setColor("huise");
                         linkedList.add(fileDetailBean);
                     }
                 }
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
                     if(fileDetailBean.getStatus().equals("0")) {
+                        fileDetailBean.setErrInfo("-");
                         linkedList.add(fileDetailBean);
                     }
                 }
@@ -519,10 +540,68 @@ public class CarListController {
         }
     }
 
+    @RequestMapping(value = "/car/list/checkAgain", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
+    @ResponseBody
+    public Object carCheckAgainPost(HttpServletRequest request, ModelMap modelMap) throws IOException {
+        String dateStr = request.getParameter("dateStr");
+        String[] dates = dateStr.split(" ~ ");
+        List<TblFileBean> fileBeans = fileHandler.queryByHql("FROM TblFile t where date_format(t.uploadDate, '%Y-%m-%d') BETWEEN ? and ?", dates[0], dates[1]);
+        Constants.pubMap.put(UserUtil.getUserId() + "batchCheckAgain", true);
+        boolean isContinue = (boolean) Constants.pubMap.get(UserUtil.getUserId() + "batchCheckAgain");
+        MyClient client = new MyClient();
+        String uri = "ws://localhost:8080/websocket/houtai";
+        client.start(uri);
+        if(null != fileBeans && fileBeans.size() > 0) {
+            for (int i = 0; i < fileBeans.size(); i++) {
+                isContinue = (boolean) Constants.pubMap.get(UserUtil.getUserId() + "batchCheckAgain");
+                if (isContinue) {
+                    try {
+                        carListCheckAgainPackage(fileBeans.get(i).getId());
+                        JSONObject jo = new JSONObject();
+                        jo.put("message", Math.round(((double) (i + 1) / fileBeans.size()) * 100) + "%");
+                        //jo.put("message", i + "/50");
+                        jo.put("To", UserUtil.getName());
+                        client.sendMessage(jo.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    break;
+                }
+            }
+            client.closeSocket();
+        }else {
+            client.closeSocket();
+            return JsonUtil.toString("Y", "当前时间范围内暂无数据！");
+        }
+        if(isContinue) {
+            return JsonUtil.toString("Y", "重新整理完成！");
+        }else {
+            return JsonUtil.toString("Y", "取消成功！");
+        }
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/9/8 14:00
+     * @param request
+    * @param response
+     * @Description 取消批量重新整理
+     */
+    @RequestMapping(value = "/car/list/checkAgain/cancel", method = RequestMethod.GET)
+    @ResponseBody
+    public Object carCheckAgainGetCancel(HttpServletRequest request, HttpServletResponse response) {
+        Constants.pubMap.put(UserUtil.getUserId() + "batchCheckAgain", false);
+        return JsonUtil.toString("Y", "操作成功！");
+    }
+
     public static void main(String[] args) {
         //System.out.println(newPath("D:/car/uploader/bak/9891420180906142013924a/"));
-        String a = "history,1,2,3,4,5,6";
-        System.out.println(a.substring(8, a.length()));
+        //String a = "history,1,2,3,4,5,6";
+        //System.out.println(a.substring(8, a.length()));
+        for (int i = 1; i <= 100; i++) {
+            System.out.println();
+        }
     }
 
 }

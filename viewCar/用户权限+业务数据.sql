@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-09-07 00:33:22
+Date: 2018-09-09 22:05:31
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -1603,7 +1603,13 @@ CREATE TABLE `tbl_file_detail` (
   `status` varchar(255) DEFAULT NULL COMMENT '状态：0 正常，1 大库重复，2 任务重复，3 车系重复，4 黑名单命中，5 号段错误，6 ID转失败',
   `err_info` varchar(255) DEFAULT NULL COMMENT '错误描述，用来生成错误txt文件',
   PRIMARY KEY (`id`),
-  KEY `file_detail_file_id_index` (`file_id`) USING BTREE
+  KEY `file_detail_file_id_index` (`file_id`) USING BTREE,
+  KEY `file_detail_file_name_index` (`file_name`) USING BTREE,
+  KEY `file_detail_task_id_index` (`task_id`) USING BTREE,
+  KEY `file_detail_phone_index` (`phone`) USING BTREE,
+  KEY `file_detail_area_index` (`area`) USING BTREE,
+  KEY `file_detail_car_sys_index` (`car_sys`) USING BTREE,
+  KEY `file_detail_status_index` (`status`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

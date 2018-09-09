@@ -47,4 +47,18 @@ public class FileServiceImpl extends CommonServiceImpl implements FileService {
         TblFile file = this.get(TblFile.class, id);
         super.delete(file);
     }
+
+    @Override
+    public List<TblFileBean> queryByHql(String hql, Object... param) {
+        List<TblFile> files = super.findHql(hql, param);
+        List<TblFileBean> fileBeans = new ArrayList<TblFileBean>();
+        if (files != null && files.size() > 0) {
+            for (TblFile file : files) {
+                TblFileBean fileBean = new TblFileBean();
+                BeanUtils.copyProperties(file, fileBean);
+                fileBeans.add(fileBean);
+            }
+        }
+        return fileBeans;
+    }
 }

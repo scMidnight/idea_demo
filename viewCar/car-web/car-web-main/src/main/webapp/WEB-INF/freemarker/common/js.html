@@ -26,5 +26,31 @@
         var nowStr = now.getFullYear() + "-" + full(now.getMonth()+1) + "-" + full(now.getDate()) + " ~ ";
         nowStr += nowStrEnd;
         return nowStr;
+    };
+    expandMenu();
+    /*****
+     * 左侧菜单展开
+     */
+    function expandMenu(){
+        var url = window.location.href;
+        var host = window.location.host;
+        url = url.substring(url.indexOf(host) + host.length );
+        if(url.indexOf(";") > -1){
+            url = url.substring(0,url.indexOf(";"));
+        }
+        if(url.indexOf("?") > -1){
+            url = url.substring(0,url.indexOf("?"));
+        }
+        var $this = $(".layui-nav-child").find("[href='" + url + "']");
+        if($this.length == 0){
+            url = url.substring(0,url.lastIndexOf("/"));
+            $this = $(".layui-nav-item").find("[href='" + url + "']");
+        }
+
+        if($this.parent().is("ul")){
+            $this.addClass("layui-nav-itemed");
+        }else {
+            $this.parent("dd").addClass("layui-this").parent().parent().addClass("layui-nav-itemed");
+        }
     }
 </script>
