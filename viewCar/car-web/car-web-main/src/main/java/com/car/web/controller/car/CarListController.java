@@ -406,6 +406,13 @@ public class CarListController {
         return ret;
     }
 
+    /**
+     * @Author SunChang
+     * @Date 2018/9/10 15:13
+     * @param request
+    * @param modelMap
+     * @Description 错误信息查看
+     */
     @RequestMapping(value = "/car/list/errInfo", method = RequestMethod.GET)
     public String carerrInfoGet(HttpServletRequest request, ModelMap modelMap) {
         modelMap.put("errCode", request.getParameter("err"));
@@ -413,6 +420,13 @@ public class CarListController {
         return "/car/errInfo";
     }
 
+    /**
+     * @Author SunChang
+     * @Date 2018/9/10 15:13
+     * @param request
+    * @param modelMap
+     * @Description 错误信息查看
+     */
     @RequestMapping(value = "/car/list/errInfo", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
     @ResponseBody
     public String carerrInfoPost(HttpServletRequest request, ModelMap modelMap) {
@@ -435,12 +449,26 @@ public class CarListController {
         }
     }
 
+    /**
+     * @Author SunChang
+     * @Date 2018/9/10 15:13
+     * @param request
+    * @param modelMap
+     * @Description 详情
+     */
     @RequestMapping(value = "/car/list/info", method = RequestMethod.GET)
     public String carInfoGet(HttpServletRequest request, ModelMap modelMap) {
         modelMap.put("fileId", request.getParameter("fileId"));
         return "/car/info";
     }
 
+    /**
+     * @Author SunChang
+     * @Date 2018/9/10 15:13
+     * @param request
+    * @param modelMap
+     * @Description 详情
+     */
     @RequestMapping(value = "/car/list/info", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
     @ResponseBody
     public String carInfoPost(HttpServletRequest request, ModelMap modelMap) {
@@ -540,6 +568,13 @@ public class CarListController {
         }
     }
 
+    /**
+     * @Author SunChang
+     * @Date 2018/9/10 15:13
+     * @param request
+    * @param modelMap
+     * @Description 时间范围内的包全部重新整理
+     */
     @RequestMapping(value = "/car/list/checkAgain", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
     @ResponseBody
     public Object carCheckAgainPost(HttpServletRequest request, ModelMap modelMap) throws IOException {

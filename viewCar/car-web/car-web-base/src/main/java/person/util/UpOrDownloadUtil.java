@@ -161,6 +161,7 @@ public class UpOrDownloadUtil {
             response.setCharacterEncoding("utf-8");
             response.setContentType("multipart/form-data");
             response.setHeader("Content-Disposition", "attachment;fileName=\"" + fileName + "\"");
+            response.addHeader("Content-Length", String.valueOf(sbs.available()));
             os = response.getOutputStream();
             byte[] b = new byte[2048];
             int length;

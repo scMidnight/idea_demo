@@ -1,0 +1,138 @@
+<#include "/common/head.html">
+<#include "/common/bodyStart.html">
+<div class="layui-layout layui-layout-admin">
+    <#include "/common/headContent.html">
+    <#include "/common/left.html">
+    <div class="layui-body">
+        <div style="padding: 15px;">
+            <blockquote class="layui-userCodeelem-quote">
+
+            </blockquote>
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>
+                    导出为EXCEL
+                </legend>
+            </fieldset>
+            <blockquote class="layui-elem-quote">
+                <div class="layui-form" lay-filter="one">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label" style="width: 120px;">导出时段</label>
+                            <div class="layui-input-inline" style="width: 200px;">
+                                <input type="text" name="dateStr" id="dateStr" placeholder=" ~ " readonly="" class="layui-input" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width: 120px;">导出时屏蔽数据</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="filter" value="1" title="大库重复" />
+                            <input type="checkbox" name="filter" value="2" title="任务重复" checked />
+                            <input type="checkbox" name="filter" value="3" title="车系重复" checked />
+                            <input type="checkbox" name="filter" value="4" title="黑名单命中" checked />
+                            <input type="checkbox" name="filter" value="5" title="号段错误" checked />
+                            <input type="checkbox" name="filter" value="6" title="ID转失败" checked />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width: 120px;"></label>
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-btn layui-btn-normal" id="batchExport" data-type="batchExport">导出</button>
+                            <a id = "batchExportA" style="display: none" href=""><span>batchExportA</span></a>
+                        </div>
+                    </div>
+                </div>
+            </blockquote>
+        </div>
+    </div>
+    <#include "/common/footer.html">
+</div>
+<#include "/common/js.html">
+<!-- 自定义 js -->
+<script>
+    var loading;
+    var t;
+    function closeLoad(index) {
+        layer.close(index);
+        clearTimeout(t);
+    }
+    layui.use(['form','laydate','element','layer'], function () {
+        var form = layui.form, laydate = layui.laydate, element = layui.element, layer = layui.layer;
+        laydate.render({
+            elem:'#dateStr'
+            ,range: '~'
+            ,value: dateStr(90)
+            ,trigger: 'click'
+            ,theme: 'molv'
+            ,done: function (value, date, endDate) {
+                dateVal = value;
+            }
+        });
+        $("#batchExport").on("click", function () {
+            var dates = $("input[name='dateStr']").val();
+            if(checkIsData(dates)) {
+                var type = $(this).data('type');
+                if (!isNull(type) && type == 'batchExport') {
+                    var arr = new Array();
+                    $("input:checkbox[name='filter']:checked").each(function (i) {
+                        arr[i] = $(this).val();
+                    });
+                    loading = layer.load(0, {shade: [0.4, '#000']});
+                    var $a = $("#batchExportA");
+
+                    $a.attr("href", "${base}/car/batchExport/export?dateStr=" + dates + "&arrs=" + arr.join(","));
+                    $("#batchExportA span").trigger('click');
+                    getBatchExportRes(loading);
+                } else {
+                    layer.msg("参数非法");
+                }
+            }
+        });
+        function checkIsData(dates) {
+            if(isNull(dates)) {
+                layer.alert("请填入时间范围！");
+                return false;
+            }
+            var res = true;
+            $.ajax({
+                url:'${base}/car/batchExport/export/isData',
+                dataType: "json",
+                type:"get",
+                async:false,
+                success:function (result) {
+                    if(result.status=="N") {
+                        res = false;
+                    }
+                }
+            });
+            return res;
+        }
+        function getBatchExportRes(index) {
+            if(!isNull(t)) {
+                clearTimeout(t);
+            }
+            var res;
+            $.ajax({
+                url:'${base}/car/batchExport/export/exportRes',
+                dataType: "json",
+                type:"get",
+                async:false,
+                success:function (result) {
+                    if(result.status=="Y") {
+                        res = true;
+                    }else {
+                        res = false;
+                    }
+                }
+            });
+            if(res){
+                closeLoad(index);
+            }else {
+                t = setTimeout(function () {
+                    getBatchExportRes(index);
+                }, 1000);
+            }
+        }
+    })
+</script>
+<#include "/common/bodyEnd.html">

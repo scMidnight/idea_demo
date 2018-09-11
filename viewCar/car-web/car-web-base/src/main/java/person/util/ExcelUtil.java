@@ -278,4 +278,31 @@ public class ExcelUtil {
         stream.close();
         return true;
     }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/9/5 17:01
+    * @param dataList
+     * @Description 输出excel
+     */
+    public static boolean writeWeb(OutputStream out, List<String[]> dataList) throws Exception {
+        // 创建工作文档对象
+        Workbook wb = new XSSFWorkbook();
+        // 创建sheet对象
+        Sheet sheet1 = (Sheet) wb.createSheet("sheet1");
+        // 循环写入行数据
+        for (int i = 0; i < dataList.size(); i++) {
+            Row row = (Row) sheet1.createRow(i);
+            String[] col = dataList.get(i);
+            for (int j = 0; j < col.length; j++) {
+                Cell cell = row.createCell(j);
+                cell.setCellValue(col[j]);
+            }
+        }
+        // 写入数据
+        wb.write(out);
+        // 关闭文件流
+        out.close();
+        return true;
+    }
 }
