@@ -21,14 +21,11 @@ import person.handler.FileHandler;
 import person.security.cache.CacheManager;
 import person.util.*;
 import person.util.webSocket.MyClient;
-import person.util.webSocket.WebSocket;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

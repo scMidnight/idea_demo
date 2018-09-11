@@ -7,6 +7,7 @@ import person.handler.FileDetailHandler;
 import person.service.FileDetailService;
 
 import java.util.List;
+import java.util.Map;
 
 @Service("fileDetailHandler")
 public class FileDetailHandlerImpl implements FileDetailHandler {
@@ -41,5 +42,10 @@ public class FileDetailHandlerImpl implements FileDetailHandler {
     @Override
     public void batchDel(List<TblFileDetailBean> fileDetailBeans) {
         fileDetailService.batchDel(fileDetailBeans);
+    }
+
+    @Override
+    public List<Map<String, Object>> findForJdbc(String sql, Object... objs) {
+        return fileDetailService.findForJdbc(sql, objs);
     }
 }

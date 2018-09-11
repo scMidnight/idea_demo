@@ -98,9 +98,11 @@
                 url:'${base}/car/batchExport/export/isData',
                 dataType: "json",
                 type:"get",
+                data:{dateStr:dates},
                 async:false,
                 success:function (result) {
                     if(result.status=="N") {
+                        layer.msg("无数据，或文件待整理！");
                         res = false;
                     }
                 }

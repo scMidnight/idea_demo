@@ -3,6 +3,7 @@ package person.handler;
 import person.db.bean.TblFileDetailBean;
 
 import java.util.List;
+import java.util.Map;
 
 public interface FileDetailHandler {
 
@@ -38,4 +39,6 @@ public interface FileDetailHandler {
      * @Description 批量删除
      */
     void batchDel(List<TblFileDetailBean> fileDetailBeans);
+
+    List<Map<String, Object>> findForJdbc(String sql, Object... objs);
 }
