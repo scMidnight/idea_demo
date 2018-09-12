@@ -15,4 +15,6 @@ public interface AreaHandler {
      * @Description 查询地区码表中所有数据
      */
     List<TblAreaBean> queryAll();
+
+    List<TblAreaBean> findByProperty(String propertyName, Object value);
 }

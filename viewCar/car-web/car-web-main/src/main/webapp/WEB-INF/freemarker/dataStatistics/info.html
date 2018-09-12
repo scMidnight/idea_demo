@@ -1,0 +1,129 @@
+<#include "/common/head.html">
+<#include "/common/bodyStart.html">
+<div class="layui-layout layui-layout-admin">
+    <#include "/common/headContent.html">
+    <#include "/common/left.html">
+    <div class="layui-body">
+        <div style="padding: 15px;">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>
+                    列表&emsp;
+                    <button class="layui-btn layui-btn-danger" onclick="javascript:window.location='${base}/car/dataStatistics'">返回</button>
+                </legend>
+            </fieldset>
+            <blockquote class="layui-elem-quote">
+                <div class="layui-form" lay-filter="one">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">数据时段</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="dateStr" id="dateStr" placeholder=" ~ " readonly="" class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="button" class="layui-btn layui-btn-normal" id="statistics" data-type="statistics">统计时间范围内数据</button>
+                        </div>
+                    </div>
+                </div>
+            </blockquote>
+            <table class="layui-hide" id="statisticsList" lay-filter="statisticsList"></table>
+        </div>
+    </div>
+    <#include "/common/footer.html">
+</div>
+<#include "/common/js.html">
+<script type="text/html" id="index">
+    {{d.LAY_TABLE_INDEX+1}}
+</script>
+<script type="text/html" id="carSysOperate">
+    <a class="layui-btn layui-btn-xs" lay-event="carSysOperate">对应省份/城市比例</a>
+</script>
+<script type="text/html" id="cityOperate">
+    <a class="layui-btn layui-btn-xs" lay-event="cityOperate">对应车系比例</a>
+</script>
+<script type="text/html" id="provOperate">
+    <a class="layui-btn layui-btn-xs" lay-event="provOperate">对应车系比例</a>
+</script>
+<!-- 自定义 js -->
+<script>
+    var dateVal = "${dateVal!''}";
+    if(isNull(dateVal)) {
+        dateVal = dateStr(90);
+    }
+    var type = "${type!''}";
+    var cols = "[";
+    if(!isNull(type)) {
+        if(type == "carSys") {
+            cols += "{title:'序号', type:'number', align:'center', templet: '#index'}";
+            cols += ",{field:'carSys', title:'车系', align:'center'}";
+            cols += ",{field:'tradeName', title:'厂商', align:'center'}";
+            cols += ",{field:'sum', title:'总量', align:'center', sort:true}";
+            cols += ",{field:'right', title:'操作', toolbar:'#carSysOperate', align:'center'}]";
+        }else if(type == "city") {
+            cols += "{title:'序号', type:'number', align:'center', templet: '#index'}";
+            cols += ",{field:'city', title:'城市', align:'center'}";
+            cols += ",{field:'sum', title:'总量', align:'center', sort:true}";
+            cols += ",{field:'right', title:'操作', toolbar:'#cityOperate', align:'center'}]";
+        }else if(type == "prov") {
+            cols += "{title:'序号', type:'number', align:'center', templet: '#index'}";
+            cols += ",{field:'prov', title:'省份', align:'center'}";
+            cols += ",{field:'sum', title:'总量', align:'center', sort:true}";
+            cols += ",{field:'right', title:'操作', toolbar:'#provOperate', align:'center'}]";
+        }else {
+            cols += "]";
+        }
+    }
+    layui.use(['form','laydate','element','layer','table'], function () {
+        var form = layui.form, laydate = layui.laydate, element = layui.element, layer = layui.layer, table = layui.table;
+        laydate.render({
+            elem:'#dateStr'
+            ,range: '~'
+            ,value: dateVal
+            ,trigger: 'click'
+            ,theme: 'molv'
+            ,done: function (value, date, endDate) {
+                dateVal = value;
+            }
+        });
+        var tableIns = table.render({
+            elem: '#statisticsList'
+            ,url: '${base}/car/dataStatistics/info'
+            ,method:'post'
+            ,cols:[
+                eval('(' + cols + ')')
+            ]
+            ,even: true //隔行换色
+            ,where:{
+                dateVal: dateVal
+                ,type: type
+            }
+        });
+        table.on('tool(statisticsList)', function (obj) {
+            var $data = obj.data;
+            var layEvent = obj.event;
+            if(layEvent == 'carSysOperate') {
+                window.location = "${base}/car/dataStatistics/infoChart?type=carSys&dateVal=" + dateVal + "&id=" + $data.id;
+            }
+            if(layEvent == "cityOperate") {
+                window.location = "${base}/car/dataStatistics/infoChart?type=city&dateVal=" + dateVal + "&id=" + $data.id;
+            }
+            if(layEvent == "provOperate") {
+                window.location = "${base}/car/dataStatistics/infoChart?type=prov&dateVal=" + dateVal + "&id=" + $data.id;
+            }
+        });
+        $("#statistics").on("click", function () {
+            var temp = $("input[name='dateStr']").val();
+            if(isNull(temp)) {
+                layer.msg("请选择时间范围！");
+                return;
+            }
+            tableIns.reload({
+                where:{
+                    dateVal: dateVal
+                    ,type: type
+                }
+            })
+        })
+    })
+</script>
+<#include "/common/bodyEnd.html">

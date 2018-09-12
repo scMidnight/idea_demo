@@ -9,13 +9,17 @@
     <http pattern="/error/**" security="none"/>
     <http pattern="/login" security="none"/>
     <http pattern="/loginFail" security="none"/>
+    <http pattern="/404" security="none"/>
+    <http pattern="/500" security="none"/>
+    <http pattern="/sessionOut" security="none"/>
 
-    <http name="basicAdminMgr" auto-config="false" access-denied-page="/error/noAuthority.htm" use-expressions="true"
+    <!--<http name="basicAdminMgr" auto-config="false" access-denied-page="/error/noAuthority.htm" use-expressions="true"-->
+    <http name="basicAdminMgr" auto-config="false" access-denied-page="/500" use-expressions="true"
           entry-point-ref="authenticationEntryPoint">
         <custom-filter position="FORM_LOGIN_FILTER" ref="loginFilter" />
         <custom-filter before="FILTER_SECURITY_INTERCEPTOR" ref="myFilter"/>
         <!-- 防止session固话攻击 -->
-        <session-management session-fixation-protection="none" session-authentication-error-url="/error/noAuthority.html" invalid-session-url="/error/sessionOut.html" />
+        <session-management session-fixation-protection="none" session-authentication-error-url="/500" invalid-session-url="/sessionOut" />
         <!-- session相关管理 -->
         <session-management  session-authentication-strategy-ref="sas" />
         <!-- logout -->
@@ -36,7 +40,7 @@
 
     <!-- 登出之后 -->
     <beans:bean id="logoutSuccessHandler" class="person.security.service.impl.LogoutSuccessHandler">
-        <beans:property name="redirctUrl" value="http://emanage.mofcom.gov.cn/loginGov.html" />
+        <beans:property name="redirctUrl" value="/login" />
     </beans:bean>
 
     <!-- 国际化 -->

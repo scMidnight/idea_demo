@@ -27,4 +27,26 @@ public class LoginAction {
         }
         return "/login";
     }
+
+    @RequestMapping(value = "/404", method = RequestMethod.GET)
+    public String fail1(HttpServletRequest request, ModelMap modelMap) {
+        if(request.getSession().getAttribute("SPRING_SECURITY_LAST_EXCEPTION") != null) {
+            modelMap.addAttribute("error", "true");
+        }
+        return "redirect:/error/404.html";
+    }
+    @RequestMapping(value = "/500", method = RequestMethod.GET)
+    public String fail2(HttpServletRequest request, ModelMap modelMap) {
+        if(request.getSession().getAttribute("SPRING_SECURITY_LAST_EXCEPTION") != null) {
+            modelMap.addAttribute("error", "true");
+        }
+        return "redirect:/error/500.html";
+    }
+    @RequestMapping(value = "/sessionOut", method = RequestMethod.GET)
+    public String fail3(HttpServletRequest request, ModelMap modelMap) {
+        if(request.getSession().getAttribute("SPRING_SECURITY_LAST_EXCEPTION") != null) {
+            modelMap.addAttribute("error", "true");
+        }
+        return "redirect:/error/sessionOut.html";
+    }
 }

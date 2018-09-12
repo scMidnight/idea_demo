@@ -21,4 +21,9 @@ public class AreaHandlerImpl implements AreaHandler {
     public List<TblAreaBean> queryAll() {
         return areaService.queryAll();
     }
+
+    @Override
+    public List<TblAreaBean> findByProperty(String propertyName, Object value) {
+        return areaService.findByProperty(propertyName, value);
+    }
 }

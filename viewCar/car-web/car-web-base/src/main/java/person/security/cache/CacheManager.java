@@ -130,4 +130,11 @@ public class CacheManager {
     public Map<String, String> getAreaMap() {
         return TblAreaCache.getInstance().getMapAll();
     }
+
+    public Map<String, TblCarSystemBean> getCarMapBean() {
+        return TblCarSysCache.getInstance().getMapBean();
+    }
+    public Map<String, TblCarSystemBean> getCarMapBeanName() {
+        return TblCarSysCache.getInstance().getMapBeanName();
+    }
 }

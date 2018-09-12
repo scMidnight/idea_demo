@@ -176,7 +176,7 @@ public class CarListController {
             //存储线程的返回值
             List<Future<List<TblFileDetailBean>>> results = new LinkedList<Future<List<TblFileDetailBean>>>();
             for (String s : listStr) {
-                CheckPackageThread checkPackageThread = new CheckPackageThread(fileBean.getId(), fileDetailHandler, blacks, areaBeans, carSystemBeans, s);
+                CheckPackageThread checkPackageThread = new CheckPackageThread(fileBean.getId(), fileDetailHandler, blacks, areaBeans, carSystemBeans, s, fileBean.getUploadDate());
                 Future<List<TblFileDetailBean>> result = exe.submit(checkPackageThread);
                 results.add(result);
             }

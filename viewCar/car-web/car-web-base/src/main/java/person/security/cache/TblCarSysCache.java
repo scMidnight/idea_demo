@@ -12,7 +12,9 @@ import java.util.Map;
  */
 public class TblCarSysCache {
     private static Map<String, String> cacheMap = new HashMap<String, String>();
+    private static Map<String, TblCarSystemBean> cacheMapBean = new HashMap<String, TblCarSystemBean>();
     private static List<TblCarSystemBean> cacheList = new ArrayList<TblCarSystemBean>();
+    private static Map<String, TblCarSystemBean> cacheMapBeanName = new HashMap<String, TblCarSystemBean>();
     private static TblCarSysCache cache = null;
 
     public static TblCarSysCache getInstance() {
@@ -29,6 +31,8 @@ public class TblCarSysCache {
         if(null != list && !list.isEmpty()) {
             for (TblCarSystemBean carSystemBean : list) {
                 cacheMap.put(carSystemBean.getCarSysId(), carSystemBean.getCarSysName());
+                cacheMapBean.put(carSystemBean.getCarSysId(), carSystemBean);
+                cacheMapBeanName.put(carSystemBean.getCarSysName(), carSystemBean);
                 cacheList.add(carSystemBean);
             }
         }
@@ -61,5 +65,12 @@ public class TblCarSysCache {
 
     public Map<String, String> getMapAll() {
         return cacheMap;
+    }
+
+    public Map<String, TblCarSystemBean> getMapBean() {
+        return cacheMapBean;
+    }
+    public Map<String, TblCarSystemBean> getMapBeanName() {
+        return cacheMapBeanName;
     }
 }

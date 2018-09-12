@@ -58,4 +58,9 @@ public class CarSystemHandlerImpl implements CarSystemHandler {
     public List<TblCarSystemBean> queryAll() {
         return carSystemService.queryAll();
     }
+
+    @Override
+    public List<TblCarSystemBean> findByProperty(String propertyName, Object value) {
+        return carSystemService.findByProperty(propertyName, value);
+    }
 }

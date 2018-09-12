@@ -1,22 +1,45 @@
 package person.db.bean;
 
+import java.util.List;
+
+/**
+ * Created by SunChang on 2018/9/11
+ */
 public class PieBean {
-    private String value;
-    private String name;
+    private List<PieData> pieData;
+    private String pieLegends;
+    private String selected;
 
-    public String getValue() {
-        return value;
+    public PieBean() {
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public PieBean(List<PieData> pieData, String pieLegends, String selected) {
+        this.pieData = pieData;
+        this.pieLegends = pieLegends;
+        this.selected = selected;
     }
 
-    public String getName() {
-        return name;
+    public List<PieData> getPieData() {
+        return pieData;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPieData(List<PieData> pieData) {
+        this.pieData = pieData;
+    }
+
+    public String getPieLegends() {
+        return pieLegends;
+    }
+
+    public void setPieLegends(String pieLegends) {
+        this.pieLegends = pieLegends;
+    }
+
+    public String getSelected() {
+        return selected;
+    }
+
+    public void setSelected(String selected) {
+        this.selected = selected;
     }
 }

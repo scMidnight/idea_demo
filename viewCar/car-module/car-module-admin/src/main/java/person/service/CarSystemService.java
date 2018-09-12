@@ -32,4 +32,13 @@ public interface CarSystemService extends CommonService {
      * @Description 查询所有信息
      */
     List<TblCarSystemBean> queryAll();
+
+    /**
+     * @Author SunChang
+     * @Date 2018/9/5 14:55
+     * @param propertyName
+    * @param value
+     * @Description 根据字段名称查询结果
+     */
+    List<TblCarSystemBean> findByProperty(String propertyName, Object value);
 }

@@ -5,7 +5,10 @@ import org.springframework.beans.BeansException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import person.db.bean.TblCarSystemBean;
+import person.db.bean.TblFileBean;
+import person.db.bean.TblFileDetailBean;
 import person.db.entity.TblCarSystem;
+import person.db.entity.TblFileDetail;
 import person.service.CarSystemService;
 
 import java.util.ArrayList;
@@ -39,6 +42,20 @@ public class CarSystemServiceImpl extends CommonServiceImpl implements CarSystem
             TblCarSystemBean carSystemBean = new TblCarSystemBean();
             BeanUtils.copyProperties(carSystem, carSystemBean);
             carSystemBeans.add(carSystemBean);
+        }
+        return carSystemBeans;
+    }
+
+    @Override
+    public List<TblCarSystemBean> findByProperty(String propertyName, Object value) {
+        List<TblCarSystem> carSystems = super.findByProperty(TblCarSystem.class, propertyName, value);
+        List<TblCarSystemBean> carSystemBeans = new ArrayList<TblCarSystemBean>();
+        if(null != carSystems && !carSystems.isEmpty()) {
+            for (TblCarSystem carSystem : carSystems) {
+                TblCarSystemBean carSystemBean = new TblCarSystemBean();
+                BeanUtils.copyProperties(carSystem, carSystemBean);
+                carSystemBeans.add(carSystemBean);
+            }
         }
         return carSystemBeans;
     }

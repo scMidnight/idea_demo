@@ -1,6 +1,7 @@
 package person.db.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public class TblFileDetailBean implements Serializable {
@@ -16,6 +17,7 @@ public class TblFileDetailBean implements Serializable {
     private TblFileBean fileBean;//文件表
     private String errInfo;//错误描述，用来生成错误txt文件
     private String color;
+    private Date uploadDate;//上传时间
 
     public String getId() {
         return id;
@@ -111,5 +113,13 @@ public class TblFileDetailBean implements Serializable {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public Date getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(Date uploadDate) {
+        this.uploadDate = uploadDate;
     }
 }

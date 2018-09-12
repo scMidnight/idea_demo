@@ -302,7 +302,7 @@
         $("#checkAgain").on("click", function () {
             var dateStr = $("input[name='dateStr']").val();
             if(isNull(dateStr)) {
-                layer.alert("请填入时间范围！");
+                layer.msg("请选择时间范围！");
                 return;
             }
             var type = $(this).data('type');

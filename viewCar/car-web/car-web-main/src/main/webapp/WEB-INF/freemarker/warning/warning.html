@@ -7,7 +7,7 @@
         <div style="padding: 15px;">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                 <legend>
-                    数据统计
+                    监测预警
                 </legend>
             </fieldset>
             <blockquote class="layui-elem-quote">
@@ -26,23 +26,15 @@
                 </div>
             </blockquote>
             <div class="layui-row">
-                <div id="carSys" class="layui-col-md6" style="height: 400px;"></div>
-                <div id="city" class="layui-col-md6" style="height: 400px;"></div>
-            </div>
-            <div class="layui-row">
-                <div class="layui-col-md6" id="carSysInfo" style="text-align: center;"><button class="layui-btn layui-btn-warm" style="z-index: 1">查看详情</button></div>
-                <div class="layui-col-md6" id="cityInfo" style="text-align: center;"><button class="layui-btn layui-btn-warm" style="z-index: 1">查看详情</button></div>
+                <div id="bigLib" class="layui-col-md4" style="height: 400px;"></div>
+                <div id="bigLibCount" class="layui-col-md4" style="height: 400px;"></div>
+                <div id="carSys" class="layui-col-md4" style="height: 400px;"></div>
             </div>
             <br />
             <br />
-            <br />
             <div class="layui-row">
-                <div id="prov" class="layui-col-md6" style="height: 400px;">
-                </div>
-                <div class="layui-col-md6" style="height: 400px;"></div>
-            </div>
-            <div class="layui-row">
-                <div class="layui-col-md6" id="provInfo" style="text-align: center;"><button class="layui-btn layui-btn-warm" style="z-index: 1">查看详情</button></div>
+                <div id="phone" class="layui-col-md4" style="height: 400px;"></div>
+                <div id="black" class="layui-col-md4" style="height: 400px;"></div>
             </div>
         </div>
     </div>
@@ -72,24 +64,14 @@
             }
             var type = $(this).data('type');
             if(!isNull(type) && type == 'statistics') {
+                bigLibShow();
+                bigLibCountShow();
                 carSysShow();
-                cityShow();
-                provShow();
+                phoneShow();
+                blackShow();
             }
         })
-    });
-    function skipUrl(str) {
-        window.location = "${base}/car/dataStatistics/info?choice=" + str + "&dateVal=" + dateVal;
-    }
-    $("#carSysInfo").on("click", function () {
-        skipUrl("carSys");
-    });
-    $("#cityInfo").on("click", function () {
-        skipUrl("city");
-    });
-    $("#provInfo").on("click", function () {
-        skipUrl("prov");
     })
 </script>
-<script src="${base}/resources/js/chartsShow.js"></script>
+<script src="${base}/resources/js/warning.js"></script>
 <#include "/common/bodyEnd.html">

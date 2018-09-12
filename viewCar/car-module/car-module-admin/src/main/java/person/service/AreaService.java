@@ -16,4 +16,6 @@ public interface AreaService extends CommonService {
      * @Description 查询地区码表中所有数据
      */
     List<TblAreaBean> queryAll();
+
+    List<TblAreaBean> findByProperty(String propertyName, Object value);
 }

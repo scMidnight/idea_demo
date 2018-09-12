@@ -11,7 +11,7 @@
  Target Server Version : 50139
  File Encoding         : 65001
 
- Date: 11/09/2018 10:13:22
+ Date: 12/09/2018 15:43:16
 */
 
 SET NAMES utf8mb4;
@@ -26,7 +26,10 @@ CREATE TABLE `tbl_area`  (
   `area_code` varchar(35) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '城市编码',
   `city_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '城市名称',
   `prov_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '省',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `tbl_area_area_code_index`(`area_code`) USING BTREE,
+  INDEX `tbl_area_city_name_index`(`city_name`) USING BTREE,
+  INDEX `tbl_area_prov_name_index`(`prov_name`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
@@ -1585,11 +1588,6 @@ CREATE TABLE `tbl_file`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
--- Records of tbl_file
--- ----------------------------
-INSERT INTO `tbl_file` VALUES ('CDDA870AD0ABCC2B9F8708E12D5FF933', '9891420180906142013924', '0905数据.zip', 'D:/car/uploader/bak/9891420180906142013924', '2018-09-06 14:20:13', '0');
-
--- ----------------------------
 -- Table structure for tbl_file_detail
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_file_detail`;
@@ -1604,6 +1602,7 @@ CREATE TABLE `tbl_file_detail`  (
   `car_sys` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '车系',
   `status` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '状态：0 正常，1 大库重复，2 任务重复，3 车系重复，4 黑名单命中，5 号段错误，6 ID转失败',
   `err_info` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '错误描述，用来生成错误txt文件',
+  `UPLOAD_DATE` datetime NULL DEFAULT NULL COMMENT '上传时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `file_detail_file_id_index`(`file_id`) USING BTREE,
   INDEX `file_detail_file_name_index`(`file_name`) USING BTREE,
@@ -1611,7 +1610,8 @@ CREATE TABLE `tbl_file_detail`  (
   INDEX `file_detail_phone_index`(`phone`) USING BTREE,
   INDEX `file_detail_area_index`(`area`) USING BTREE,
   INDEX `file_detail_car_sys_index`(`car_sys`) USING BTREE,
-  INDEX `file_detail_status_index`(`status`) USING BTREE
+  INDEX `file_detail_status_index`(`status`) USING BTREE,
+  INDEX `file_detail_UPLOAD_DATE_index`(`UPLOAD_DATE`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
@@ -1635,7 +1635,7 @@ INSERT INTO `tbl_function` VALUES ('F001001', '上传数据', '上传数据', '2
 INSERT INTO `tbl_function` VALUES ('F001002', '数据列表', '数据列表', '2', '/car/list');
 INSERT INTO `tbl_function` VALUES ('F002', '数据统计', '数据统计', '1', '#');
 INSERT INTO `tbl_function` VALUES ('F002001', '数据统计', '数据统计', '2', '/car/dataStatistics');
-INSERT INTO `tbl_function` VALUES ('F003', '检测预警', '检测预警', '1', '#');
+INSERT INTO `tbl_function` VALUES ('F003', '监测预警', '监测预警', '1', '/car/warning');
 INSERT INTO `tbl_function` VALUES ('F004', '批量导出', '批量导出', '1', '/car/batchExport');
 INSERT INTO `tbl_function` VALUES ('F005', '黑名单管理', '黑名单管理', '1', '/blackList');
 INSERT INTO `tbl_function` VALUES ('F006', '车系管理', '车系管理', '1', '#');

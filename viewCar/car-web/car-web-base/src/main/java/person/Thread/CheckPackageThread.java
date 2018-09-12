@@ -11,6 +11,7 @@ import person.util.MobileFromUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -25,14 +26,16 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
     private List<TblAreaBean> areaBeans;
     private List<TblCarSystemBean> carSystemBeans;
     private String excelPath;
+    private Date uploadDate;
 
-    public CheckPackageThread(String fileId, FileDetailHandler fileDetailHandler, List<String> blacks, List<TblAreaBean> areaBeans, List<TblCarSystemBean> carSystemBeans, String excelPath) {
+    public CheckPackageThread(String fileId, FileDetailHandler fileDetailHandler, List<String> blacks, List<TblAreaBean> areaBeans, List<TblCarSystemBean> carSystemBeans, String excelPath, Date uploadDate) {
         this.fileId = fileId;
         this.fileDetailHandler = fileDetailHandler;
         this.blacks = blacks;
         this.areaBeans = areaBeans;
         this.carSystemBeans = carSystemBeans;
         this.excelPath = excelPath;
+        this.uploadDate = uploadDate;
     }
 
     @Override
@@ -46,6 +49,7 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                     TblFileDetailBean fileDetailBean = CarUtil.getFileDetailBean(vals);
                     fileDetailBean.setFileName(list.getLast());
                     fileDetailBean.setFileId(fileId);
+                    fileDetailBean.setUploadDate(uploadDate);
                     if (StringUtil.isBlank(vals[0])
                             || StringUtil.isBlank(vals[1])
                             || StringUtil.isBlank(vals[2])
