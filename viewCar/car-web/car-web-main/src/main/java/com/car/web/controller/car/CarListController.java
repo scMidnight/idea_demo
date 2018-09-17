@@ -110,7 +110,7 @@ public class CarListController {
         String where = "";
         page.setPageNo(Integer.parseInt(pageNo));
         page.setPageSize(Integer.parseInt(limit));
-        Page<TblFileBean> pageResult = fileHandler.queryByPageFilter(page,hql + where, valueMap);
+        Page<TblFileBean> pageResult = fileHandler.queryByPageFilter(page,hql + where + " order by t.uploadDate desc", valueMap);
         List<CarListBean> carListBeans = new ArrayList<CarListBean>();
         if(null != pageResult.getResult() && !pageResult.getResult().isEmpty()) {
             for (TblFileBean fileBean : pageResult.getResult()) {
@@ -589,8 +589,8 @@ public class CarListController {
         Constants.pubMap.put(UserUtil.getUserId() + "batchCheckAgain", true);
         boolean isContinue = (boolean) Constants.pubMap.get(UserUtil.getUserId() + "batchCheckAgain");
         MyClient client = new MyClient();
-        String uri = "ws://localhost:8080/websocket/houtai";
-        //String uri = "ws://101.200.63.2:8081/websocket/houtai";
+        //String uri = "ws://localhost:8080/websocket/houtai";
+        String uri = "ws://101.200.63.2:8081/websocket/houtai";
         client.start(uri);
         if(null != fileBeans && fileBeans.size() > 0) {
             for (int i = 0; i < fileBeans.size(); i++) {

@@ -42,12 +42,16 @@ public class CarUtil {
      * @Description 通过号码归属地与提供的城市名比对，得出城市ID
      */
     public static String checkCityId(List<TblAreaBean> areaBeans, String cityName, String mobileFrom) {
-        String[] mobileFroms = mobileFrom.split("&nbsp;");
         String mobile = "";
-        if(mobileFroms.length > 1) {
-            mobile = mobileFroms[mobileFroms.length - 1];
+        if(mobileFrom == null || mobileFrom.equals("&nbsp;")) {
+            mobile = cityName;
         }else {
-            mobile = mobileFroms[0];
+            String[] mobileFroms = mobileFrom.split("&nbsp;");
+            if (mobileFroms.length > 1) {
+                mobile = mobileFroms[mobileFroms.length - 1];
+            } else {
+                mobile = mobileFroms[0];
+            }
         }
         String id = "";
         for (TblAreaBean areaBean : areaBeans) {
