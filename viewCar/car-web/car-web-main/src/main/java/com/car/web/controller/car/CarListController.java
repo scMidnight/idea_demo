@@ -18,6 +18,7 @@ import person.db.bean.*;
 import person.db.entity.Page;
 import person.handler.FileDetailHandler;
 import person.handler.FileHandler;
+import person.handler.UserHandler;
 import person.security.cache.CacheManager;
 import person.util.*;
 import person.util.webSocket.MyClient;
@@ -39,6 +40,9 @@ public class CarListController {
 
     @Autowired
     FileDetailHandler fileDetailHandler;
+
+    @Autowired
+    UserHandler userHandler;
 
     /**
      * @Author SunChang
@@ -176,7 +180,7 @@ public class CarListController {
             //存储线程的返回值
             List<Future<List<TblFileDetailBean>>> results = new LinkedList<Future<List<TblFileDetailBean>>>();
             for (String s : listStr) {
-                CheckPackageThread checkPackageThread = new CheckPackageThread(fileBean.getId(), fileDetailHandler, blacks, areaBeans, carSystemBeans, s, fileBean.getUploadDate());
+                CheckPackageThread checkPackageThread = new CheckPackageThread(fileBean.getId(), fileDetailHandler, blacks, areaBeans, carSystemBeans, s, fileBean.getUploadDate(), userHandler);
                 Future<List<TblFileDetailBean>> result = exe.submit(checkPackageThread);
                 results.add(result);
             }
@@ -395,12 +399,16 @@ public class CarListController {
             }
         }
         String[] ps = p.split("\\\\");
-        ps[ps.length - 1] = "ID" + ps[ps.length - 1].substring(2, ps[ps.length - 1].length());
-        String ret = "";
-        for (int i = 0; i < ps.length; i++) {
-            ret += ps[i] + File.separatorChar;
+        if(null != ps && ps.length > 1) {
+            String ret = "";
+            ps[ps.length - 1] = "ID" + ps[ps.length - 1].substring(2, ps[ps.length - 1].length());
+            for (int i = 0; i < ps.length; i++) {
+                ret += ps[i] + File.separatorChar;
+            }
+            return ret;
+        }else {
+            return path;
         }
-        return ret;
     }
 
     /**
@@ -490,7 +498,7 @@ public class CarListController {
                         if(arrs.contains("history")) {
                             List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("phone", fileDetailBean.getPhone());
                             for (TblFileDetailBean temp : temps) {
-                                if(!temp.getId().equals(fileDetailBean.getId())) {
+                                if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
                                     temp.setStatus("1");
                                     temp.setErrInfo("历史数据");
                                     temp.setColor("qianlan");
@@ -515,7 +523,7 @@ public class CarListController {
                         if(arrs.contains("history")) {
                             List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("carSys", fileDetailBean.getCarSys());
                             for (TblFileDetailBean temp : temps) {
-                                if(!temp.getId().equals(fileDetailBean.getId()) && fileDetailBean.getPhone().equals(temp.getPhone())) {
+                                if(!temp.getFileId().equals(fileDetailBean.getFileId()) && fileDetailBean.getPhone().equals(temp.getPhone())) {
                                     temp.setStatus("3");
                                     temp.setErrInfo("历史数据");
                                     temp.setColor("qianhuang");
@@ -582,6 +590,7 @@ public class CarListController {
         boolean isContinue = (boolean) Constants.pubMap.get(UserUtil.getUserId() + "batchCheckAgain");
         MyClient client = new MyClient();
         String uri = "ws://localhost:8080/websocket/houtai";
+        //String uri = "ws://101.200.63.2:8081/websocket/houtai";
         client.start(uri);
         if(null != fileBeans && fileBeans.size() > 0) {
             for (int i = 0; i < fileBeans.size(); i++) {

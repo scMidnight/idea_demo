@@ -182,6 +182,10 @@ public class ZipUtil {
      */
     public static void unZip(String zipPath, String targetPath) {
         try {
+            File targetFile = new File(targetPath);
+            if(!targetFile.exists()) {
+                targetFile.mkdirs();
+            }
             BufferedOutputStream dest = null;
             BufferedInputStream is = null;
             ZipEntry entry;
@@ -197,6 +201,9 @@ public class ZipUtil {
                         file.mkdirs();
                     }
                 }else {
+                    if(entry.getName().indexOf("/") == -1) {
+                        outPath = (targetPath + entry.getName()).replaceAll("\\*", "/");
+                    }
                     if (entry.getName().lastIndexOf(".xls") != -1 || entry.getName().lastIndexOf(".xlsx") != -1) {
                         int count;
                         byte data[] = new byte[2048];

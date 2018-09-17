@@ -206,6 +206,9 @@ public class UpOrDownloadUtil {
                 file.transferTo(new File(filePath));//springMVC自带上传文件方法，非加密。
 				//saveFile(filePath, file.getBytes());//自定义保存不加密文件方法
                 //============================================================
+                System.out.println("=============");
+                System.out.println("=============");
+                System.out.println("=============");
                 fileBean.setFileName(fileName);
                 fileBean.setFileNameBak(file.getOriginalFilename());
                 fileBean.setFilePath(filePath);

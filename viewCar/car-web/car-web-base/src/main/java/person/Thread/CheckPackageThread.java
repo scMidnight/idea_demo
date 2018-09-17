@@ -4,10 +4,13 @@ import jodd.util.StringUtil;
 import person.db.bean.TblAreaBean;
 import person.db.bean.TblCarSystemBean;
 import person.db.bean.TblFileDetailBean;
+import person.db.bean.TblUserBean;
 import person.handler.FileDetailHandler;
+import person.handler.UserHandler;
 import person.util.CarUtil;
 import person.util.ExcelUtil;
 import person.util.MobileFromUtil;
+import person.util.UserUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,8 +30,9 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
     private List<TblCarSystemBean> carSystemBeans;
     private String excelPath;
     private Date uploadDate;
+    private UserHandler userHandler;
 
-    public CheckPackageThread(String fileId, FileDetailHandler fileDetailHandler, List<String> blacks, List<TblAreaBean> areaBeans, List<TblCarSystemBean> carSystemBeans, String excelPath, Date uploadDate) {
+    public CheckPackageThread(String fileId, FileDetailHandler fileDetailHandler, List<String> blacks, List<TblAreaBean> areaBeans, List<TblCarSystemBean> carSystemBeans, String excelPath, Date uploadDate, UserHandler userHandler) {
         this.fileId = fileId;
         this.fileDetailHandler = fileDetailHandler;
         this.blacks = blacks;
@@ -36,6 +40,7 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
         this.carSystemBeans = carSystemBeans;
         this.excelPath = excelPath;
         this.uploadDate = uploadDate;
+        this.userHandler = userHandler;
     }
 
     @Override
@@ -71,10 +76,13 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                         continue;
                     }
                     if(CarUtil.isBlack(blacks, fileDetailBean.getPhone())) {
-                        fileDetailBean.setStatus("4");//黑名单命中
-                        fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：黑名单命中");
-                        fileDetailBeans1.add(fileDetailBean);
-                        continue;
+                        TblUserBean userBean = userHandler.loadByUserId(UserUtil.getUserId());
+                        if(userBean.getIsBlack().equals("1")) {
+                            fileDetailBean.setStatus("4");//黑名单命中
+                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：黑名单命中");
+                            fileDetailBeans1.add(fileDetailBean);
+                            continue;
+                        }
                     }
                     String carSysId = CarUtil.getCarSysId(carSystemBeans, vals[3]);
                     fileDetailBean.setCarSys(carSysId);
