@@ -50,9 +50,12 @@ public class FileUtil {
     public static void delFile(String path) {
         File file = new File(path);
         if(file.exists() && file.isFile()) {
+            System.gc();
             if(file.delete()) {
                 System.out.println("删除文件成功！");
             }else {
+                System.gc();
+                file.delete();
                 System.err.println("删除失败！");
             }
         }

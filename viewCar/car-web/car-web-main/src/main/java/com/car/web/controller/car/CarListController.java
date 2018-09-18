@@ -196,35 +196,43 @@ public class CarListController {
                 Thread.sleep(500);
             }
             for (Future<List<TblFileDetailBean>> result : results) {
-                fileDetailBeans.addAll(result.get());
+                if(result.get() != null && result.get().size() > 0) {
+                    fileDetailBeans.addAll(result.get());
+                }
             }
-            for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
-                for (TblFileDetailBean detailBean : fileDetailBeans) {
-                    if(fileDetailBean.getId() != detailBean.getId()) {
-                        if(fileDetailBean.getCarSys().equals(detailBean.getCarSys()) &&
-                                fileDetailBean.getPhone().equals(detailBean.getPhone())) {//车第重复
-                            fileDetailBean.setStatus("3");
-                            fileDetailBean.setErrInfo(fileDetailBean.getErrInfo() + "错误，状态：车系重复");
-                            break;
-                        }
-                        if (fileDetailBean.getTaskId().equals(detailBean.getTaskId())) {
-                            if (fileDetailBean.getPhone().equals(detailBean.getPhone())) {
-                                fileDetailBean.setStatus("2");
-                                fileDetailBean.setErrInfo(fileDetailBean.getErrInfo() + "错误，状态：任务重复");
+            if(fileDetailBeans!= null && !fileDetailBeans.isEmpty()) {
+                for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                    for (TblFileDetailBean detailBean : fileDetailBeans) {
+                        if (fileDetailBean.getId() != detailBean.getId()) {
+                            if (fileDetailBean.getCarSys().equals(detailBean.getCarSys()) &&
+                                    fileDetailBean.getPhone().equals(detailBean.getPhone())) {//车第重复
+                                fileDetailBean.setStatus("3");
+                                fileDetailBean.setErrInfo(fileDetailBean.getErrInfo() + "错误，状态：车系重复");
+                                break;
+                            }
+                            if (fileDetailBean.getTaskId().equals(detailBean.getTaskId())) {
+                                if (fileDetailBean.getPhone().equals(detailBean.getPhone())) {
+                                    fileDetailBean.setStatus("2");
+                                    fileDetailBean.setErrInfo(fileDetailBean.getErrInfo() + "错误，状态：任务重复");
+                                    break;
+                                }
+                            }
+                            if (fileDetailBean.getPhone().equals(detailBean.getPhone())) {//大库重复
+                                fileDetailBean.setStatus("1");
+                                fileDetailBean.setErrInfo(fileDetailBean.getErrInfo() + "错误，状态：大库重复");
                                 break;
                             }
                         }
-                        if(fileDetailBean.getPhone().equals(detailBean.getPhone())) {//大库重复
-                            fileDetailBean.setStatus("1");
-                            fileDetailBean.setErrInfo(fileDetailBean.getErrInfo() + "错误，状态：大库重复");
-                            break;
-                        }
                     }
                 }
+                fileDetailHandler.batchSaveFileDetailBeansAndUpdateFileStatus(fileDetailBeans);
+                FileUtils.deleteDirectory(new File(fileBean.getFilePath() + "a" + File.separatorChar));
+                return JsonUtil.toString("Y", "操作成功！");
+            }else {
+                FileUtils.deleteDirectory(new File(fileBean.getFilePath() + "a" + File.separatorChar));
+                return JsonUtil.toString("N", "未读取到相关数据！");
             }
-            fileDetailHandler.batchSaveFileDetailBeansAndUpdateFileStatus(fileDetailBeans);
-            FileUtils.deleteDirectory(new File(fileBean.getFilePath() + "a" + File.separatorChar));
-            return JsonUtil.toString("Y", "操作成功！");
+
         } catch (Exception e) {
             return JsonUtil.toString("N", "失败异常：" + e.getMessage());
         }

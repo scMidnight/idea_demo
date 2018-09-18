@@ -53,11 +53,14 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
             for (int i = 0; i < list.size()-1; i++) {
                 if(i != 0) {
                     String[] vals = list.get(i).split("\t");
+                    if(vals.length != 7) {
+                        continue;
+                    }
                     TblFileDetailBean fileDetailBean = CarUtil.getFileDetailBean(vals);
                     fileDetailBean.setFileName(list.getLast());
                     fileDetailBean.setFileId(fileId);
                     fileDetailBean.setUploadDate(uploadDate);
-                    if (vals.length < 6 || vals.length > 6 || StringUtil.isBlank(vals[0])
+                    if (StringUtil.isBlank(vals[0])
                             || StringUtil.isBlank(vals[1])
                             || StringUtil.isBlank(vals[2])
                             || StringUtil.isBlank(vals[3])

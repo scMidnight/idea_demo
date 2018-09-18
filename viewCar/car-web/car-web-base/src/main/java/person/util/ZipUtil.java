@@ -30,10 +30,10 @@ public class ZipUtil {
         /**
          * 压缩文件
          */
-        File file = new File("D:\\car\\uploader\\bak\\111");
-        File[] files = file.listFiles();
-        FileOutputStream fos1 = new FileOutputStream(new File("D:\\car\\uploader\\bak\\111.zip"));
-        zipFiles(fos1, "", files);
+        //File file = new File("D:\\car\\uploader\\bak\\111");
+        //File[] files = file.listFiles();
+        //FileOutputStream fos1 = new FileOutputStream(new File("D:\\car\\uploader\\bak\\111.zip"));
+        //zipFiles(fos1, "", files);
     }
 
     /**
@@ -205,6 +205,12 @@ public class ZipUtil {
                         outPath = (targetPath + entry.getName()).replaceAll("\\*", "/");
                     }
                     if (entry.getName().lastIndexOf(".xls") != -1 || entry.getName().lastIndexOf(".xlsx") != -1) {
+                        if(outPath.lastIndexOf("/") != -1) {
+                            File fileTem = new File(outPath.substring(0, outPath.lastIndexOf("/") + 1));
+                            if(!fileTem.exists()) {
+                                fileTem.mkdirs();
+                            }
+                        }
                         int count;
                         byte data[] = new byte[2048];
                         FileOutputStream fos = new FileOutputStream(outPath);
