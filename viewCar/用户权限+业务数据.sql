@@ -1,36 +1,31 @@
 /*
- Navicat Premium Data Transfer
+Navicat MySQL Data Transfer
 
- Source Server         : MySql Local
- Source Server Type    : MySQL
- Source Server Version : 50139
- Source Host           : localhost:3306
- Source Schema         : learn
+Source Server         : mysql
+Source Server Version : 50717
+Source Host           : localhost:3306
+Source Database       : learn
 
- Target Server Type    : MySQL
- Target Server Version : 50139
- File Encoding         : 65001
+Target Server Type    : MYSQL
+Target Server Version : 50717
+File Encoding         : 65001
 
- Date: 12/09/2018 15:43:16
+Date: 2018-09-18 13:07:31
 */
 
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
+SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
 -- Table structure for tbl_area
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_area`;
-CREATE TABLE `tbl_area`  (
-  `id` varchar(35) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '主键',
-  `area_code` varchar(35) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '城市编码',
-  `city_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '城市名称',
-  `prov_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '省',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `tbl_area_area_code_index`(`area_code`) USING BTREE,
-  INDEX `tbl_area_city_name_index`(`city_name`) USING BTREE,
-  INDEX `tbl_area_prov_name_index`(`prov_name`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+CREATE TABLE `tbl_area` (
+  `id` varchar(35) NOT NULL COMMENT '主键',
+  `area_code` varchar(35) DEFAULT NULL COMMENT '城市编码',
+  `city_name` varchar(100) DEFAULT NULL COMMENT '城市名称',
+  `prov_name` varchar(100) DEFAULT NULL COMMENT '省',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Records of tbl_area
@@ -436,17 +431,17 @@ INSERT INTO `tbl_area` VALUES ('659900', '659900', '其他地区', '新疆维吾
 -- Table structure for tbl_car_system
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_car_system`;
-CREATE TABLE `tbl_car_system`  (
-  `id` varchar(35) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '主键',
-  `brand_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '品牌名称',
-  `brand_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '品牌id',
-  `trade_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '厂商名称',
-  `trade_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '厂商ID',
-  `car_sys_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '车系名称',
-  `car_sys_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '车系ID',
-  `is_del` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0' COMMENT '是否删除0否1是',
+CREATE TABLE `tbl_car_system` (
+  `id` varchar(35) NOT NULL COMMENT '主键',
+  `brand_name` varchar(255) DEFAULT NULL COMMENT '品牌名称',
+  `brand_id` varchar(255) DEFAULT NULL COMMENT '品牌id',
+  `trade_name` varchar(255) DEFAULT NULL COMMENT '厂商名称',
+  `trade_id` varchar(255) DEFAULT NULL COMMENT '厂商ID',
+  `car_sys_name` varchar(255) DEFAULT NULL COMMENT '车系名称',
+  `car_sys_id` varchar(255) DEFAULT NULL COMMENT '车系ID',
+  `is_del` varchar(1) NOT NULL DEFAULT '0' COMMENT '是否删除0否1是',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Records of tbl_car_system
@@ -1577,55 +1572,71 @@ INSERT INTO `tbl_car_system` VALUES ('DA2F8E83963B2C951CC45C9DA14A26F4', '1', '1
 -- Table structure for tbl_file
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_file`;
-CREATE TABLE `tbl_file`  (
-  `id` varchar(35) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '主键',
-  `file_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '附件名称',
-  `FILE_NAME_BAK` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '附件原名称',
-  `FILE_PATH` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '附件路径',
-  `UPLOAD_DATE` datetime NULL DEFAULT NULL COMMENT '上传时间',
-  `STATUS` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '0' COMMENT '状态：状态：0 待整理，1 已整理',
+CREATE TABLE `tbl_file` (
+  `id` varchar(35) NOT NULL COMMENT '主键',
+  `file_name` varchar(255) DEFAULT NULL COMMENT '附件名称',
+  `FILE_NAME_BAK` varchar(255) DEFAULT NULL COMMENT '附件原名称',
+  `FILE_PATH` varchar(255) DEFAULT NULL COMMENT '附件路径',
+  `UPLOAD_DATE` datetime DEFAULT NULL COMMENT '上传时间',
+  `STATUS` varchar(1) DEFAULT '0' COMMENT '状态：状态：0 待整理，1 已整理',
+  `file_count` varchar(255) DEFAULT '0' COMMENT '文件总数',
+  `sum_count` varchar(255) DEFAULT '0' COMMENT '合计条数',
+  `problem_count` varchar(255) DEFAULT '0' COMMENT '问题条数',
+  `task_repeat_count` varchar(255) DEFAULT '0' COMMENT '任务重复条数',
+  `carsys_repeat_count` varchar(255) DEFAULT '0' COMMENT '车系重复条数',
+  `biglib_repeat_count` varchar(255) DEFAULT '0' COMMENT '大库重复条数',
+  `black_hit_count` varchar(255) DEFAULT '0' COMMENT '黑名单命中条数',
+  `number_err_count` varchar(255) DEFAULT '0' COMMENT '号段错误条数',
+  `id_failed_count` varchar(255) DEFAULT '0' COMMENT 'id转失败条数',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+
+-- ----------------------------
+-- Records of tbl_file
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for tbl_file_detail
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_file_detail`;
-CREATE TABLE `tbl_file_detail`  (
-  `id` varchar(35) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '主键',
-  `file_id` varchar(35) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '文件表ID',
-  `file_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '文件名',
-  `task_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '任务ID',
-  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '姓名',
-  `phone` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '手机号',
-  `area` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '地区',
-  `car_sys` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '车系',
-  `status` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '状态：0 正常，1 大库重复，2 任务重复，3 车系重复，4 黑名单命中，5 号段错误，6 ID转失败',
-  `err_info` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '错误描述，用来生成错误txt文件',
-  `UPLOAD_DATE` datetime NULL DEFAULT NULL COMMENT '上传时间',
+CREATE TABLE `tbl_file_detail` (
+  `id` varchar(35) NOT NULL COMMENT '主键',
+  `file_id` varchar(35) NOT NULL COMMENT '文件表ID',
+  `file_name` varchar(255) DEFAULT NULL COMMENT '文件名',
+  `task_id` varchar(255) DEFAULT NULL COMMENT '任务ID',
+  `name` varchar(255) DEFAULT NULL COMMENT '姓名',
+  `phone` varchar(255) DEFAULT NULL COMMENT '手机号',
+  `area` varchar(255) DEFAULT NULL COMMENT '地区',
+  `car_sys` varchar(255) DEFAULT NULL COMMENT '车系',
+  `status` varchar(255) DEFAULT NULL COMMENT '状态：0 正常，1 大库重复，2 任务重复，3 车系重复，4 黑名单命中，5 号段错误，6 ID转失败',
+  `err_info` varchar(255) DEFAULT NULL COMMENT '错误描述，用来生成错误txt文件',
+  `UPLOAD_DATE` datetime DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `file_detail_file_id_index`(`file_id`) USING BTREE,
-  INDEX `file_detail_file_name_index`(`file_name`) USING BTREE,
-  INDEX `file_detail_task_id_index`(`task_id`) USING BTREE,
-  INDEX `file_detail_phone_index`(`phone`) USING BTREE,
-  INDEX `file_detail_area_index`(`area`) USING BTREE,
-  INDEX `file_detail_car_sys_index`(`car_sys`) USING BTREE,
-  INDEX `file_detail_status_index`(`status`) USING BTREE,
-  INDEX `file_detail_UPLOAD_DATE_index`(`UPLOAD_DATE`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+  KEY `file_detail_file_id_index` (`file_id`) USING BTREE,
+  KEY `file_detail_file_name_index` (`file_name`) USING BTREE,
+  KEY `file_detail_task_id_index` (`task_id`) USING BTREE,
+  KEY `file_detail_phone_index` (`phone`) USING BTREE,
+  KEY `file_detail_area_index` (`area`) USING BTREE,
+  KEY `file_detail_car_sys_index` (`car_sys`) USING BTREE,
+  KEY `file_detail_status_index` (`status`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+
+-- ----------------------------
+-- Records of tbl_file_detail
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for tbl_function
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_function`;
-CREATE TABLE `tbl_function`  (
-  `id` varchar(35) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `function_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `function_description` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `function_level` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `function_url` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+CREATE TABLE `tbl_function` (
+  `id` varchar(35) NOT NULL,
+  `function_name` varchar(50) NOT NULL DEFAULT '',
+  `function_description` varchar(50) NOT NULL DEFAULT '',
+  `function_level` varchar(1) NOT NULL DEFAULT '',
+  `function_url` varchar(500) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Records of tbl_function
@@ -1635,7 +1646,7 @@ INSERT INTO `tbl_function` VALUES ('F001001', '上传数据', '上传数据', '2
 INSERT INTO `tbl_function` VALUES ('F001002', '数据列表', '数据列表', '2', '/car/list');
 INSERT INTO `tbl_function` VALUES ('F002', '数据统计', '数据统计', '1', '#');
 INSERT INTO `tbl_function` VALUES ('F002001', '数据统计', '数据统计', '2', '/car/dataStatistics');
-INSERT INTO `tbl_function` VALUES ('F003', '监测预警', '监测预警', '1', '/car/warning');
+INSERT INTO `tbl_function` VALUES ('F003', '检测预警', '检测预警', '1', '#');
 INSERT INTO `tbl_function` VALUES ('F004', '批量导出', '批量导出', '1', '/car/batchExport');
 INSERT INTO `tbl_function` VALUES ('F005', '黑名单管理', '黑名单管理', '1', '/blackList');
 INSERT INTO `tbl_function` VALUES ('F006', '车系管理', '车系管理', '1', '#');
@@ -1645,12 +1656,12 @@ INSERT INTO `tbl_function` VALUES ('F006001', '车系列表', '车系列表', '2
 -- Table structure for tbl_role
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_role`;
-CREATE TABLE `tbl_role`  (
-  `id` varchar(35) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `role_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `role_description` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+CREATE TABLE `tbl_role` (
+  `id` varchar(35) NOT NULL,
+  `role_name` varchar(50) NOT NULL DEFAULT '',
+  `role_description` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Records of tbl_role
@@ -1661,10 +1672,10 @@ INSERT INTO `tbl_role` VALUES ('1', '管理员', '管理员');
 -- Table structure for tbl_rolefunction
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_rolefunction`;
-CREATE TABLE `tbl_rolefunction`  (
-  `role_id` varchar(35) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `function_id` varchar(35) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+CREATE TABLE `tbl_rolefunction` (
+  `role_id` varchar(35) NOT NULL,
+  `function_id` varchar(35) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Records of tbl_rolefunction
@@ -1684,15 +1695,15 @@ INSERT INTO `tbl_rolefunction` VALUES ('1', 'F006001');
 -- Table structure for tbl_user
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_user`;
-CREATE TABLE `tbl_user`  (
-  `id` varchar(35) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `usercode` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `password` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '',
-  `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `is_black` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '1' COMMENT '是否开启黑名单1是0否',
+CREATE TABLE `tbl_user` (
+  `id` varchar(35) NOT NULL,
+  `usercode` varchar(50) NOT NULL DEFAULT '',
+  `password` varchar(50) NOT NULL DEFAULT '',
+  `email` varchar(50) DEFAULT '',
+  `username` varchar(50) DEFAULT NULL,
+  `is_black` varchar(1) NOT NULL DEFAULT '1' COMMENT '是否开启黑名单1是0否',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Records of tbl_user
@@ -1703,14 +1714,12 @@ INSERT INTO `tbl_user` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3',
 -- Table structure for tbl_userrole
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_userrole`;
-CREATE TABLE `tbl_userrole`  (
-  `user_id` varchar(35) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `role_id` varchar(35) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+CREATE TABLE `tbl_userrole` (
+  `user_id` varchar(35) NOT NULL,
+  `role_id` varchar(35) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Records of tbl_userrole
 -- ----------------------------
 INSERT INTO `tbl_userrole` VALUES ('1', '1');
-
-SET FOREIGN_KEY_CHECKS = 1;
