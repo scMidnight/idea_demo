@@ -73,9 +73,9 @@ public class WarningController {
                     "UNION ALL " +
                     "select '正常数据' name, count(1) number from tbl_file_detail t where t.`status` = '0' and date_format(t.UPLOAD_DATE, '%Y-%m-%d') BETWEEN ? and ?", dates[0], dates[1], dates[0], dates[1]);
         }else if(type.equals("bigLibCount")) {
-            maps = fileDetailHandler.findForJdbc("select concat(CAST(count(1) as char),'次') name, count(1) number from tbl_file_detail t where t.status = '1' and date_format(t.UPLOAD_DATE, '%Y-%m-%d') BETWEEN ? and ? GROUP BY t.phone HAVING (number <= 7)" +
+            maps = fileDetailHandler.findForJdbc("select t.name name,  sum(t.number) number from (select concat(CAST(count(1) as char),'次') name, count(1) number from tbl_file_detail t where t.status = '1' and date_format(t.UPLOAD_DATE, '%Y-%m-%d') BETWEEN ? and ? GROUP BY t.phone HAVING (number <= 7)) t group by t.name" +
                     " union all " +
-                    "select '7次以上' name, sum(number) number from(" +
+                    "select '7次以上' name, ifnull(sum(number), 0) number from(" +
                     "select count(1) number from tbl_file_detail t where t.status = '1' and date_format(t.UPLOAD_DATE, '%Y-%m-%d') BETWEEN ? and ? GROUP BY t.phone HAVING(number > 7) ) t", dates[0], dates[1], dates[0], dates[1]);
         }else if(type.equals("carSys")) {
             maps = fileDetailHandler.findForJdbc("select '车系重复数据' name, count(1) number from tbl_file_detail t where t.`status` = '3' and date_format(t.UPLOAD_DATE, '%Y-%m-%d') BETWEEN ? and ?" +
