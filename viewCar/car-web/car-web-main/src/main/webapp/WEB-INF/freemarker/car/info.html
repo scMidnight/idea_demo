@@ -80,8 +80,10 @@
         $(".layui-table-main tr[data-index='" + i + "']").css('color', fontColor);
     }
     var fileId = "${fileId!''}";
+    var loading;
     layui.use(['table','form'], function () {
        var table = layui.table, form = layui.form;
+        loading = layer.load(0,{shade: [0.4,'#000']});
         var tableIns = table.render({
             elem: '#infoList'
             ,url: '${base}/car/list/info'
@@ -126,9 +128,9 @@
                         }else if(dat.color == "huise") {
                             fullColor(i, "#808080", "#000000");
                         }
-
                     }
                 }
+                layer.close(loading);
             }
         });
         $("#seachInfo").on("click", function () {

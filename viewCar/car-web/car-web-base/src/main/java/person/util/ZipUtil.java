@@ -15,7 +15,7 @@ import java.util.zip.ZipOutputStream;
 public class ZipUtil {
     private static final int  BUFFER_SIZE = 2 * 1024;
     public static void main(String[] args) throws IOException {
-        //unZip("D:\\car\\uploader\\bak\\123456789", "D:\\car\\uploader\\bak\\123456789a\\");
+        //unZip("D:\\car\\uploader\\bak\\111.zip", "D:\\car\\uploader\\bak\\111\\");
         //LinkedList<String> list = read("D:\\car\\uploader\\bak\\123456789a\\0905数据\\0905-247-凯翼167911427670209-凯翼V3-全国.xlsx");
         //for (int i = 0; i < list.size(); i++) {
         //    String[] strs = list.get(i).split("\t");
@@ -30,9 +30,9 @@ public class ZipUtil {
         /**
          * 压缩文件
          */
-        File file = new File("D:\\car\\uploader\\bak\\9891420180906142013924a");
+        File file = new File("D:\\car\\uploader\\bak\\111");
         File[] files = file.listFiles();
-        FileOutputStream fos1 = new FileOutputStream(new File("D:\\car\\uploader\\bak\\zzz.zip"));
+        FileOutputStream fos1 = new FileOutputStream(new File("D:\\car\\uploader\\bak\\111.zip"));
         zipFiles(fos1, "", files);
     }
 

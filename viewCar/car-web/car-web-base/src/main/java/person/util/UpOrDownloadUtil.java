@@ -127,19 +127,28 @@ public class UpOrDownloadUtil {
      */
     public void downLoadZip(String fileName, HttpServletRequest request, HttpServletResponse response, String filePath) {
         boolean isIe = isMSBrowser(request);
+        OutputStream os = null;
         try {
             fileName = getFileName(isIe, fileName);
             //response.reset();//清空response,暂且可不用;
             response.setCharacterEncoding("utf-8");
             response.setContentType("multipart/form-data");
             response.setHeader("Content-Disposition", "attachment;fileName=\"" + fileName + "\"");
+            //response.addHeader("Content-Length", String.valueOf(sbs.available()));
+            os = response.getOutputStream();
             File file = new File(filePath);
             File[] files = file.listFiles();
-            ZipUtil.zipFiles(response.getOutputStream(), "", files);
+            ZipUtil.zipFiles(os, "", files);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -168,6 +177,7 @@ public class UpOrDownloadUtil {
             while ((length = sbs.read(b)) > 0) {
                 os.write(b, 0, length);
             }
+            os.flush();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -214,6 +224,15 @@ public class UpOrDownloadUtil {
                 fileBean.setFilePath(filePath);
                 fileBean.setId(IdUtils.randomString());
                 fileBean.setStatus("0");
+                fileBean.setFileCount("0");
+                fileBean.setSumCount("0");
+                fileBean.setProblemCount("0");
+                fileBean.setTaskRepeatCount("0");
+                fileBean.setCarSysRepeatCount("0");
+                fileBean.setBigLibRepeatCount("0");
+                fileBean.setBlackHitCount("0");
+                fileBean.setNumberErrCount("0");
+                fileBean.setIdFailedCount("0");
                 fileBeans.add(fileBean);
             }
         }

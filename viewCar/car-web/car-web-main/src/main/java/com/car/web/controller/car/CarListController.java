@@ -26,6 +26,8 @@ import person.util.webSocket.MyClient;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -111,37 +113,37 @@ public class CarListController {
         page.setPageNo(Integer.parseInt(pageNo));
         page.setPageSize(Integer.parseInt(limit));
         Page<TblFileBean> pageResult = fileHandler.queryByPageFilter(page,hql + where + " order by t.uploadDate desc", valueMap);
-        List<CarListBean> carListBeans = new ArrayList<CarListBean>();
-        if(null != pageResult.getResult() && !pageResult.getResult().isEmpty()) {
-            for (TblFileBean fileBean : pageResult.getResult()) {
-                CarListBean carListBean = new CarListBean();
-                carListBean.setFileBean(fileBean);
-                if(fileBean.getStatus().equals("0")) {
-                    carListBean.setFileCount("0");
-                    carListBean.setSumCount("0");
-                    carListBean.setProblemCount("0");
-                    carListBean.setTaskRepeatCount("0");
-                    carListBean.setCarSysRepeatCount("0");
-                    carListBean.setBigLibraryRepeatCount("0");
-                    carListBean.setBlackHitRepeatCount("0");
-                    carListBean.setNumberErrCount("0");
-                    carListBean.setIdFailedCount("0");
-                }else {
-                    String fileId = fileBean.getId();
-                    carListBean.setFileCount(String.valueOf(fileDetailHandler.queryByHql("FROM TblFileDetail t where t.fileId = ? group by t.fileName", fileId).size()));
-                    carListBean.setSumCount(String.valueOf(fileDetailHandler.queryByHql("FROM TblFileDetail t where t.fileId = ?", fileId).size()));
-                    carListBean.setProblemCount(String.valueOf(fileDetailHandler.queryByHql("from TblFileDetail t where t.fileId = ? and t.status != ?", fileId, "0").size()));
-                    carListBean.setTaskRepeatCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "2").size()));
-                    carListBean.setCarSysRepeatCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "3").size()));
-                    carListBean.setBigLibraryRepeatCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "1").size()));
-                    carListBean.setBlackHitRepeatCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "4").size()));
-                    carListBean.setNumberErrCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "5").size()));
-                    carListBean.setIdFailedCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "6").size()));
-                }
-                carListBeans.add(carListBean);
-            }
-        }
-        JsonBean jsonBean = new JsonBean("0", "", String.valueOf(pageResult.getTotalCount()), carListBeans);
+        //List<CarListBean> carListBeans = new ArrayList<CarListBean>();
+        //if(null != pageResult.getResult() && !pageResult.getResult().isEmpty()) {
+        //    for (TblFileBean fileBean : pageResult.getResult()) {
+        //        CarListBean carListBean = new CarListBean();
+        //        carListBean.setFileBean(fileBean);
+        //        if(fileBean.getStatus().equals("0")) {
+        //            carListBean.setFileCount("0");
+        //            carListBean.setSumCount("0");
+        //            carListBean.setProblemCount("0");
+        //            carListBean.setTaskRepeatCount("0");
+        //            carListBean.setCarSysRepeatCount("0");
+        //            carListBean.setBigLibraryRepeatCount("0");
+        //            carListBean.setBlackHitRepeatCount("0");
+        //            carListBean.setNumberErrCount("0");
+        //            carListBean.setIdFailedCount("0");
+        //        }else {
+        //            String fileId = fileBean.getId();
+        //            carListBean.setFileCount(String.valueOf(fileDetailHandler.queryByHql("FROM TblFileDetail t where t.fileId = ? group by t.fileName", fileId).size()));
+        //            carListBean.setSumCount(String.valueOf(fileDetailHandler.queryByHql("FROM TblFileDetail t where t.fileId = ?", fileId).size()));
+        //            carListBean.setProblemCount(String.valueOf(fileDetailHandler.queryByHql("from TblFileDetail t where t.fileId = ? and t.status != ?", fileId, "0").size()));
+        //            carListBean.setTaskRepeatCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "2").size()));
+        //            carListBean.setCarSysRepeatCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "3").size()));
+        //            carListBean.setBigLibraryRepeatCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "1").size()));
+        //            carListBean.setBlackHitRepeatCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "4").size()));
+        //            carListBean.setNumberErrCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "5").size()));
+        //            carListBean.setIdFailedCount(String.valueOf(fileDetailHandler.queryByHqlOnErrCount(fileId, "6").size()));
+        //        }
+        //        carListBeans.add(carListBean);
+        //    }
+        //}
+        JsonBean jsonBean = new JsonBean("0", "", String.valueOf(pageResult.getTotalCount()), pageResult.getResult());
         return JsonUtil.beanToJsonString(jsonBean);
     }
 
@@ -180,7 +182,7 @@ public class CarListController {
             //存储线程的返回值
             List<Future<List<TblFileDetailBean>>> results = new LinkedList<Future<List<TblFileDetailBean>>>();
             for (String s : listStr) {
-                CheckPackageThread checkPackageThread = new CheckPackageThread(fileBean.getId(), fileDetailHandler, blacks, areaBeans, carSystemBeans, s, fileBean.getUploadDate(), userHandler);
+                CheckPackageThread checkPackageThread = new CheckPackageThread(fileBean.getId(), fileDetailHandler, blacks, areaBeans, carSystemBeans, s, fileBean.getUploadDate(), userHandler, UserUtil.getUserId());
                 Future<List<TblFileDetailBean>> result = exe.submit(checkPackageThread);
                 results.add(result);
             }
@@ -315,9 +317,16 @@ public class CarListController {
         UpOrDownloadUtil up = new UpOrDownloadUtil();
         String[] zipNames = fileBean.getFileNameBak().split("\\.");
         String zipName = zipNames[0] + "-ok." + zipNames[1];
-        up.downLoadZip(zipName, request, response, dirPath);
+        File file = new File(dirPath);
+        File[] files = file.listFiles();
         try {
+            String targetPath = Constants.getRootPath() + "bak/";
+            File targetZip = new File(targetPath + zipName);
+            FileOutputStream fos1 = new FileOutputStream(targetZip);
+            ZipUtil.zipFiles(fos1, "", files);
+            up.downLoadCarExcel(zipName, request, response, new FileInputStream(targetZip));
             FileUtils.deleteDirectory(new File(dirPath));
+            FileUtils.deleteQuietly(targetZip);
         } catch (IOException e) {
             e.printStackTrace();
         }

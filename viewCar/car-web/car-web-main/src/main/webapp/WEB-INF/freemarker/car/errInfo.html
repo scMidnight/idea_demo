@@ -40,8 +40,10 @@
 <script>
     var errCode = "${errCode!''}";
     var fileId = "${fileId!''}";
+    var loading;
     layui.use(['table'], function () {
        var table = layui.table;
+       loading = layer.load(0,{shade: [0.4,'#000']});
         table.render({
             elem: '#errList'
             ,url: '${base}/car/list/errInfo'
@@ -57,6 +59,9 @@
                 ,{field:'status', title:'状态', templet:'#status', align:'center'}
             ]]
             ,even: true //隔行换色
+            ,done: function (res, curr, count) {
+                layer.close(loading);
+            }
             ,where:{
                 errCode: errCode
                 ,fileId: fileId

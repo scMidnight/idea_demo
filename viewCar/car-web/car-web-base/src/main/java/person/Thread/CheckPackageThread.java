@@ -31,8 +31,9 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
     private String excelPath;
     private Date uploadDate;
     private UserHandler userHandler;
+    private String userId;
 
-    public CheckPackageThread(String fileId, FileDetailHandler fileDetailHandler, List<String> blacks, List<TblAreaBean> areaBeans, List<TblCarSystemBean> carSystemBeans, String excelPath, Date uploadDate, UserHandler userHandler) {
+    public CheckPackageThread(String fileId, FileDetailHandler fileDetailHandler, List<String> blacks, List<TblAreaBean> areaBeans, List<TblCarSystemBean> carSystemBeans, String excelPath, Date uploadDate, UserHandler userHandler, String userId) {
         this.fileId = fileId;
         this.fileDetailHandler = fileDetailHandler;
         this.blacks = blacks;
@@ -41,6 +42,7 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
         this.excelPath = excelPath;
         this.uploadDate = uploadDate;
         this.userHandler = userHandler;
+        this.userId = userId;
     }
 
     @Override
@@ -55,7 +57,7 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                     fileDetailBean.setFileName(list.getLast());
                     fileDetailBean.setFileId(fileId);
                     fileDetailBean.setUploadDate(uploadDate);
-                    if (StringUtil.isBlank(vals[0])
+                    if (vals.length < 6 || vals.length > 6 || StringUtil.isBlank(vals[0])
                             || StringUtil.isBlank(vals[1])
                             || StringUtil.isBlank(vals[2])
                             || StringUtil.isBlank(vals[3])
@@ -76,7 +78,7 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                         continue;
                     }
                     if(CarUtil.isBlack(blacks, fileDetailBean.getPhone())) {
-                        TblUserBean userBean = userHandler.loadByUserId(UserUtil.getUserId());
+                        TblUserBean userBean = userHandler.loadByUserId(userId);
                         if(userBean.getIsBlack().equals("1")) {
                             fileDetailBean.setStatus("4");//黑名单命中
                             fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：黑名单命中");
