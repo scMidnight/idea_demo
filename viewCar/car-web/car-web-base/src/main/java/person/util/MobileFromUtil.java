@@ -1,6 +1,9 @@
 package person.util;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import jodd.util.StringUtil;
+import net.sf.json.JSONObject;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -12,7 +15,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,11 +28,41 @@ import java.util.regex.Pattern;
  */
 public class MobileFromUtil {
 
+    public static String getMobileFromBd(String mobileNumber) {
+        //百度的API地址
+        String urlString = "http://mobsec-dianhua.baidu.com/dianhua_api/open/location?tel=" + mobileNumber;
+        StringBuilder sb = new StringBuilder();
+        BufferedReader buffer;
+        String provinces = "";//省
+        String city = "";//城市
+        String operators = "";//运营商
+        try {
+            URL url = new URL(urlString);
+            //获取URL地址中的页面内容
+            InputStream in = url.openStream();
+            // 解决乱码问题
+            buffer = new BufferedReader(new InputStreamReader(in, "utf8"));
+            String line = null;
+            //一行一行的读取数据
+            while ((line = buffer.readLine()) != null) {
+                sb.append(line);
+            }
+            in.close();
+            buffer.close();
+            //1、使用JSONObject
+            JsonObject jsonStr = new Gson().fromJson(sb.toString(), JsonObject.class);
+            city = jsonStr.get("response").getAsJsonObject().get(mobileNumber).getAsJsonObject().get("detail").getAsJsonObject().get("area").getAsJsonArray().get(0).getAsJsonObject().get("city").getAsString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return city;
+    }
+
     /**
      * @Author SunChang
      * @Date 2018/9/6 11:11
      * @param mobileNumber
-     * @Description 获取手机号归属地
+     * @Description 获取手机号归属地 ip138的，使用一段时间后特别慢。
      */
     public static String getMobileFrom(String mobileNumber) throws MalformedURLException {
         HttpClient client=null;
@@ -52,7 +89,6 @@ public class MobileFromUtil {
                             Element element = elements.get(1);
                             Node node = element.childNode(1);
                             Node node1 = node.childNode(4);
-                            System.out.println(node1.childNodeSize());
                             if(node1.childNodeSize() == 4) {
                                 result = node1.childNode(2).childNode(1).toString();
                             }else if(node1.childNodeSize() == 6) {
@@ -60,13 +96,7 @@ public class MobileFromUtil {
                             }else if(node1.childNodeSize() == 5) {
                                 result = node1.childNode(3).childNode(0).toString();
                             }
-                            //result = element.childNode(1).childNode(4).childNode(2).childNode(1).toString();
-                            //for (Element element : elements) {
-                            //    System.out.println("===================================================");
-                            //    System.out.println(element.toString());
-                            //}
                         }
-                        //result = htmlSource;
                     }
                 }
             }
@@ -79,9 +109,6 @@ public class MobileFromUtil {
 
     public static void main(String[] args) throws MalformedURLException {
         //System.out.println(getMobileFrom("18286809527"));
-        //System.out.println(getMobileFrom("15502119051"));
-        String a = "上海&nbsp;";
-        String[] b = a.split("&nbsp;");
-        System.out.println(b.length);
+        System.out.println(getMobileFromBd("15041672899"));
     }
 }

@@ -70,7 +70,8 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                         fileDetailBeans1.add(fileDetailBean);
                         continue;
                     }
-                    String mobileFrom = MobileFromUtil.getMobileFrom(vals[1]);//得到归属地
+                    //String mobileFrom = MobileFromUtil.getMobileFrom(vals[1]);//得到归属地
+                    String mobileFrom = MobileFromUtil.getMobileFromBd(vals[1]);//得到归属地
                     String cityId = CarUtil.checkCityId(areaBeans, vals[2], mobileFrom);//判断城市ID
                     if (StringUtil.isNotBlank(cityId)) {
                         fileDetailBean.setArea(cityId);

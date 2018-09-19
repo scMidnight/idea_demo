@@ -43,16 +43,17 @@ public class CarUtil {
      */
     public static String checkCityId(List<TblAreaBean> areaBeans, String cityName, String mobileFrom) {
         String mobile = "";
-        if(mobileFrom == null || mobileFrom.equals("&nbsp;")) {
+        if(StringUtil.isBlank(mobileFrom) || mobileFrom.equals("&nbsp;")) {
             mobile = cityName;
-        }else {
-            String[] mobileFroms = mobileFrom.split("&nbsp;");
-            if (mobileFroms.length > 1) {
-                mobile = mobileFroms[mobileFroms.length - 1];
-            } else {
-                mobile = mobileFroms[0];
-            }
         }
+        //else {
+        //    String[] mobileFroms = mobileFrom.split("&nbsp;");
+        //    if (mobileFroms.length > 1) {
+        //        mobile = mobileFroms[mobileFroms.length - 1];
+        //    } else {
+        //        mobile = mobileFroms[0];
+        //    }
+        //}
         String id = "";
         for (TblAreaBean areaBean : areaBeans) {
             if(areaBean.getCityName().contains(cityName) && areaBean.getCityName().contains(mobile)) {
