@@ -109,12 +109,16 @@ public class CarUtil {
      */
     public static boolean checkCarSys(String carSysId, String phone, FileDetailHandler fileDetailHandler) {
         boolean isCarSys = false;
-        List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.findByProperty("carSys", carSysId);
-        for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
-            if(fileDetailBean.getPhone().equals(phone)) {
-                isCarSys = true;
-                break;
-            }
+        //List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.findByProperty2("carSys", carSysId);
+        List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.queryByHql("from TblFileDetail t where t.carSys = ? and t.phone = ?", carSysId, phone);
+        if(null != fileDetailBeans && !fileDetailBeans.isEmpty()) {
+            //for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+            //    if(fileDetailBean.getPhone().equals(phone)) {
+            //        isCarSys = true;
+            //        break;
+            //    }
+            //}
+            isCarSys = true;
         }
         return isCarSys;
     }
@@ -128,12 +132,16 @@ public class CarUtil {
      */
     public static boolean checkTask(String taskId, String phone, FileDetailHandler fileDetailHandler) {
         boolean isTask = false;
-        List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.findByProperty("taskId", taskId);
-        for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
-            if(fileDetailBean.getPhone().equals(phone)) {
-                isTask = true;
-                break;
-            }
+        //List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.findByProperty2("taskId", taskId);
+        List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.queryByHql("from TblFileDetail t where t.taskId = ? and t.phone = ?", taskId, phone);
+        if(null != fileDetailBeans && !fileDetailBeans.isEmpty()) {
+            //for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+            //    if(fileDetailBean.getPhone().equals(phone)) {
+            //        isTask = true;
+            //        break;
+            //    }
+            //}
+            isTask = true;
         }
         return isTask;
     }
@@ -146,7 +154,7 @@ public class CarUtil {
      */
     public static boolean checkBigLib(String phone, FileDetailHandler fileDetailHandler) {
         boolean isBigLib = false;
-        List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.findByProperty("phone", phone);
+        List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.findByProperty2("phone", phone);
         if(null != fileDetailBeans && !fileDetailBeans.isEmpty()) {
             isBigLib = true;
         }

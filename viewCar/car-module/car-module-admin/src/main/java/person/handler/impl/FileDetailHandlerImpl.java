@@ -20,6 +20,11 @@ public class FileDetailHandlerImpl implements FileDetailHandler {
     }
 
     @Override
+    public List<TblFileDetailBean> findByProperty2(String propertyName, Object value) {
+        return fileDetailService.findByProperty2(propertyName, value);
+    }
+
+    @Override
     public void deleteAllAndFile(String propertyName, Object value) {
         fileDetailService.deleteAllAndFile(propertyName, value);
     }

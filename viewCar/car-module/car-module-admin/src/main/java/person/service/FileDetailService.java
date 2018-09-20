@@ -15,6 +15,14 @@ public interface FileDetailService extends CommonService {
      * @Description 根据字段名称查询结果
      */
     List<TblFileDetailBean> findByProperty(String propertyName, Object value);
+    /**
+     * @Author SunChang
+     * @Date 2018/9/5 14:55
+     * @param propertyName
+    * @param value
+     * @Description 根据字段名称查询结果
+     */
+    List<TblFileDetailBean> findByProperty2(String propertyName, Object value);
 
     /**
      * @Author SunChang

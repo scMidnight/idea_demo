@@ -174,7 +174,9 @@ public class CarListController {
             List<TblAreaBean> areaBeans = CacheManager.getInstance().getAreaAll();//地区码表
             List<TblCarSystemBean> carSystemBeans = CacheManager.getInstance().getCarSysAll();//车系码表
             TblFileBean fileBean = fileHandler.queryById(id);
+            System.out.println("要解压文件了");
             ZipUtil.unZip(fileBean.getFilePath(), fileBean.getFilePath() + "a" + File.separatorChar);//解压原包
+            System.out.println("解压完了");
             List<String> listStr = getFilePaths(new File(fileBean.getFilePath() + "a" + File.separatorChar));
             List<TblFileDetailBean> fileDetailBeans = new ArrayList<TblFileDetailBean>();
             /*创建可用线程数量的固定线程池*/
@@ -246,7 +248,9 @@ public class CarListController {
     public Object carListCheckAgainPackage(String id) {
         TblFileBean fileBean = fileHandler.queryById(id);
         List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.findByProperty("fileId", id);
-        fileDetailHandler.batchDel(fileDetailBeans);
+        if(null != fileDetailBeans && fileDetailBeans.size() > 0) {
+            fileDetailHandler.batchDel(fileDetailBeans);
+        }
         return carListcheckPackage(id);
     }
 

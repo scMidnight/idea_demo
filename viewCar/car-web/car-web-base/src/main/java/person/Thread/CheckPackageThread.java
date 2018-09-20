@@ -49,6 +49,7 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
     public List<TblFileDetailBean> call() throws Exception {
         List<TblFileDetailBean> fileDetailBeans1 = new ArrayList<TblFileDetailBean>();
         try {
+            System.out.println("读取文件内容");
             LinkedList<String> list = ExcelUtil.read(excelPath);
             for (int i = 0; i < list.size()-1; i++) {
                 if(i != 0) {
@@ -71,7 +72,9 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                         continue;
                     }
                     //String mobileFrom = MobileFromUtil.getMobileFrom(vals[1]);//得到归属地
+                    System.out.println("要获得归属地了");
                     String mobileFrom = MobileFromUtil.getMobileFromBd(vals[1]);//得到归属地
+                    System.out.println("要获得城市ID了");
                     String cityId = CarUtil.checkCityId(areaBeans, vals[2], mobileFrom);//判断城市ID
                     if (StringUtil.isNotBlank(cityId)) {
                         fileDetailBean.setArea(cityId);
@@ -81,6 +84,7 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                         fileDetailBeans1.add(fileDetailBean);
                         continue;
                     }
+                    System.out.println("要验证黑名单了");
                     if(CarUtil.isBlack(blacks, fileDetailBean.getPhone())) {
                         TblUserBean userBean = userHandler.loadByUserId(userId);
                         if(userBean.getIsBlack().equals("1")) {
@@ -90,6 +94,7 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                             continue;
                         }
                     }
+                    System.out.println("要验证车系了");
                     String carSysId = CarUtil.getCarSysId(carSystemBeans, vals[3]);
                     fileDetailBean.setCarSys(carSysId);
                     if(CarUtil.checkCarSys(carSysId, fileDetailBean.getPhone(), fileDetailHandler)) {
@@ -98,12 +103,14 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                         fileDetailBeans1.add(fileDetailBean);
                         continue;
                     }
+                    System.out.println("要验证任务了");
                     if(CarUtil.checkTask(fileDetailBean.getTaskId(), fileDetailBean.getPhone(), fileDetailHandler)) {
                         fileDetailBean.setStatus("2");//任务重复
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：任务重复");
                         fileDetailBeans1.add(fileDetailBean);
                         continue;
                     }
+                    System.out.println("要验证大库了");
                     if(CarUtil.checkBigLib(fileDetailBean.getPhone(), fileDetailHandler)) {
                         fileDetailBean.setStatus("1");//大库重复
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：大库重复");
