@@ -51,7 +51,9 @@ public class MobileFromUtil {
             buffer.close();
             //1、使用JSONObject
             JsonObject jsonStr = new Gson().fromJson(sb.toString(), JsonObject.class);
-            city = jsonStr.get("response").getAsJsonObject().get(mobileNumber).getAsJsonObject().get("detail").getAsJsonObject().get("area").getAsJsonArray().get(0).getAsJsonObject().get("city").getAsString();
+            if(!jsonStr.get("response").getAsJsonObject().get(mobileNumber).isJsonNull()) {
+                city = jsonStr.get("response").getAsJsonObject().get(mobileNumber).getAsJsonObject().get("detail").getAsJsonObject().get("area").getAsJsonArray().get(0).getAsJsonObject().get("city").getAsString();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -109,6 +111,6 @@ public class MobileFromUtil {
 
     public static void main(String[] args) throws MalformedURLException {
         //System.out.println(getMobileFrom("18286809527"));
-        System.out.println(getMobileFromBd("15041672899"));
+        System.out.println(getMobileFromBd("17364401868"));
     }
 }

@@ -42,29 +42,25 @@ public class CarUtil {
      * @Description 通过号码归属地与提供的城市名比对，得出城市ID
      */
     public static String checkCityId(List<TblAreaBean> areaBeans, String cityName, String mobileFrom) {
-        if(StringUtil.isBlank(mobileFrom) || mobileFrom.equals("&nbsp;")) {
-            return "";
-        }
-        if(cityName.contains(mobileFrom) || mobileFrom.contains(cityName)) {
-            String id = "";
-            for (TblAreaBean areaBean : areaBeans) {
-                if(areaBean.getCityName().contains(mobileFrom)) {
-                    id = areaBean.getId();
-                    break;
-                }
-            }
-            return id;
+        String mobile = "";
+        if(mobileFrom == null || mobileFrom.equals("&nbsp;")) {
+            mobile = cityName;
         }else {
-            return "";
+            String[] mobileFroms = mobileFrom.split("&nbsp;");
+            if (mobileFroms.length > 1) {
+                mobile = mobileFroms[mobileFroms.length - 1];
+            } else {
+                mobile = mobileFroms[0];
+            }
         }
-        //else {
-        //    String[] mobileFroms = mobileFrom.split("&nbsp;");
-        //    if (mobileFroms.length > 1) {
-        //        mobile = mobileFroms[mobileFroms.length - 1];
-        //    } else {
-        //        mobile = mobileFroms[0];
-        //    }
-        //}
+        String id = "";
+        for (TblAreaBean areaBean : areaBeans) {
+            if(areaBean.getCityName().contains(cityName) && areaBean.getCityName().contains(mobile)) {
+                id = areaBean.getId();
+                break;
+            }
+        }
+        return id;
     }
 
     /**
