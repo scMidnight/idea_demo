@@ -42,9 +42,20 @@ public class CarUtil {
      * @Description 通过号码归属地与提供的城市名比对，得出城市ID
      */
     public static String checkCityId(List<TblAreaBean> areaBeans, String cityName, String mobileFrom) {
-        String mobile = "";
         if(StringUtil.isBlank(mobileFrom) || mobileFrom.equals("&nbsp;")) {
-            mobile = cityName;
+            return "";
+        }
+        if(cityName.contains(mobileFrom) || mobileFrom.contains(cityName)) {
+            String id = "";
+            for (TblAreaBean areaBean : areaBeans) {
+                if(areaBean.getCityName().contains(mobileFrom)) {
+                    id = areaBean.getId();
+                    break;
+                }
+            }
+            return id;
+        }else {
+            return "";
         }
         //else {
         //    String[] mobileFroms = mobileFrom.split("&nbsp;");
@@ -54,14 +65,6 @@ public class CarUtil {
         //        mobile = mobileFroms[0];
         //    }
         //}
-        String id = "";
-        for (TblAreaBean areaBean : areaBeans) {
-            if(areaBean.getCityName().contains(cityName) && areaBean.getCityName().contains(mobile)) {
-                id = areaBean.getId();
-                break;
-            }
-        }
-        return id;
     }
 
     /**
