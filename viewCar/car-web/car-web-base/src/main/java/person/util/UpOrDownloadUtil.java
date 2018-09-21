@@ -154,6 +154,46 @@ public class UpOrDownloadUtil {
 
     /**
      * @Author SunChang
+     * @Date 2018/9/21 11:04
+     * @param zipFile
+    * @param request
+    * @param response
+    * @param isDelete
+     * @Description
+     */
+    public void downLoadCarZip(File zipFile, HttpServletRequest request, HttpServletResponse response, boolean isDelete) {
+        boolean isIe = isMSBrowser(request);
+        String fileName = zipFile.getName();
+        try {
+            fileName = getFileName(isIe, fileName);
+            // 以流的形式下载文件。
+            BufferedInputStream fis = new BufferedInputStream(new FileInputStream(zipFile));
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+            fis.close();
+            // 清空response
+            response.reset();
+            OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/octet-stream");
+            response.setHeader("Content-Disposition", "attachment;fileName=\"" + fileName + "\"");
+            toClient.write(buffer);
+            toClient.flush();
+            toClient.close();
+            if(isDelete)
+            {
+                zipFile.delete();        //是否将生成的服务器端文件删除
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @Author SunChang
      * @Date 2018/9/7 16:42
      * @param fileName
     * @param request

@@ -34,6 +34,10 @@ public class ZipUtil {
         //File[] files = file.listFiles();
         //FileOutputStream fos1 = new FileOutputStream(new File("D:\\car\\uploader\\bak\\111.zip"));
         //zipFiles(fos1, "", files);
+        File[] files = new File("D:/car/uploader/bak/xxxxa/").listFiles();
+        File file = new File("D:/car/uploader/bak/test.zip");
+        FileOutputStream fos1 = new FileOutputStream(file);
+        ZipUtil.zipFiles(fos1, "", files);
     }
 
     /**

@@ -263,7 +263,14 @@ public class CarListController {
     public Object carListExportPackage(HttpServletRequest request, HttpServletResponse response) {
         Constants.pubMap.put(UserUtil.getUserId() + "ExportPackage", false);//记录公共变量当前用户导出包是否成功
         TblFileBean fileBean = fileHandler.queryById(request.getParameter("id"));
-        String dirPath = fileBean.getFilePath() + "a" + File.separatorChar;
+        String dirPath = fileBean.getFilePath() + "a/";
+        if(new File(dirPath).exists()) {
+            try {
+                FileUtils.deleteDirectory(new File(dirPath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         String arrs = request.getParameter("arrs");
         ZipUtil.unZip(fileBean.getFilePath(), dirPath);//解压原包
         renameFiles(new File(dirPath));//把原始文件重命名
@@ -334,9 +341,9 @@ public class CarListController {
             File targetZip = new File(targetPath + zipName);
             FileOutputStream fos1 = new FileOutputStream(targetZip);
             ZipUtil.zipFiles(fos1, "", files);
-            up.downLoadCarExcel(zipName, request, response, new FileInputStream(targetZip));
+            up.downLoadCarZip(targetZip, request, response, true);
             FileUtils.deleteDirectory(new File(dirPath));
-            FileUtils.deleteQuietly(targetZip);
+        //    FileUtils.deleteQuietly(targetZip);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -417,17 +424,26 @@ public class CarListController {
                 break;
             }
         }
-        String[] ps = p.split("\\\\");
-        if(null != ps && ps.length > 1) {
-            String ret = "";
-            ps[ps.length - 1] = "ID" + ps[ps.length - 1].substring(2, ps[ps.length - 1].length());
-            for (int i = 0; i < ps.length; i++) {
-                ret += ps[i] + File.separatorChar;
-            }
-            return ret;
+        if(p.lastIndexOf("/") != -1) {
+            String p1 = p.substring(p.lastIndexOf("/") + 1, p.length());
+            String[] p1s = p1.split("-");
+            String p2 = "/ID-" + p1s[1];
+            p2 = p.substring(0, p.lastIndexOf("/")) + p2 + "/";
+            return p2;
         }else {
             return path;
         }
+        //String[] ps = p.split("\\\\");
+        //if(null != ps && ps.length > 1) {
+        //    String ret = "";
+        //    ps[ps.length - 1] = "ID" + ps[ps.length - 1].substring(2, ps[ps.length - 1].length());
+        //    for (int i = 0; i < ps.length; i++) {
+        //        ret += ps[i] + File.separatorChar;
+        //    }
+        //    return ret;
+        //}else {
+        //    return path;
+        //}
     }
 
     /**
@@ -656,12 +672,14 @@ public class CarListController {
     }
 
     public static void main(String[] args) {
-        //System.out.println(newPath("D:/car/uploader/bak/9891420180906142013924a/"));
-        //String a = "history,1,2,3,4,5,6";
-        //System.out.println(a.substring(8, a.length()));
-        for (int i = 1; i <= 100; i++) {
-            System.out.println();
-        }
+        String path = "/usr/local/uploader/bak/7848520180918132617325a/原标-浔阳0822";
+        //String path2 = path.substring(0, path.lastIndexOf("/"));
+        //path2 += path.substring(path.lastIndexOf("/"), path.length());
+        String path2 = path.substring(path.lastIndexOf("/") + 1, path.length());
+        String[] temps = path2.split("-");
+        String a = "/ID-" + temps[1];
+        a = path.substring(0, path.lastIndexOf("/")) + a;
+        System.out.println(a);
     }
 
 }
