@@ -311,33 +311,36 @@
                 layer.msg("请选择时间范围！");
                 return;
             }
-            var type = $(this).data('type');
-            if(!isNull(type) && type == 'checkAgain') {
-                $("#close").show();
-                loading.style.display="block";
-                $.ajax({
-                    url:'${base}/car/list/checkAgain',
-                    dataType: 'json',
-                    type:'post',
-                    data:{dateStr:dateStr},
-                    success:function (result) {
-                        if(result.status=="Y") {
-                            layer.msg(result.msg, {
-                                icon: 1,
-                                time: 1000 //1秒关闭（如果不配置，默认是3秒）
-                            });
-                            tableIns.reload({
-                                page:{
-                                    curr:1
-                                }
-                            });
-                        }else {
-                            layer.alert(result.msg);
+            layer.confirm('您选择的时间范围是：' + dateStr + "，确定重新整理此条时间范围内数据嘛？", {icon: 3}, function (index) {
+                layer.close(index);
+                var type = $(this).data('type');
+                if(!isNull(type) && type == 'checkAgain') {
+                    $("#close").show();
+                    loading.style.display="block";
+                    $.ajax({
+                        url:'${base}/car/list/checkAgain',
+                        dataType: 'json',
+                        type:'post',
+                        data:{dateStr:dateStr},
+                        success:function (result) {
+                            if(result.status=="Y") {
+                                layer.msg(result.msg, {
+                                    icon: 1,
+                                    time: 1000 //1秒关闭（如果不配置，默认是3秒）
+                                });
+                                tableIns.reload({
+                                    page:{
+                                        curr:1
+                                    }
+                                });
+                            }else {
+                                layer.alert(result.msg);
+                            }
+                            loading.style.display="none";   //隐藏遮罩层
                         }
-                        loading.style.display="none";   //隐藏遮罩层
-                    }
-                })
-            }
+                    })
+                }
+            });
         });
         $("#close").click(function() {
             $(this).hide();
