@@ -91,8 +91,16 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                             continue;
                         }
                     }
+                    //获取车系对应ID，如果没有就视为转id失败
                     String carSysId = CarUtil.getCarSysId(carSystemBeans, vals[3]);
-                    fileDetailBean.setCarSys(carSysId);
+                    if(StringUtil.isNotBlank(carSysId)) {
+                        fileDetailBean.setCarSys(carSysId);
+                    }else {
+                        fileDetailBean.setStatus("6");
+                        fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行车系转换错误，状态：ID转失败");
+                        fileDetailBeans1.add(fileDetailBean);
+                        continue;
+                    }
                     if(CarUtil.checkCarSys(carSysId, fileDetailBean.getPhone(), fileDetailHandler)) {
                         fileDetailBean.setStatus("3");//车系重复
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：车系重复");

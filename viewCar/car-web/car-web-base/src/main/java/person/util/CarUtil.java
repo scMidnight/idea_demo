@@ -91,7 +91,7 @@ public class CarUtil {
     public static String getCarSysId(List<TblCarSystemBean> carSystemBeans, String carSysName) {
         String carSysId = "";
         for (TblCarSystemBean carSystemBean : carSystemBeans) {
-            if(carSystemBean.getCarSysName().contains(carSysName)) {
+            if(carSystemBean.getCarSysName().equals(carSysName)) {
                 carSysId = carSystemBean.getCarSysId();
                 break;
             }
