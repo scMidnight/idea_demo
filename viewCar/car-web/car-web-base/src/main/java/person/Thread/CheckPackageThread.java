@@ -79,7 +79,7 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                     }else {
                         fileDetailBean.setStatus("5");//号段错误
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：号段错误，文件中是" + vals[2] + "，根据号码查询后为：" + mobileFrom);
-                        fileDetailBeans1.add(fileDetailBean);
+                        //fileDetailBeans1.add(fileDetailBean);
                         //continue;
                     }
                     if(CarUtil.isBlack(blacks, fileDetailBean.getPhone())) {
@@ -120,6 +120,8 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                     }
                     if(!fileDetailBean.getStatus().equals("5")) {//如果是号段错误
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行");
+                        fileDetailBeans1.add(fileDetailBean);
+                    }else {
                         fileDetailBeans1.add(fileDetailBean);
                     }
                 }
