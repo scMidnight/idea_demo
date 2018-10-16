@@ -51,10 +51,10 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
         try {
             System.out.println("读取文件内容");
             LinkedList<String> list = ExcelUtil.read(excelPath);
-            for (int i = 0; i < list.size()-1; i++) {
+            for (int i = 0; i < list.size(); i++) {
                 if(i != 0) {
                     String[] vals = list.get(i).split("\t");
-                    if(vals.length != 7) {
+                    if(vals== null || vals.length != 7) {
                         continue;
                     }
                     TblFileDetailBean fileDetailBean = CarUtil.getFileDetailBean(vals);
@@ -116,9 +116,10 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                     if(CarUtil.checkBigLib(fileDetailBean.getPhone(), fileDetailHandler)) {
                         fileDetailBean.setStatus("1");//大库重复
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：大库重复");
+                        fileDetailBeans1.add(fileDetailBean);
                         continue;
                     }
-                    if(!fileDetailBean.getStatus().equals("5")) {//如果是号段错误
+                    if(!fileDetailBean.getStatus().equals("5")) {//如果不是号段错误
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行");
                         fileDetailBeans1.add(fileDetailBean);
                     }else {

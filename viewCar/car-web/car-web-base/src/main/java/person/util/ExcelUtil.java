@@ -228,8 +228,12 @@ public class ExcelUtil {
                             break;
                     }
                 }
-                mobile = mobile.replaceAll("\\s*", "");
-                c += mobile.replace("\"", "").trim() + "\t";
+                if(i == 3) {
+                    c += mobile.trim() + "\t";
+                }else {
+                    mobile = mobile.replaceAll("\\s*", "");
+                    c += mobile.replace("\"", "").trim() + "\t";
+                }
             }
             if (c.trim().length() > 0) {
                 list.add(c);
