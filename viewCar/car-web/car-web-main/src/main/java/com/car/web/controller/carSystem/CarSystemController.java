@@ -13,6 +13,8 @@ import person.db.bean.JsonBean;
 import person.db.bean.TblCarSystemBean;
 import person.db.entity.Page;
 import person.handler.CarSystemHandler;
+import person.security.cache.CacheManager;
+import person.security.cache.TblCarSysCache;
 import person.util.ExcelUtil;
 import person.util.IdUtils;
 import person.util.JsonUtil;
@@ -73,6 +75,7 @@ public class CarSystemController {
     public Object delInfoPost(String id) {
         try {
             carSystemHandler.removeCarSystemInfo(id);
+            TblCarSysCache.getInstance().refresh(carSystemHandler.queryAll());
             return JsonUtil.toString("Y", "操作成功！");
         } catch (Exception e) {
             return JsonUtil.toString("N", "失败异常：" + e.getMessage());
@@ -106,6 +109,7 @@ public class CarSystemController {
         carSystemBean.setIsDel("0");
         try {
             carSystemHandler.addCarSystemInfo(carSystemBean);
+            TblCarSysCache.getInstance().refresh(carSystemHandler.queryAll());
             redirectAttributes.addFlashAttribute("add_status", "success");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("add_status", "error");
