@@ -15,13 +15,12 @@ import person.db.entity.Page;
 import person.handler.CarSystemHandler;
 import person.security.cache.CacheManager;
 import person.security.cache.TblCarSysCache;
-import person.util.ExcelUtil;
-import person.util.IdUtils;
-import person.util.JsonUtil;
-import person.util.UpOrDownloadUtil;
+import person.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -133,7 +132,7 @@ public class CarSystemController {
         //excel标题
         String [] title = {"品牌ID", "品牌名称", "厂商ID", "厂商名称", "车系ID", "车系名称"};
         //excel文件名
-        String fileName = "车系数据表"+System.currentTimeMillis()+".xls";
+        String fileName = "车系数据表" + CarUtil.getDateStr(new Date(), "yyyyMMdd HH:mm:ss") + ".xls";
         //sheet名
         String sheetName = "车系信息";
         String[][] contents = new String[carSystemBeans.size()][title.length];

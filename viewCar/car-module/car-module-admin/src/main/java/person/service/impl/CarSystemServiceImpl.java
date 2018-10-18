@@ -36,7 +36,8 @@ public class CarSystemServiceImpl extends CommonServiceImpl implements CarSystem
 
     @Override
     public List<TblCarSystemBean> queryAll() {
-        List<TblCarSystem> carSystems = super.findByProperty(TblCarSystem.class, "isDel", "0");
+        //List<TblCarSystem> carSystems = super.findByProperty(TblCarSystem.class, "isDel", "0");
+        List<TblCarSystem> carSystems = super.findHql("FROM TblCarSystem t order by t.brandName, t.tradeName, t.carSysId asc");
         List<TblCarSystemBean> carSystemBeans = new ArrayList<TblCarSystemBean>();
         for (TblCarSystem carSystem : carSystems) {
             TblCarSystemBean carSystemBean = new TblCarSystemBean();

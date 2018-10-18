@@ -7,6 +7,8 @@ import person.db.bean.TblFileDetailBean;
 import person.handler.FileDetailHandler;
 import person.security.cache.CacheManager;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -181,5 +183,18 @@ public class CarUtil {
                 fileDetailBean.setCarSys(StringUtil.isNotBlank(carMap.get(fileDetailBean.getCarSys()))?carMap.get(fileDetailBean.getCarSys()):fileDetailBean.getCarSys());
             }
         }
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/10/18 14:36
+     * @param d
+    * @param formatStr
+     * @Description 根据传入的日期格式，获取当前日期时间字符串
+     */
+    public static String getDateStr(Date d, String formatStr) {
+        SimpleDateFormat sdf = new SimpleDateFormat(formatStr);
+        String dateNowStr = sdf.format(d);
+        return dateNowStr;
     }
 }
