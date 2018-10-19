@@ -18,6 +18,7 @@ public class TblFileDetailBean implements Serializable {
     private String errInfo;//错误描述，用来生成错误txt文件
     private String color;
     private Date uploadDate;//上传时间
+    private String orderNum;//排序字段
 
     public String getId() {
         return id;
@@ -121,5 +122,13 @@ public class TblFileDetailBean implements Serializable {
 
     public void setUploadDate(Date uploadDate) {
         this.uploadDate = uploadDate;
+    }
+
+    public String getOrderNum() {
+        return orderNum;
+    }
+
+    public void setOrderNum(String orderNum) {
+        this.orderNum = orderNum;
     }
 }

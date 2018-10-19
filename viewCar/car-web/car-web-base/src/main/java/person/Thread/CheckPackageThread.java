@@ -61,6 +61,7 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                     fileDetailBean.setFileName(list.getLast());
                     fileDetailBean.setFileId(fileId);
                     fileDetailBean.setUploadDate(uploadDate);
+                    fileDetailBean.setOrderNum(String.valueOf(i+1));
                     if (StringUtil.isBlank(vals[0])
                             || StringUtil.isBlank(vals[1])
                             || StringUtil.isBlank(vals[2])

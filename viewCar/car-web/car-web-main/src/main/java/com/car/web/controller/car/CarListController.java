@@ -298,7 +298,7 @@ public class CarListController {
         for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
             dataList.add(title);
             //查询单个文件的数据
-            List<TblFileDetailBean> fileDetailBeans1 = fileDetailHandler.queryByHql(hql + " and t.fileName = ?", fileBean.getId(), fileDetailBean.getFileName());
+            List<TblFileDetailBean> fileDetailBeans1 = fileDetailHandler.queryByHql(hql + " and t.fileName = ? order by (t.orderNum+0)", fileBean.getId(), fileDetailBean.getFileName());
             if(null != fileDetailBeans1 && !fileDetailBeans1.isEmpty()) {
                 for (TblFileDetailBean tblFileDetailBean : fileDetailBeans1) {
                     String[] temps = {tblFileDetailBean.getName(),tblFileDetailBean.getPhone(),tblFileDetailBean.getArea(), tblFileDetailBean.getCarSys(), "", ""};
@@ -319,7 +319,7 @@ public class CarListController {
             }
         }
         //错误的数据
-        List<TblFileDetailBean> errFilDetailBean = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.fileId = ? and t.status != ?", fileBean.getId(), "0");
+        List<TblFileDetailBean> errFilDetailBean = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.fileId = ? and t.status != ? order by t.fileName, (t.orderNum+0)", fileBean.getId(), "0");
         String errInfo = "";
         if(null != errFilDetailBean) {
             for (TblFileDetailBean fileDetailBean : errFilDetailBean) {
