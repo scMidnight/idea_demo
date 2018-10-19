@@ -78,6 +78,7 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                     if (StringUtil.isNotBlank(cityId)) {
                         fileDetailBean.setArea(cityId);
                     }else {
+                        fileDetailBean.setArea(CarUtil.getCityId(areaBeans, vals[2]));
                         fileDetailBean.setStatus("5");//号段错误
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：号段错误，文件中是" + vals[2] + "，根据号码查询后为：" + mobileFrom);
                         //fileDetailBeans1.add(fileDetailBean);

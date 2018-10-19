@@ -67,6 +67,28 @@ public class CarUtil {
 
     /**
      * @Author SunChang
+     * @Date 2018/10/19 16:58
+     * @param areaBeans
+    * @param cityName
+     * @Description 城市转id
+     */
+    public static String getCityId(List<TblAreaBean> areaBeans, String cityName) {
+        String id = "";
+        for (TblAreaBean areaBean : areaBeans) {
+            if(areaBean.getCityName().contains(cityName) || cityName.contains(areaBean.getCityName())) {
+                id = areaBean.getId();
+                break;
+            }
+        }
+        if(StringUtil.isNotBlank(id)) {
+            return id;
+        }else {
+            return cityName;
+        }
+    }
+
+    /**
+     * @Author SunChang
      * @Date 2018/9/6 20:08
      * @param blacks
     * @param phone
