@@ -54,7 +54,7 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
             for (int i = 0; i < list.size(); i++) {
                 if(i != 0) {
                     String[] vals = list.get(i).split("\t");
-                    if(vals== null || vals.length != 7) {
+                    if(vals == null || vals.length == 1) {
                         continue;
                     }
                     TblFileDetailBean fileDetailBean = CarUtil.getFileDetailBean(vals);
@@ -65,10 +65,9 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                     if (StringUtil.isBlank(vals[0])
                             || StringUtil.isBlank(vals[1])
                             || StringUtil.isBlank(vals[2])
-                            || StringUtil.isBlank(vals[3])
-                            || StringUtil.isBlank(vals[6])) {
+                            || StringUtil.isBlank(vals[3])) {
                         fileDetailBean.setStatus("6");
-                        fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：ID转失败");
+                        fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：ID转失败，字段为空");
                         fileDetailBeans1.add(fileDetailBean);
                         continue;
                     }

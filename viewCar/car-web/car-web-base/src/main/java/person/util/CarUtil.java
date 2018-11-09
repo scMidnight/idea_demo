@@ -26,11 +26,15 @@ public class CarUtil {
     public static TblFileDetailBean getFileDetailBean(String[] strs) {
         TblFileDetailBean fileDetailBean = new TblFileDetailBean();
         fileDetailBean.setId(IdUtils.randomString());
-        fileDetailBean.setName(strs[0]);
-        fileDetailBean.setPhone(strs[1]);
-        fileDetailBean.setArea(strs[2]);
-        fileDetailBean.setCarSys(strs[3]);
-        fileDetailBean.setTaskId(strs[6]);
+        fileDetailBean.setName(StringUtil.isNotBlank(strs[0]) ? strs[0] : "");
+        fileDetailBean.setPhone(StringUtil.isNotBlank(strs[1]) ? strs[1] : "");
+        fileDetailBean.setArea(StringUtil.isNotBlank(strs[2]) ? strs[2] : "");
+        fileDetailBean.setCarSys(StringUtil.isNotBlank(strs[3]) ? strs[3] : "");
+        if(strs.length > 4) {
+            fileDetailBean.setTaskId(StringUtil.isNotBlank(strs[6]) ? strs[6] : "");
+        }else {
+            fileDetailBean.setTaskId("");
+        }
         fileDetailBean.setStatus("0");
         return fileDetailBean;
     }
