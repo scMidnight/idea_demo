@@ -232,6 +232,8 @@ public class ExcelUtil {
                     c += mobile.trim() + "\t";
                 }else {
                     mobile = mobile.replaceAll("\\s*", "");
+                    mobile = mobile.replace("  ", "");
+                    mobile = mobile.replace(" ", "");
                     c += mobile.replace("\"", "").trim() + "\t";
                 }
             }
@@ -308,5 +310,13 @@ public class ExcelUtil {
         // 关闭文件流
         out.close();
         return true;
+    }
+
+    public static void main(String[] args) {
+        try {
+            read("C:\\Users\\SunChang\\Desktop\\原-1120-12046-一汽丰田奕泽IZOA9-11月-丰田-全国.xls");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
