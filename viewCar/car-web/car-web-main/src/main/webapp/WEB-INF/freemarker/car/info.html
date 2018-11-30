@@ -39,7 +39,7 @@
 </div>
 <#include "/common/js.html">
 <script type="text/html" id="fileNameBak">
-    {{d.fileBean.fileNameBak}}
+    {{d.fileBean.fileNameBak}};
 </script>
 <script type="text/html" id="status">
     {{# if (d.status == '1')  { }}
@@ -91,8 +91,8 @@
             ,toolbar: '#toolbar'
             ,defaultToolbar: []
             ,cols: [[
-                {field:'fileNameBak', title:'文件包名', templet:'#fileNameBak', align:'center'}
-                ,{field:'fileName', title:'文件名', width:360, align:'center'}
+                {field:'fileNameBak', title:'数据排期', templet:'#fileNameBak', align:'center'}
+                ,{field:'fileName', title:'排期名称', width:360, align:'center'}
                 ,{field:'taskId', title:'任务ID', align:'center'}
                 ,{field:'name', title:'姓名', align:'center'}
                 ,{field:'phone', title:'手机号', align:'center'}

@@ -18,6 +18,7 @@ import person.db.bean.*;
 import person.db.entity.Page;
 import person.handler.FileDetailHandler;
 import person.handler.FileHandler;
+import person.handler.ShowHandler;
 import person.handler.UserHandler;
 import person.security.cache.CacheManager;
 import person.util.*;
@@ -45,6 +46,9 @@ public class CarListController {
 
     @Autowired
     UserHandler userHandler;
+
+    @Autowired
+    ShowHandler showHandler;
 
     /**
      * @Author SunChang
@@ -77,7 +81,7 @@ public class CarListController {
             fileHandler.batchAddAttachment(fileBeans);
         } catch (Exception e) {
             jsonBean = new JsonBean("-1", e.getMessage(), "0", null);
-            System.err.println("上传文件有误：" + e.getMessage());
+            System.err.println("纳入文件有误：" + e.getMessage());
         }
         return JsonUtil.beanToJsonString(jsonBean);
     }
@@ -669,6 +673,63 @@ public class CarListController {
     public Object carCheckAgainGetCancel(HttpServletRequest request, HttpServletResponse response) {
         Constants.pubMap.put(UserUtil.getUserId() + "batchCheckAgain", false);
         return JsonUtil.toString("Y", "操作成功！");
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/11/30 13:19
+     * @param files
+    * @param request
+    * @param response
+     * @Description 给展示页面插数据
+     */
+    @RequestMapping(value = "/car/list/insert", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
+    @ResponseBody
+    public Object excelInsert(@RequestParam("file") MultipartFile[] files, HttpServletRequest request, HttpServletResponse response) {
+        JsonBean jsonBean = null;
+        boolean flag = true;
+        String ex = "";
+        for (MultipartFile file : files) {
+            try {
+                String fileName = file.getOriginalFilename();
+                String fileType = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+                List<TblShowBean> tblShowBeans = ExcelUtil.readStream(file.getInputStream(), fileType);
+                showHandler.deleteAll();
+                showHandler.batchAdd(tblShowBeans);
+                flag = true;
+            } catch (IOException e) {
+                flag = false;
+                ex = e.getMessage();
+                e.printStackTrace();
+            }
+        }
+        if(flag) {
+            jsonBean = new JsonBean("0", "", "0", null);
+        }else  {
+            jsonBean = new JsonBean("-1", ex, "0", null);
+        }
+        return JsonUtil.beanToJsonString(jsonBean);
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/11/30 13:45
+     * @param page
+    * @param request
+    * @param map
+     * @Description excel入库数据列表查询
+     */
+    @RequestMapping(value = "/car/list/insert/list", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
+    @ResponseBody
+    public Object excelListPost(Page<TblShowBean> page, HttpServletRequest request, ModelMap map) {
+        String pageNo = request.getParameter("page");//page是当前页码
+        String limit = request.getParameter("limit");//limit是每页数据量
+        String hql = "SELECT t FROM TblShow t";
+        page.setPageNo(Integer.parseInt(pageNo));
+        page.setPageSize(Integer.parseInt(limit));
+        Page<TblShowBean> pageResult = showHandler.queryByPageFilter(page,hql, null);
+        JsonBean jsonBean = new JsonBean("0", "", String.valueOf(pageResult.getTotalCount()), pageResult.getResult());
+        return JsonUtil.beanToJsonString(jsonBean);
     }
 
     public static void main(String[] args) {

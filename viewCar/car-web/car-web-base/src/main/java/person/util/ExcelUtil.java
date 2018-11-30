@@ -3,14 +3,15 @@ package person.util;
 import jodd.util.StringUtil;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import person.db.bean.TblShowBean;
 
 import java.io.*;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -193,6 +194,69 @@ public class ExcelUtil {
             }
         }
         return wb;
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/11/30 13:11
+     * @param inputStream
+    * @param fileType
+     * @Description 读取附件中内容插入实体类集合
+     */
+    public static List<TblShowBean> readStream(InputStream inputStream, String fileType) throws IOException {
+        List<TblShowBean> list = new ArrayList<>();
+        InputStream stream = inputStream;
+        Workbook wb = null;
+        if (fileType.equals("xls")) {
+            wb = new HSSFWorkbook(stream);
+        } else if (fileType.equals("xlsx")) {
+            wb = new XSSFWorkbook(stream);
+        } else {
+            System.out.println("您输入的excel格式不正确");
+        }
+        Sheet sheet1 = wb.getSheetAt(0);
+        int rowNUmber = sheet1.getLastRowNum();
+        for (int i = 1; i <= rowNUmber; i++) {
+            Row row = sheet1.getRow(i);
+            String val = "";
+            for (int j = 0; j < row.getLastCellNum();j++) {
+                Cell cell = row.getCell(j);
+                if(cell !=null) {
+                    DecimalFormat df = new DecimalFormat("#");
+                    switch (cell.getCellType()) {
+                        case HSSFCell.CELL_TYPE_NUMERIC:// 数字
+                            if(DateUtil.isCellDateFormatted(cell)) {
+                                Date theDate = cell.getDateCellValue();
+                                SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd");
+                                val += dff.format(theDate);
+                            }else {
+                                val += df.format(cell.getNumericCellValue()) + ",";
+                            }
+                            break;
+                        default:
+                            val += cell.toString() + ",";
+                            break;
+                    }
+
+                }
+            }
+            String[] vals = val.split(",");
+            TblShowBean tblShowBean = new TblShowBean();
+            tblShowBean.setId(IdUtils.randomString());
+            tblShowBean.setSource(vals[0]);
+            tblShowBean.setIntentionPerson(vals[1]);
+            tblShowBean.setCityOrientation(vals[2]);
+            tblShowBean.setIntentionBrand(vals[3]);
+            tblShowBean.setIntentionTrade(vals[4]);
+            tblShowBean.setIntentionModel(vals[5]);
+            tblShowBean.setPhone(vals[6]);
+            tblShowBean.setNetworkNum(vals[7]);
+            tblShowBean.setAnalysis(vals[8]);
+            tblShowBean.setCarMonth(vals[9]);
+            tblShowBean.setInsertDate(vals[10]);
+            list.add(tblShowBean);
+        }
+        return list;
     }
 
     /**

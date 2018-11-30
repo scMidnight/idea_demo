@@ -1723,3 +1723,33 @@ CREATE TABLE `tbl_userrole` (
 -- Records of tbl_userrole
 -- ----------------------------
 INSERT INTO `tbl_userrole` VALUES ('1', '1');
+
+-- ----------------------------
+-- Table structure for tbl_show
+-- ----------------------------
+DROP TABLE IF EXISTS `tbl_show`;
+CREATE TABLE `tbl_show`  (
+  `id` varchar(35) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '主键',
+  `source` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '来源',
+  `intention_person` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '意向人',
+  `city_orientation` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '城市定向',
+  `intention_brand` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '意向品牌',
+  `intention_trade` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '意向厂商',
+  `intention_model` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '意向车型',
+  `phone` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '手机号',
+  `network_num` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '网络跟踪频次',
+  `analysis` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '购车意向分析',
+  `car_month` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '欲购车月份',
+  `insert_date` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '载入时间',
+  INDEX `show_source_index`(`source`(255)) USING BTREE,
+  INDEX `show_intention_person_index`(`intention_person`(255)) USING BTREE,
+  INDEX `show_city_orientation_index`(`city_orientation`(255)) USING BTREE,
+  INDEX `show_intention_brand_index`(`intention_brand`(255)) USING BTREE,
+  INDEX `show_intention_trade_index`(`intention_trade`(255)) USING BTREE,
+  INDEX `show_intention_model_index`(`intention_model`(255)) USING BTREE,
+  INDEX `show_phone_index`(`phone`(255)) USING BTREE,
+  INDEX `show_network_num_index`(`network_num`(255)) USING BTREE,
+  INDEX `show_analysis_index`(`analysis`(255)) USING BTREE,
+  INDEX `show_car_month_index`(`car_month`(255)) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+SET FOREIGN_KEY_CHECKS = 1;
