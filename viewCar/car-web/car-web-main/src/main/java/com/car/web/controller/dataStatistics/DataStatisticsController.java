@@ -152,7 +152,7 @@ public class DataStatisticsController {
             if(null != maps && maps.size() > 0) {
                 for (Map<String, Object> map : maps) {
                     StatisticsBean statisticsBean = new StatisticsBean();
-                    String name = map.get("name").toString();
+                    String name = map.get("name") == null ? "" : map.get("name").toString();
                     statisticsBean.setId(name);
                     if (CarUtil.isInteger(name)) {
                         statisticsBean.setCarSys(carSysMaps.get(name).getCarSysName());

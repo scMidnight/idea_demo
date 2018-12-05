@@ -40,6 +40,6 @@ public class carPasswordEncode implements PasswordEncoder {
     }
 
     public static void main(String[] args){
-        System.out.println(Encoder.encodeMd5("admin"));
+        System.out.println(Encoder.encodeMd5("rswx2018"));
     }
 }
