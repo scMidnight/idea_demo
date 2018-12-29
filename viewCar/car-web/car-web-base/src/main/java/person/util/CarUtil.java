@@ -61,7 +61,10 @@ public class CarUtil {
         }
         String id = "";
         for (TblAreaBean areaBean : areaBeans) {
-            if(areaBean.getCityName().contains(cityName) && areaBean.getCityName().contains(mobile)) {
+            if (areaBean.getCityName().equals(cityName) && areaBean.getCityName().equals(mobile.trim())) {
+                id = areaBean.getId();
+                break;
+            }else if(areaBean.getCityName().contains(cityName) && areaBean.getCityName().contains(mobile.trim())) {
                 id = areaBean.getId();
                 break;
             }
@@ -79,7 +82,10 @@ public class CarUtil {
     public static String getCityId(List<TblAreaBean> areaBeans, String cityName) {
         String id = "";
         for (TblAreaBean areaBean : areaBeans) {
-            if(areaBean.getCityName().contains(cityName) || cityName.contains(areaBean.getCityName())) {
+            if(areaBean.getCityName().equals(cityName.trim())) {
+                id = areaBean.getId();
+                break;
+            }else if(areaBean.getCityName().contains(cityName) || cityName.contains(areaBean.getCityName())) {
                 id = areaBean.getId();
                 break;
             }
