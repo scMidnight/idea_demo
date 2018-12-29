@@ -99,14 +99,14 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                     }else {
                         fileDetailBean.setStatus("6");
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行车系转换错误，状态：ID转失败");
-                        fileDetailBeans1.add(fileDetailBean);
-                        continue;
+                        //fileDetailBeans1.add(fileDetailBean);
+                        //continue;
                     }
                     if(CarUtil.checkCarSys(carSysId, fileDetailBean.getPhone(), fileDetailHandler)) {
                         fileDetailBean.setStatus("3");//车系重复
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：车系重复");
-                        fileDetailBeans1.add(fileDetailBean);
-                        continue;
+                        //fileDetailBeans1.add(fileDetailBean);
+                        //continue;
                     }
                     if(CarUtil.checkTask(fileDetailBean.getTaskId(), fileDetailBean.getPhone(), fileDetailHandler)) {
                         fileDetailBean.setStatus("2");//任务重复
@@ -120,7 +120,7 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                         fileDetailBeans1.add(fileDetailBean);
                         continue;
                     }
-                    if(!fileDetailBean.getStatus().equals("5")) {//如果不是号段错误
+                    if(!fileDetailBean.getStatus().equals("5") && !fileDetailBean.getStatus().equals("6") && !fileDetailBean.getStatus().equals("3")) {//如果不是号段错误，车系错误以及车第重复
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行");
                         fileDetailBeans1.add(fileDetailBean);
                     }else {
