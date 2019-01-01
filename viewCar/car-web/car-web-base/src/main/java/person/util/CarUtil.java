@@ -64,9 +64,14 @@ public class CarUtil {
             if (areaBean.getCityName().equals(cityName) && areaBean.getCityName().equals(mobile.trim())) {
                 id = areaBean.getId();
                 break;
-            }else if(areaBean.getCityName().contains(cityName) && areaBean.getCityName().contains(mobile.trim())) {
-                id = areaBean.getId();
-                break;
+            }
+        }
+        if(StringUtil.isBlank(id)) {
+            for (TblAreaBean areaBean : areaBeans) {
+                if (areaBean.getCityName().contains(cityName) && areaBean.getCityName().contains(mobile.trim())) {
+                    id = areaBean.getId();
+                    break;
+                }
             }
         }
         return id;
@@ -85,9 +90,14 @@ public class CarUtil {
             if(areaBean.getCityName().equals(cityName.trim())) {
                 id = areaBean.getId();
                 break;
-            }else if(areaBean.getCityName().contains(cityName) || cityName.contains(areaBean.getCityName())) {
-                id = areaBean.getId();
-                break;
+            }
+        }
+        if(StringUtil.isBlank(id)) {
+            for (TblAreaBean areaBean : areaBeans) {
+                if(areaBean.getCityName().contains(cityName) || cityName.contains(areaBean.getCityName())) {
+                    id = areaBean.getId();
+                    break;
+                }
             }
         }
         if(StringUtil.isNotBlank(id)) {

@@ -1,0 +1,116 @@
+<#include "/common/head.html">
+<#include "/common/bodyStart.html">
+<div class="layui-layout layui-layout-admin">
+    <#include "/common/headContent.html">
+    <#include "/common/left2.html">
+    <div class="layui-body">
+        <div style="padding: 15px;">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>请确定线下目标潜客筛选的三大维度：</legend>
+            </fieldset>
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">品牌选择：</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="brand" value="全品牌" title="全品牌" lay-filter="brand">
+                        <input type="radio" name="brand" value="指定品牌" checked lay-filter="brand" title="指定品牌">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <!--<label class="layui-form-label">普通文本域</label>-->
+                    <div class="layui-input-block">
+                        <textarea id="brandTextArea" placeholder="请输入指定品牌" class="layui-textarea"></textarea>
+                        <h3><font color="red">*</font>仅筛选出到访过以上品牌经销商的线下潜客</h3>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">地域选择：</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="diyu" value="不指定地域" title="不指定地域" lay-filter="diyu">
+                        <input type="radio" name="diyu" value="自定义地域" checked lay-filter="diyu" title="自定义地域">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <!--<label class="layui-form-label">普通文本域</label>-->
+                    <div class="layui-input-block">
+                        <textarea id="diyuTextArea" placeholder="请输入地域名" class="layui-textarea"></textarea>
+                        <h3><font color="red">*</font>仅筛选出到访以上地域经销商的线下潜客</h3>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">时段选择：</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="shiduan" value="实时数据" title="实时数据" >
+                        <input type="radio" name="shiduan" value="昨日数据" title="昨日数据" >
+                        <input type="radio" name="shiduan" value="近一周数据" title="近一周数据" >
+                        <input type="radio" name="shiduan" value="近一个月数据" title="近一个月数据" >
+                        <input type="radio" name="shiduan" value="近三个月数据" title="近三个月数据" >
+                        <input type="radio" name="shiduan" value="近半年数据" title="近半年数据" >
+                        <button class="layui-btn layui-btn-sm" style="margin-top: 10px;">自定义时段</button>
+                    </div>
+                </div>
+                <div class="layui-row">
+                    <div class="layui-col-xs6 layui-col-md12">
+                        <div class="layui-form-item">
+                            <button style="display:block;margin:15px auto" class="layui-btn" lay-submit lay-filter="baocun">开始筛选</button>
+                        </div>
+                    </div>
+                </div>
+                <hr class="layui-bg-black" />
+                经数据筛选后，符合您筛选条件的线下潜客数为：<button id="downFile" class="layui-btn layui-btn-disabled">提取人群数据包</button>
+            </div>
+        </div>
+    </div>
+    <#include "/common/footer.html">
+</div>
+<#include "/common/js.html">
+<!-- 自定义 js -->
+<script>
+    var t1 ;
+    var loading;
+    layui.use('form', function () {
+        function ok() {
+            layer.close(loading);
+            layer.msg('筛选成功，请点击 提取人群数据包 按钮进行下载！',{
+                time: 0
+                ,btn: ['确定']
+                ,icon:1
+                ,yes: function(index) {
+                    layer.close(index);
+                    window.clearTimeout(t1);
+                    $("#downFile").removeClass("layui-btn-disabled");
+                    $("#downFile").addClass("layui-btn-warm");
+                }
+            })
+        };
+        var form = layui.form;
+        form.on('submit(baocun)', function (data) {
+            loading = layer.load(0,{shade: [0.4,'#000']});
+            t1 = window.setTimeout(ok,5000);
+        });
+        form.on('radio(brand)', function (data) {
+            if(data.value === '全品牌') {
+                $("#brandTextArea").val("");
+                $("#brandTextArea").attr("disabled", true);
+            }else {
+                $("#brandTextArea").attr("disabled", false);
+            }
+        });
+        form.on('radio(diyu)', function (data) {
+            if(data.value === '不指定地域') {
+                $("#diyuTextArea").val("");
+                $("#diyuTextArea").attr("disabled", true);
+            }else {
+                $("#diyuTextArea").attr("disabled", false);
+            }
+        });
+    });
+    $("#downFile").on("click", function () {
+        if(!$(this).hasClass("layui-btn-disabled")) {
+            window.location.href = "${base}/filter/downFile";
+            $(this).removeClass("layui-btn-warm");
+            $(this).addClass("layui-btn-disabled");
+        }
+    })
+</script>
+<#include "/common/bodyEnd.html">

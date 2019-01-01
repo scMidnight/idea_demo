@@ -1,0 +1,94 @@
+<#include "/common/head.html">
+<#include "/common/bodyStart.html">
+<div class="layui-layout layui-layout-admin">
+    <#include "/common/headContent.html">
+    <#include "/common/left3.html">
+    <div class="layui-body">
+        <div style="padding: 15px;">
+            <div class="layui-tab layui-tab-brief" lay-filter="tab">
+                <ul class="layui-tab-title">
+                    <li class="layui-this" lay-id="1">采集实时数据</li>
+                    <li lay-id="2">按日期采集数据</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <div class="layui-row">
+                            <div class="layui-col-md11">
+                                <fieldset class="layui-elem-field layui-field-title">
+                                    <legend>
+                                        车金融意向用户名单&emsp;
+                                    </legend>
+                                </fieldset>
+                            </div>
+                            <div class="layui-col-md1">
+                                <button style="display:block;margin: 3px auto" class="layui-btn layui-btn-danger" id="jia"><i class="layui-icon layui-icon-add-circle"></i></button>
+                            </div>
+                        </div>
+                        <table class="layui-hide" id="excelShowList" lay-filter="excelShowList"></table>
+                    </div>
+                    <!--<div class="layui-tab-item">按日期采集数据，功能正在开发中...</div>-->
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <#include "/common/footer.html">
+</div>
+<#include "/common/js.html">
+<!-- 自定义 js -->
+<script type="text/html" id="insertDate">
+    {{util.toDateString(d.insertDate, 'yyyy-MM-dd')}}
+</script>
+<script>
+    layui.use(['element','layer','table','upload'], function(){
+        var element = layui.element, layer = layui.layer, upload = layui.upload, table = layui.table;
+        element.on('tab(tab)', function (data) {
+            console.log(data.content);
+            if($(this).attr("lay-id") === "2") {
+                layer.msg("功能正在开发中...");
+                element.tabChange('tab', '1');
+            }
+            // layer.msg('切到到了'+ data.index + '：' + this.innerHTML);
+        });
+        var uploadExl = upload.render({
+            elem: "#jia"
+            ,url:"${base}/intentClient/insert"
+            ,accept: "file"
+            ,exts: "xls|xlsx"
+            ,before: function (obj) {
+                loading = layer.load(0,{shade: [0.4,'#000']});
+            }
+            ,done: function(res, index, upload) {
+                if(res.code == 0) {
+                    layer.msg("更新数据完成！");
+                    layer.close(loading);
+                    tableIns.reload({
+                        page:{
+                            curr:1
+                        }
+                    });
+                }
+            }
+        });
+        var tableIns = table.render({
+            id: 'excelShow'
+            ,elem: '#excelShowList'
+            ,url:'${base}/intentClient'
+            ,method:'post'
+            ,cols:[[
+                {field: 'insertDate', title: '采集日期', align: 'center', templet:'#insertDate', sort: true}
+                ,{field: 'userName', title: '用户名', align: 'center'}
+                ,{field: 'phone', title: '手机号', align: 'center'}
+                ,{field: 'age', title: '年龄', sort:true, align: 'center'}
+                ,{field: 'brandName', title: '意向品牌', align: 'center'}
+                ,{field: 'carSys', title: '意向车系', align: 'center'}
+                ,{field: 'carProduct', title: '意向车金融产品', align: 'center'}
+                ,{field: 'stage', title: '所处阶段', sort:true, align: 'center'}
+                ,{field: 'source', title: '来源经销商', sort:true, align: 'center'}
+            ]]
+            ,even: true //隔行换色
+            ,page: true //是否显示分页
+        });
+    });
+</script>
+<#include "/common/bodyEnd.html">

@@ -10,10 +10,30 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-09-18 13:07:31
+Date: 2019-01-02 03:10:52
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for tbl_ad_pro_manage
+-- ----------------------------
+DROP TABLE IF EXISTS `tbl_ad_pro_manage`;
+CREATE TABLE `tbl_ad_pro_manage` (
+  `id` varchar(35) NOT NULL COMMENT '主键',
+  `insert_date` varchar(1000) DEFAULT NULL COMMENT '载入时间',
+  `pro_id` varchar(1000) DEFAULT NULL COMMENT '项目id',
+  `pro_name` varchar(1000) DEFAULT NULL COMMENT '项目名称',
+  `brand_name` varchar(255) DEFAULT NULL COMMENT '品牌名称',
+  `trade_name` varchar(255) DEFAULT NULL COMMENT '厂商名称',
+  `car_sys_name` varchar(255) DEFAULT NULL COMMENT '车系名称',
+  `status` varchar(255) DEFAULT NULL COMMENT '投放状态 0投放中，1投放暂停，2投放结束',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tbl_ad_pro_manage
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for tbl_area
@@ -446,6 +466,7 @@ CREATE TABLE `tbl_car_system` (
 -- ----------------------------
 -- Records of tbl_car_system
 -- ----------------------------
+INSERT INTO `tbl_car_system` VALUES ('052AD9FCE148B7CA2CF826E72CEBD97F', '1', null, '1', null, '1', '1', '1');
 INSERT INTO `tbl_car_system` VALUES ('1', '玛莎拉蒂', '57', '玛莎拉蒂', '3', '总裁', '289', '0');
 INSERT INTO `tbl_car_system` VALUES ('10', '长城', '77', '长城汽车', '4', '风骏5', '2462', '0');
 INSERT INTO `tbl_car_system` VALUES ('100', '铃木', '53', '长安铃木', '35', '天语 SX4', '529', '0');
@@ -1231,6 +1252,7 @@ INSERT INTO `tbl_car_system` VALUES ('696', '广汽传祺', '82', '广汽乘用�
 INSERT INTO `tbl_car_system` VALUES ('697', '广汽传祺', '82', '广汽乘用车', '186', '传祺GA8', '3782', '0');
 INSERT INTO `tbl_car_system` VALUES ('698', '广汽传祺', '82', '广汽乘用车', '186', '传祺GS8', '4094', '0');
 INSERT INTO `tbl_car_system` VALUES ('699', '广汽传祺', '82', '广汽乘用车', '186', '传祺GM8', '4174', '0');
+INSERT INTO `tbl_car_system` VALUES ('6BC013A094D18E325A6E0E3DA93A2345', '1', null, '1', null, '1', '1', '0');
 INSERT INTO `tbl_car_system` VALUES ('7', '长城', '77', '长城汽车', '4', '长城C30', '2090', '0');
 INSERT INTO `tbl_car_system` VALUES ('70', '宝马', '15', '华晨宝马', '29', '宝马X1新能源', '4356', '0');
 INSERT INTO `tbl_car_system` VALUES ('700', '广汽传祺', '82', '广汽乘用车', '186', '传祺GS7', '4230', '0');
@@ -1626,6 +1648,25 @@ CREATE TABLE `tbl_file_detail` (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for tbl_flow_analysis
+-- ----------------------------
+DROP TABLE IF EXISTS `tbl_flow_analysis`;
+CREATE TABLE `tbl_flow_analysis` (
+  `id` varchar(35) NOT NULL COMMENT '主键',
+  `insert_date` date DEFAULT NULL COMMENT '载入时间',
+  `insert_month` varchar(1000) DEFAULT NULL COMMENT '插入月份',
+  `module_name` varchar(1000) DEFAULT NULL COMMENT '模块名称',
+  `title_name` varchar(1000) DEFAULT NULL COMMENT '标题名称',
+  `exposure_num` varchar(1000) DEFAULT NULL COMMENT '曝光次数',
+  `click_num` varchar(1000) DEFAULT NULL COMMENT '点击次数',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='流量分析';
+
+-- ----------------------------
+-- Records of tbl_flow_analysis
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for tbl_function
 -- ----------------------------
 DROP TABLE IF EXISTS `tbl_function`;
@@ -1635,22 +1676,75 @@ CREATE TABLE `tbl_function` (
   `function_description` varchar(50) NOT NULL DEFAULT '',
   `function_level` varchar(1) NOT NULL DEFAULT '',
   `function_url` varchar(500) NOT NULL,
+  `function_type` varchar(500) NOT NULL COMMENT '1:线上广告管理，2:线下潜客筛选，3:车金融潜客挖掘，4:线索优化管理，5:账号管理',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Records of tbl_function
 -- ----------------------------
-INSERT INTO `tbl_function` VALUES ('F001', '数据管理', '数据管理', '1', '#');
-INSERT INTO `tbl_function` VALUES ('F001001', '上传数据', '上传数据', '2', '/car/uploader');
-INSERT INTO `tbl_function` VALUES ('F001002', '数据列表', '数据列表', '2', '/car/list');
-INSERT INTO `tbl_function` VALUES ('F002', '数据统计', '数据统计', '1', '#');
-INSERT INTO `tbl_function` VALUES ('F002001', '数据统计', '数据统计', '2', '/car/dataStatistics');
-INSERT INTO `tbl_function` VALUES ('F003', '检测预警', '检测预警', '1', '#');
-INSERT INTO `tbl_function` VALUES ('F004', '批量导出', '批量导出', '1', '/car/batchExport');
-INSERT INTO `tbl_function` VALUES ('F005', '黑名单管理', '黑名单管理', '1', '/blackList');
-INSERT INTO `tbl_function` VALUES ('F006', '车系管理', '车系管理', '1', '#');
-INSERT INTO `tbl_function` VALUES ('F006001', '车系列表', '车系列表', '2', '/carSystem/info');
+INSERT INTO `tbl_function` VALUES ('F001', '数据管理', '数据管理', '1', '#', '4');
+INSERT INTO `tbl_function` VALUES ('F001001', '上传数据', '上传数据', '2', '/car/uploader', '4');
+INSERT INTO `tbl_function` VALUES ('F001002', '数据列表', '数据列表', '2', '/car/list', '4');
+INSERT INTO `tbl_function` VALUES ('F002', '数据统计', '数据统计', '1', '#', '4');
+INSERT INTO `tbl_function` VALUES ('F002001', '数据统计', '数据统计', '2', '/car/dataStatistics', '4');
+INSERT INTO `tbl_function` VALUES ('F003', '检测预警', '检测预警', '1', '/car/warning', '4');
+INSERT INTO `tbl_function` VALUES ('F004', '批量导出', '批量导出', '1', '/car/batchExport', '4');
+INSERT INTO `tbl_function` VALUES ('F005', '黑名单管理', '黑名单管理', '1', '/blackList', '4');
+INSERT INTO `tbl_function` VALUES ('F006', '车系管理', '车系管理', '1', '#', '4');
+INSERT INTO `tbl_function` VALUES ('F006001', '车系列表', '车系列表', '2', '/carSystem/info', '4');
+INSERT INTO `tbl_function` VALUES ('F007', '\r\n友道汽车流量分析', '\r\n友道汽车流量分析', '1', '/flowAnalysis/list', '1');
+INSERT INTO `tbl_function` VALUES ('F008', '广告投放创建', '广告投放创建', '1', '/adServing', '1');
+INSERT INTO `tbl_function` VALUES ('F009', '广告项目管理', '广告项目管理', '1', '/adProManage', '1');
+INSERT INTO `tbl_function` VALUES ('F010', '\r\n线下流量分析', '\r\n线下流量分析', '1', '/offLine', '2');
+INSERT INTO `tbl_function` VALUES ('F011', '目标潜客筛选', '目标潜客筛选', '1', '/filter', '2');
+INSERT INTO `tbl_function` VALUES ('F012', '意向客户采集', '意向客户采集', '1', '/intentClient', '3');
+INSERT INTO `tbl_function` VALUES ('F013', '转化数据上传', '转化数据上传', '1', 'javascript:layer.msg(\'功能正在开发中...\');', '3');
+INSERT INTO `tbl_function` VALUES ('F014', '账号管理', '账号管理', '1', '/accountManage', '5');
+INSERT INTO `tbl_function` VALUES ('F015', '账号资料设置', '账号资料设置', '1', 'javascript:layer.msg(\'功能正在开发中...\');', '5');
+INSERT INTO `tbl_function` VALUES ('F016', '账号操作记录', '账号操作记录', '1', 'javascript:layer.msg(\'功能正在开发中...\');', '5');
+
+-- ----------------------------
+-- Table structure for tbl_intent_client
+-- ----------------------------
+DROP TABLE IF EXISTS `tbl_intent_client`;
+CREATE TABLE `tbl_intent_client` (
+  `id` varchar(35) NOT NULL COMMENT '主键',
+  `insert_date` date DEFAULT NULL COMMENT '采集时间',
+  `user_name` varchar(1000) DEFAULT NULL COMMENT '用户名称',
+  `phone` varchar(1000) DEFAULT NULL COMMENT '手机',
+  `age` varchar(1000) DEFAULT NULL COMMENT '年龄',
+  `brand_name` varchar(1000) DEFAULT NULL COMMENT '意向品牌',
+  `car_sys` varchar(1000) DEFAULT NULL COMMENT '意向车系',
+  `car_product` varchar(1000) DEFAULT NULL COMMENT '意向车系金融产品',
+  `stage` varchar(1000) DEFAULT NULL COMMENT '所处阶段',
+  `source` varchar(1000) DEFAULT NULL COMMENT '来源经销商',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tbl_intent_client
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for tbl_offline_filter
+-- ----------------------------
+DROP TABLE IF EXISTS `tbl_offline_filter`;
+CREATE TABLE `tbl_offline_filter` (
+  `id` varchar(35) NOT NULL COMMENT '主键',
+  `insert_date` date DEFAULT NULL COMMENT '载入时间',
+  `source` varchar(1000) DEFAULT NULL COMMENT '时刻来源（经销商）',
+  `city` varchar(1000) DEFAULT NULL COMMENT '所在城市',
+  `brand_name` varchar(1000) DEFAULT NULL COMMENT '所属品牌',
+  `offline_flow` varchar(1000) DEFAULT NULL COMMENT '线下流量',
+  `stay_date` varchar(1000) DEFAULT NULL COMMENT '平均停留时间',
+  `insert_month` varchar(1000) DEFAULT NULL COMMENT '插入月份',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tbl_offline_filter
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for tbl_role
@@ -1690,6 +1784,50 @@ INSERT INTO `tbl_rolefunction` VALUES ('1', 'F004');
 INSERT INTO `tbl_rolefunction` VALUES ('1', 'F005');
 INSERT INTO `tbl_rolefunction` VALUES ('1', 'F006');
 INSERT INTO `tbl_rolefunction` VALUES ('1', 'F006001');
+INSERT INTO `tbl_rolefunction` VALUES ('1', 'F007');
+INSERT INTO `tbl_rolefunction` VALUES ('1', 'F009');
+INSERT INTO `tbl_rolefunction` VALUES ('1', 'F010');
+INSERT INTO `tbl_rolefunction` VALUES ('1', 'F011');
+INSERT INTO `tbl_rolefunction` VALUES ('1', 'F012');
+INSERT INTO `tbl_rolefunction` VALUES ('1', 'F013');
+INSERT INTO `tbl_rolefunction` VALUES ('1', 'F014');
+INSERT INTO `tbl_rolefunction` VALUES ('1', 'F015');
+INSERT INTO `tbl_rolefunction` VALUES ('1', 'F008');
+INSERT INTO `tbl_rolefunction` VALUES ('1', 'F016');
+
+-- ----------------------------
+-- Table structure for tbl_show
+-- ----------------------------
+DROP TABLE IF EXISTS `tbl_show`;
+CREATE TABLE `tbl_show` (
+  `id` varchar(35) NOT NULL COMMENT '主键',
+  `source` varchar(1000) DEFAULT NULL COMMENT '来源',
+  `intention_person` varchar(1000) DEFAULT NULL COMMENT '意向人',
+  `city_orientation` varchar(1000) DEFAULT NULL COMMENT '城市定向',
+  `intention_brand` varchar(1000) DEFAULT NULL COMMENT '意向品牌',
+  `intention_trade` varchar(1000) DEFAULT NULL COMMENT '意向厂商',
+  `intention_model` varchar(1000) DEFAULT NULL COMMENT '意向车型',
+  `phone` varchar(1000) DEFAULT NULL COMMENT '手机号',
+  `network_num` varchar(1000) DEFAULT NULL COMMENT '网络跟踪频次',
+  `analysis` varchar(1000) DEFAULT NULL COMMENT '购车意向分析',
+  `car_month` varchar(1000) DEFAULT NULL COMMENT '欲购车月份',
+  `insert_date` varchar(1000) DEFAULT NULL COMMENT '载入时间',
+  PRIMARY KEY (`id`),
+  KEY `show_source_index` (`source`(255)) USING BTREE,
+  KEY `show_intention_person_index` (`intention_person`(255)) USING BTREE,
+  KEY `show_city_orientation_index` (`city_orientation`(255)) USING BTREE,
+  KEY `show_intention_brand_index` (`intention_brand`(255)) USING BTREE,
+  KEY `show_intention_trade_index` (`intention_trade`(255)) USING BTREE,
+  KEY `show_intention_model_index` (`intention_model`(255)) USING BTREE,
+  KEY `show_phone_index` (`phone`(255)) USING BTREE,
+  KEY `show_network_num_index` (`network_num`(255)) USING BTREE,
+  KEY `show_analysis_index` (`analysis`(255)) USING BTREE,
+  KEY `show_car_month_index` (`car_month`(255)) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+
+-- ----------------------------
+-- Records of tbl_show
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for tbl_user
@@ -1723,33 +1861,3 @@ CREATE TABLE `tbl_userrole` (
 -- Records of tbl_userrole
 -- ----------------------------
 INSERT INTO `tbl_userrole` VALUES ('1', '1');
-
--- ----------------------------
--- Table structure for tbl_show
--- ----------------------------
-DROP TABLE IF EXISTS `tbl_show`;
-CREATE TABLE `tbl_show`  (
-  `id` varchar(35) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '主键',
-  `source` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '来源',
-  `intention_person` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '意向人',
-  `city_orientation` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '城市定向',
-  `intention_brand` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '意向品牌',
-  `intention_trade` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '意向厂商',
-  `intention_model` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '意向车型',
-  `phone` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '手机号',
-  `network_num` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '网络跟踪频次',
-  `analysis` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '购车意向分析',
-  `car_month` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '欲购车月份',
-  `insert_date` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '载入时间',
-  INDEX `show_source_index`(`source`(255)) USING BTREE,
-  INDEX `show_intention_person_index`(`intention_person`(255)) USING BTREE,
-  INDEX `show_city_orientation_index`(`city_orientation`(255)) USING BTREE,
-  INDEX `show_intention_brand_index`(`intention_brand`(255)) USING BTREE,
-  INDEX `show_intention_trade_index`(`intention_trade`(255)) USING BTREE,
-  INDEX `show_intention_model_index`(`intention_model`(255)) USING BTREE,
-  INDEX `show_phone_index`(`phone`(255)) USING BTREE,
-  INDEX `show_network_num_index`(`network_num`(255)) USING BTREE,
-  INDEX `show_analysis_index`(`analysis`(255)) USING BTREE,
-  INDEX `show_car_month_index`(`car_month`(255)) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
-SET FOREIGN_KEY_CHECKS = 1;

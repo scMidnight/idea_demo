@@ -1,14 +1,16 @@
 package person.util;
 
 import jodd.util.StringUtil;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import person.db.bean.TblShowBean;
+import person.db.bean.*;
 
 import java.io.*;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -201,6 +203,251 @@ public class ExcelUtil {
      * @Date 2018/11/30 13:11
      * @param inputStream
     * @param fileType
+     * @Description 广告项目管理用
+     */
+    public static List<TblAdProManageBean> readStreamAdProManage(InputStream inputStream, String fileType) throws IOException, ParseException {
+        List<TblAdProManageBean> list = new ArrayList<>();
+        InputStream stream = inputStream;
+        Workbook wb = null;
+        if (fileType.equals("xls")) {
+            wb = new HSSFWorkbook(stream);
+        } else if (fileType.equals("xlsx")) {
+            wb = new XSSFWorkbook(stream);
+        } else {
+            System.out.println("您输入的excel格式不正确");
+        }
+        Sheet sheet1 = wb.getSheetAt(0);
+        int rowNUmber = sheet1.getLastRowNum();
+        for (int i = 1; i <= rowNUmber; i++) {
+            Row row = sheet1.getRow(i);
+            String val = "";
+            for (int j = 0; j < row.getLastCellNum();j++) {
+                Cell cell = row.getCell(j);
+                if(cell !=null) {
+                    DecimalFormat df = new DecimalFormat("#");
+                    switch (cell.getCellType()) {
+                        case HSSFCell.CELL_TYPE_NUMERIC:// 数字
+                            if(DateUtil.isCellDateFormatted(cell)) {
+                                Date theDate = cell.getDateCellValue();
+                                SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd");
+                                val += dff.format(theDate);
+                            }else {
+                                val += df.format(cell.getNumericCellValue()) + ",";
+                            }
+                            break;
+                        default:
+                            val += cell.toString() + ",";
+                            break;
+                    }
+
+                }
+            }
+            String[] vals = val.split(",");
+            TblAdProManageBean adProManageBean = new TblAdProManageBean();
+            adProManageBean.setId(IdUtils.randomString());
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");// HH:mm:ss
+            adProManageBean.setInsertDate(sdf.parse(vals[0]));
+            adProManageBean.setProId(vals[1]);
+            adProManageBean.setProName(vals[2]);
+            adProManageBean.setBrandName(vals[3]);
+            adProManageBean.setTradeName(vals[4]);
+            adProManageBean.setCarSysName(vals[5]);
+            adProManageBean.setStatus("0");
+            list.add(adProManageBean);
+        }
+        return list;
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/11/30 13:11
+     * @param inputStream
+    * @param fileType
+     * @Description 意向客户采集
+     */
+    public static List<TblIntentClientBean> readStreamIntentClient(InputStream inputStream, String fileType) throws IOException, ParseException {
+        List<TblIntentClientBean> list = new ArrayList<>();
+        InputStream stream = inputStream;
+        Workbook wb = null;
+        if (fileType.equals("xls")) {
+            wb = new HSSFWorkbook(stream);
+        } else if (fileType.equals("xlsx")) {
+            wb = new XSSFWorkbook(stream);
+        } else {
+            System.out.println("您输入的excel格式不正确");
+        }
+        Sheet sheet1 = wb.getSheetAt(0);
+        int rowNUmber = sheet1.getLastRowNum();
+        for (int i = 1; i <= rowNUmber; i++) {
+            Row row = sheet1.getRow(i);
+            String val = "";
+            for (int j = 0; j < row.getLastCellNum();j++) {
+                Cell cell = row.getCell(j);
+                if(cell !=null) {
+                    DecimalFormat df = new DecimalFormat("#");
+                    switch (cell.getCellType()) {
+                        case HSSFCell.CELL_TYPE_NUMERIC:// 数字
+                            if(DateUtil.isCellDateFormatted(cell)) {
+                                Date theDate = cell.getDateCellValue();
+                                SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd");
+                                val += dff.format(theDate);
+                            }else {
+                                val += df.format(cell.getNumericCellValue()) + ",";
+                            }
+                            break;
+                        default:
+                            val += cell.toString() + ",";
+                            break;
+                    }
+
+                }
+            }
+            String[] vals = val.split(",");
+            TblIntentClientBean intentClientBean = new TblIntentClientBean();
+            intentClientBean.setId(IdUtils.randomString());
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");// HH:mm:ss
+            intentClientBean.setInsertDate(sdf.parse(vals[0]));
+            intentClientBean.setUserName(vals[1]);
+            intentClientBean.setPhone(vals[2]);
+            intentClientBean.setAge(vals[3]);
+            intentClientBean.setBrandName(vals[4]);
+            intentClientBean.setCarSys(vals[5]);
+            intentClientBean.setCarProduct(vals[6]);
+            intentClientBean.setStage(vals[7]);
+            intentClientBean.setSource(vals[8]);
+            list.add(intentClientBean);
+        }
+        return list;
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/11/30 13:11
+     * @param inputStream
+    * @param fileType
+     * @Description 汽车流量分析用
+     */
+    public static List<TblFlowAnalysisBean> readStreamFlowAnalysis(InputStream inputStream, String fileType) throws IOException, ParseException {
+        List<TblFlowAnalysisBean> list = new ArrayList<>();
+        InputStream stream = inputStream;
+        Workbook wb = null;
+        if (fileType.equals("xls")) {
+            wb = new HSSFWorkbook(stream);
+        } else if (fileType.equals("xlsx")) {
+            wb = new XSSFWorkbook(stream);
+        } else {
+            System.out.println("您输入的excel格式不正确");
+        }
+        Sheet sheet1 = wb.getSheetAt(0);
+        int rowNUmber = sheet1.getLastRowNum();
+        for (int i = 1; i <= rowNUmber; i++) {
+            Row row = sheet1.getRow(i);
+            String val = "";
+            for (int j = 0; j < row.getLastCellNum();j++) {
+                Cell cell = row.getCell(j);
+                if(cell !=null) {
+                    DecimalFormat df = new DecimalFormat("#");
+                    switch (cell.getCellType()) {
+                        case HSSFCell.CELL_TYPE_NUMERIC:// 数字
+                            if(DateUtil.isCellDateFormatted(cell)) {
+                                Date theDate = cell.getDateCellValue();
+                                SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd");
+                                val += dff.format(theDate);
+                            }else {
+                                val += df.format(cell.getNumericCellValue()) + ",";
+                            }
+                            break;
+                        default:
+                            val += cell.toString() + ",";
+                            break;
+                    }
+
+                }
+            }
+            String[] vals = val.split(",");
+            TblFlowAnalysisBean flowAnalysisBean = new TblFlowAnalysisBean();
+            flowAnalysisBean.setId(IdUtils.randomString());
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");// HH:mm:ss
+            SimpleDateFormat sdfM=new SimpleDateFormat("yyyy-MM");// HH:mm:ss
+            flowAnalysisBean.setInsertDate(sdf.parse(vals[0]));
+            Date date = sdfM.parse(vals[0]);
+            flowAnalysisBean.setInsertMonth(sdfM.format(date));
+            flowAnalysisBean.setModuleName(vals[1]);
+            flowAnalysisBean.setTitleName(vals[2]);
+            flowAnalysisBean.setExposureNum(vals[3]);
+            flowAnalysisBean.setClickNum(vals[4]);
+            list.add(flowAnalysisBean);
+        }
+        return list;
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/11/30 13:11
+     * @param inputStream
+    * @param fileType
+     * @Description 线下潜客用
+     */
+    public static List<TblOfflineFilterBean> readStreamOffLine(InputStream inputStream, String fileType) throws IOException, ParseException {
+        List<TblOfflineFilterBean> list = new ArrayList<>();
+        InputStream stream = inputStream;
+        Workbook wb = null;
+        if (fileType.equals("xls")) {
+            wb = new HSSFWorkbook(stream);
+        } else if (fileType.equals("xlsx")) {
+            wb = new XSSFWorkbook(stream);
+        } else {
+            System.out.println("您输入的excel格式不正确");
+        }
+        Sheet sheet1 = wb.getSheetAt(0);
+        int rowNUmber = sheet1.getLastRowNum();
+        for (int i = 1; i <= rowNUmber; i++) {
+            Row row = sheet1.getRow(i);
+            String val = "";
+            for (int j = 0; j < row.getLastCellNum();j++) {
+                Cell cell = row.getCell(j);
+                if(cell !=null) {
+                    DecimalFormat df = new DecimalFormat("#");
+                    switch (cell.getCellType()) {
+                        case HSSFCell.CELL_TYPE_NUMERIC:// 数字
+                            if(DateUtil.isCellDateFormatted(cell)) {
+                                Date theDate = cell.getDateCellValue();
+                                SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd");
+                                val += dff.format(theDate);
+                            }else {
+                                val += df.format(cell.getNumericCellValue()) + ",";
+                            }
+                            break;
+                        default:
+                            val += cell.toString() + ",";
+                            break;
+                    }
+
+                }
+            }
+            String[] vals = val.split(",");
+            TblOfflineFilterBean offlineFilterBean = new TblOfflineFilterBean();
+            offlineFilterBean.setId(IdUtils.randomString());
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");// HH:mm:ss
+            SimpleDateFormat sdfM=new SimpleDateFormat("yyyy-MM");// HH:mm:ss
+            offlineFilterBean.setInsertDate(sdf.parse(vals[0]));
+            Date date = sdfM.parse(vals[0]);
+            offlineFilterBean.setInsertMonth(sdfM.format(date));
+            offlineFilterBean.setSource(vals[1]);
+            offlineFilterBean.setCity(vals[2]);
+            offlineFilterBean.setBrandName(vals[3]);
+            offlineFilterBean.setOfflineFlow(vals[4]);
+            offlineFilterBean.setStayDate(vals[4]);
+            list.add(offlineFilterBean);
+        }
+        return list;
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/11/30 13:11
+     * @param inputStream
+    * @param fileType
      * @Description 读取附件中内容插入实体类集合
      */
     public static List<TblShowBean> readStream(InputStream inputStream, String fileType) throws IOException {
@@ -376,11 +623,15 @@ public class ExcelUtil {
         return true;
     }
 
-    public static void main(String[] args) {
-        try {
-            read("C:\\Users\\SunChang\\Desktop\\原-1120-12046-一汽丰田奕泽IZOA9-11月-丰田-全国.xls");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void main(String[] args) throws ParseException {
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM");
+        String date = "2018-01-01";
+        Date date1 = sdf.parse(date);
+        System.out.println(sdf.format(date1));
+        //try {
+        //    read("C:\\Users\\SunChang\\Desktop\\原-1120-12046-一汽丰田奕泽IZOA9-11月-丰田-全国.xls");
+        //} catch (IOException e) {
+        //    e.printStackTrace();
+        //}
     }
 }

@@ -1,0 +1,273 @@
+<#include "/common/head.html">
+<#include "/common/bodyStart.html">
+<div class="layui-layout layui-layout-admin">
+    <#include "/common/headContent.html">
+    <#include "/common/left5.html">
+    <div class="layui-body">
+        <div style="padding: 15px;">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                <legend>超级管理员账号：</legend>
+            </fieldset>
+            <table class="layui-hide" id="admin1" lay-filter="admin1"></table>
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                <legend>管理员账号：</legend>
+            </fieldset>
+            <table class="layui-hide" id="admin2" lay-filter="admin2"></table>
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                <legend>编辑者账号：</legend>
+            </fieldset>
+            <table class="layui-hide" id="admin3" lay-filter="admin3"></table>
+        </div>
+    </div>
+    <#include "/common/footer.html">
+</div>
+<div class="layui-form" id="editPage" style="margin-top:10px; display: none;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">账号：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="userCode" id="userCode" autocomplete="off" class="layui-input layui-disabled" disabled />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="pwd" id="pwd" autocomplete="off" class="layui-input" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">绑定邮箱：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="email" id="email" autocomplete="off" class="layui-input" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">绑定手机：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="phone" id="phone" autocomplete="off" class="layui-input" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">模块权限：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="modulePermissions" id="modulePermissions" autocomplete="off" class="layui-input" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">操作权限：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="operatePermissions" id="operatePermissions" autocomplete="off" class="layui-input" />
+        </div>
+    </div>
+</div>
+<#include "/common/js.html">
+<!-- 自定义 js -->
+<script type="text/html" id="insertDate">
+    {{util.toDateString(d.insertDate, 'yyyy-MM-dd')}}
+</script>
+<script type="text/html" id="operate">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+</script>
+<script>
+    var loading;
+    layui.use(['element','layer','table'], function(){
+        var element = layui.element, layer = layui.layer, table = layui.table;
+        var admin1 = table.render({
+            id: 'admin1'
+            ,elem: '#admin1'
+            // url: '${base}/accountManage/admin1'
+            // ,method:'post'
+            ,cols:[[
+                {field: 'userCode', title: '账号', align: 'center', sort: true}
+                ,{field: 'pwd', title: '密码', align: 'center', edit: 'text'}
+                ,{field: 'email', title: '绑定邮箱', align: 'center', edit: 'text'}
+                ,{field: 'phone', title: '绑定手机', sort:true, align: 'center', edit: 'text'}
+                ,{field: 'modulePermissions', title: '模块权限', align: 'center'}
+                ,{field: 'operatePermissions', title: '操作权限', align: 'center'}
+                ,{title: '操作', align: 'center', toolbar:'#operate',}
+            ]]
+            ,data:[{
+                "id": "10001"
+                ,"userCode": "admin"
+                ,"pwd": "**********"
+                ,"email": "375463548@qq.com"
+                ,"phone": "13800138000"
+                ,"modulePermissions": "1,2,3,4,5"
+                ,"operatePermissions": "新建|编辑|删除|整理"
+            }]
+            ,even: false //隔行换色
+            ,page: true //是否显示分页
+            ,height: 50
+        });
+        var admin2 = table.render({
+            id: 'admin2'
+            ,elem: '#admin2'
+            ,cols:[[
+                {field: 'userCode', title: '账号', align: 'center', sort: true}
+                ,{field: 'pwd', title: '密码', align: 'center', edit: 'text'}
+                ,{field: 'email', title: '绑定邮箱', align: 'center', edit: 'text'}
+                ,{field: 'phone', title: '绑定手机', sort:true, align: 'center', edit: 'text'}
+                ,{field: 'modulePermissions', title: '模块权限', align: 'center'}
+                ,{field: 'operatePermissions', title: '操作权限', align: 'center'}
+                ,{title: '操作', align: 'center', toolbar:'#operate',}
+            ]]
+            ,data:[{
+                "id": "10001"
+                ,"userCode": "admin1"
+                ,"pwd": "**********"
+                ,"email": "3224125@qq.com"
+                ,"phone": "17783776352"
+                ,"modulePermissions": "1,2,3,4,5"
+                ,"operatePermissions": "新建|编辑|删除|整理"
+            },{
+                "id": "10002"
+                ,"userCode": "admin2"
+                ,"pwd": "**********"
+                ,"email": "3224125@qq.com"
+                ,"phone": "17783776352"
+                ,"modulePermissions": "1,2,3,4,5"
+                ,"operatePermissions": "新建|编辑|删除|整理"
+            },{
+                "id": "10002"
+                ,"userCode": "admin3"
+                ,"pwd": "**********"
+                ,"email": "3224125@qq.com"
+                ,"phone": "17783776352"
+                ,"modulePermissions": "1,2,3,4,5"
+                ,"operatePermissions": "新建|编辑|删除|整理"
+            }]
+            ,even: true //隔行换色
+            ,page: true //是否显示分页
+            ,height: 50
+        });
+        var admin3 = table.render({
+            id: 'admin3'
+            ,elem: '#admin3'
+            ,cols:[[
+                {field: 'userCode', title: '账号', align: 'center', sort: true}
+                ,{field: 'pwd', title: '密码', align: 'center', edit: 'text'}
+                ,{field: 'email', title: '绑定邮箱', align: 'center', edit: 'text'}
+                ,{field: 'phone', title: '绑定手机', sort:true, align: 'center', edit: 'text'}
+                ,{field: 'modulePermissions', title: '模块权限', align: 'center'}
+                ,{field: 'operatePermissions', title: '操作权限', align: 'center'}
+                ,{title: '操作', align: 'center', toolbar:'#operate',}
+            ]]
+            ,data:[{
+                "id": "10001"
+                ,"userCode": "bianji1"
+                ,"pwd": "**********"
+                ,"email": "254342512@qq.com"
+                ,"phone": "15078865467"
+                ,"modulePermissions": "1,2,3,4,5"
+                ,"operatePermissions": "新建|编辑|删除|整理"
+            },{
+                "id": "10002"
+                ,"userCode": "bianji2"
+                ,"pwd": "**********"
+                ,"email": "847582926@qq.com"
+                ,"phone": "13657889875"
+                ,"modulePermissions": "1,2,3,4,5"
+                ,"operatePermissions": "新建|编辑|删除|整理"
+            },{
+                "id": "10003"
+                ,"userCode": "bianji3"
+                ,"pwd": "**********"
+                ,"email": "136457843@qq.com"
+                ,"phone": "15503117836"
+                ,"modulePermissions": "1,2,3,4,5"
+                ,"operatePermissions": "新建|编辑|删除|整理"
+            }]
+            ,even: true //隔行换色
+            ,page: true //是否显示分页
+            ,height: 50
+        });
+        table.on('edit', function (obj) {
+            var value = obj.value //得到修改后的值
+                ,data = obj.data //得到所在行所有键值
+                ,field = obj.field; //得到字段
+            layer.msg('此字段更改为：'+ value);
+        });
+        table.on('tool', function (obj) {
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值
+            if(layEvent == "edit") {
+                loading = layer.open({
+                    type: 1,
+                    title: '编辑',
+                    btn: ['保存', '取消'],
+                    closeBtn: 0,
+                    skin: 'layui-layer-molv',
+                    btnAlign: 'c',
+                    content: $("#editPage"),
+                    area: ['auto', '430px'],
+                    success: function(loading, layero) {
+                        $("#userCode").val(data.userCode);
+                        $("#pwd").val(data.pwd);
+                        $("#email").val(data.email);
+                        $("#phone").val(data.phone);
+                        $("#modulePermissions").val(data.modulePermissions);
+                        $("#operatePermissions").val(data.operatePermissions);
+                    },
+                    yes: function (loading, layero) {
+                        var pwd = "";
+                        var email = "";
+                        var phone = "";
+                        var modulePermissions = "";
+                        var operatePermissions = "";
+                        var flag = true;
+                        $(layero).find("input").each(function (i, o) {
+                            if(i == 1) {
+                                pwd = $(o).val();
+                                if(!check(pwd, "密码不能为空")) {
+                                    flag = false;
+                                    return false;
+                                }
+                            }
+                            if(i == 2) {
+                                email = $(o).val();
+                                if(!check(email, "邮箱不能为空")) {
+                                    flag = false;
+                                    return false;
+                                }
+                            }
+                            if(i == 3) {
+                                phone = $(o).val();
+                                if(!check(phone, "手机不能为空")) {
+                                    flag = false;
+                                    return false;
+                                }
+                            }
+                            if(i == 4) {
+                                modulePermissions = $(o).val();
+                                if(!check(modulePermissions, "模块权限不能为空")) {
+                                    flag = false;
+                                    return false;
+                                }
+                            }
+                            if(i == 5) {
+                                operatePermissions = $(o).val();
+                                if(!check(operatePermissions, "操作权限不能为空")) {
+                                    flag = false;
+                                    return false;
+                                }
+                            }
+                        });
+                        if(flag) {
+                            layer.close(loading);
+                            obj.update({pwd:pwd,email:email,phone:phone,modulePermissions:modulePermissions,operatePermissions:operatePermissions});
+                            layer.msg("更新成功！");
+                        }
+                    }
+                });
+            }
+        });
+        function check(str, msg) {
+            if(isNull(str)) {
+                layer.msg(msg);
+                return false;
+            }else {
+                return true;
+            }
+        }
+    });
+</script>
+<#include "/common/bodyEnd.html">

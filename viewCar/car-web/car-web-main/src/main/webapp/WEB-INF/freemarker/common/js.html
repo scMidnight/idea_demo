@@ -35,6 +35,7 @@
         }
     }
     expandMenu();
+    cancelChoiceHead();
     /*****
      * 左侧菜单展开
      */
@@ -48,16 +49,31 @@
         if(url.indexOf("?") > -1){
             url = url.substring(0,url.indexOf("?"));
         }
-        var $this = $(".layui-nav-child").find("[href='" + url + "']");
-        if($this.length == 0){
+        var $HeadThis = $(".layui-layout-left").find(".layui-nav-child").find("[href='" + url + "']");
+        if($HeadThis.length == 0){
             url = url.substring(0,url.lastIndexOf("/"));
-            $this = $(".layui-nav-item").find("[href='" + url + "']");
+            $HeadThis = $(".layui-nav-item").find("[href='" + url + "']");
         }
-
-        if($this.parent().is("ul")){
-            $this.addClass("layui-nav-itemed");
+        if($HeadThis.parent().is("ul")){
+            $HeadThis.addClass("layui-nav-itemed");
         }else {
-            $this.parent("dd").addClass("layui-this").parent().parent().addClass("layui-nav-itemed");
+            $HeadThis.parent("dd").addClass("layui-this").parent().parent().addClass("layui-nav-itemed");
         }
+        var $left = $(".layui-side-scroll").find("[href='" + url + "']");
+        if(($left.parent().is("dd"))) {
+            $left.parent().addClass("layui-this").parent().parent().addClass("layui-nav-itemed");
+        }else if($left.parent().is("li")) {
+            $left.parent().addClass("layui-this");
+        }
+    }
+    /*****
+     * 取消头部菜单选中状态
+     */
+    function cancelChoiceHead() {
+        $(".layui-layout-left").find("li").each(function(i, o) {
+            if($(o).is('.layui-nav-itemed')) {
+                $(o).removeClass("layui-nav-itemed");
+            }
+        });
     }
 </script>

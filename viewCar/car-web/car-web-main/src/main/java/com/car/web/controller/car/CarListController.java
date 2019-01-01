@@ -1,7 +1,6 @@
 package com.car.web.controller.car;
 
 import com.car.web.utils.Constants;
-import com.sun.corba.se.impl.orbutil.closure.Constant;
 import jodd.util.StringUtil;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.FileUtils;
@@ -27,7 +26,6 @@ import person.util.webSocket.MyClient;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;

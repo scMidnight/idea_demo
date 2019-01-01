@@ -15,6 +15,7 @@ public class TblFunction extends IdEntity {
     private String functionDescription;
     private String functionLevel;
     private String functionUrl;
+    private String functionType;//1:线上广告管理，2:线下潜客筛选，3:车金融潜客挖掘，4:线索优化管理，5:账号管理
 
     @Column(name = "function_name")
     public String getFunctionName() {
@@ -52,4 +53,12 @@ public class TblFunction extends IdEntity {
         this.functionUrl = functionUrl;
     }
 
+    @Column(name = "function_type")
+    public String getFunctionType() {
+        return functionType;
+    }
+
+    public void setFunctionType(String functionType) {
+        this.functionType = functionType;
+    }
 }

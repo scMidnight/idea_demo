@@ -1,0 +1,316 @@
+<#include "/common/head.html">
+<#include "/common/bodyStart.html">
+<div class="layui-layout layui-layout-admin">
+    <#include "/common/headContent.html">
+    <#include "/common/left1.html">
+    <div class="layui-body">
+        <div style="padding: 15px;">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>请按照以下步骤创建广告投放项目：</legend>
+            </fieldset>
+            <div class="layui-form">
+                <div class="layui-collapse">
+                    <div class="layui-colla-item">
+                        <h2 class="layui-colla-title">STEP 1 ：广告项目基础信息</h2>
+                        <div class="layui-colla-content layui-show">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">项目名称：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="proName" lay-verify="required" placeholder="项目名称" autocomplete="off" class="layui-input" />
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">广告主：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="adHost" lay-verify="required" placeholder="广告主" autocomplete="off" class="layui-input" />
+                                </div>
+                                <label class="layui-form-label">投放预算：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="investmentBudget" lay-verify="required" placeholder="投放预算" autocomplete="off" class="layui-input" />
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">元（人民币）</div>
+                            </div>
+                            <div style="margin-top: 15px;margin-bottom: 20px;">
+                                <h3><font color="red">*</font>若投放内容属于汽车行业</h3>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" style="width: 100px;">目标汽车品牌：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="carBrandName" lay-verify="required" placeholder="目标汽车品牌" autocomplete="off" class="layui-input" />
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">（合资品牌请填写精确名称，如一汽大众、上汽大众、一汽丰田、广汽丰田）</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" style="width: 100px;">目标汽车车系：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="carSysName" lay-verify="required" placeholder="目标汽车车系" autocomplete="off" class="layui-input" />
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">（如朗逸、凯美瑞、神行者、CR-V等等）</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" style="width: 100px;">车系所属类别：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="carSysType" lay-verify="required" placeholder="车系所属类别" autocomplete="off" class="layui-input" />
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" style="width: 100px;">目标汽车售价：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="carMoney" lay-verify="required" placeholder="目标汽车售价" autocomplete="off" class="layui-input" />
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">万元（人民币），取经销商参考价的中值左右</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-collapse">
+                    <div class="layui-colla-item">
+                        <h2 class="layui-colla-title">STEP 2 ：确定广告排期</h2>
+                        <div class="layui-colla-content">
+                            <div style="margin-top: 5px;margin-bottom: 10px;">
+                                <h3>展示类广告形式：</h3>
+                            </div>
+                            <div class="layui-form-item" pane="">
+                                <div class="layui-input-block" style="margin-left: 5px;">
+                                    <input type="checkbox" name="" lay-skin="primary" title="友道汽车APP开屏" />
+                                    <button class="layui-btn layui-btn-sm" style="margin-top: 10px;">设定具体排期</button>
+                                    <button class="layui-btn layui-btn-sm" style="margin-top: 10px;">上传广告创意</button>
+                                </div>
+                            </div>
+                            <div class="layui-form-item" pane="">
+                                <div class="layui-input-block" style="margin-left: 5px;">
+                                    <input type="checkbox" name="" lay-skin="primary" title="选车优惠焦点图&emsp;" />
+                                    <button class="layui-btn layui-btn-sm" style="margin-top: 10px;">设定具体排期</button>
+                                    <button class="layui-btn layui-btn-sm" style="margin-top: 10px;">上传广告创意</button>
+                                </div>
+                            </div>
+                            <div class="layui-form-item" pane="">
+                                <div class="layui-input-block" style="margin-left: 5px;">
+                                    <input type="checkbox" name="" lay-skin="primary" title="车市行情焦点图&emsp;" />
+                                    <button class="layui-btn layui-btn-sm" style="margin-top: 10px;">设定具体排期</button>
+                                    <button class="layui-btn layui-btn-sm" style="margin-top: 10px;">上传广告创意</button>
+                                </div>
+                            </div>
+                            <div style="margin-top: 5px;margin-bottom: 10px;">
+                                <h3>效果类型广告：</h3>
+                            </div>
+                            <div class="layui-form-item" pane="">
+                                <div class="layui-input-block" style="margin-left: 5px;">
+                                    <input type="checkbox" name="" lay-skin="primary" title="信息流广告&emsp;&emsp;&emsp;" />
+                                    <button class="layui-btn layui-btn-sm" style="margin-top: 10px;">设定具体排期</button>
+                                    <button class="layui-btn layui-btn-sm" style="margin-top: 10px;">上传广告创意</button>
+                                </div>
+                            </div>
+                            <div class="layui-form-item" pane="">
+                                <div class="layui-input-block" style="margin-left: 5px;">
+                                    <input type="checkbox" name="" lay-skin="primary" title="优惠券广告&emsp;&emsp;&emsp;" />
+                                    <button class="layui-btn layui-btn-sm" style="margin-top: 10px;">设定具体排期</button>
+                                    <button class="layui-btn layui-btn-sm" style="margin-top: 10px;">上传广告创意</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-collapse" style="margin-bottom:20px;">
+                    <div class="layui-colla-item">
+                        <h2 class="layui-colla-title">STEP 3 ：目标人群筛选</h2>
+                        <div class="layui-colla-content">
+                            <fieldset class="layui-elem-field">
+                                <legend>+友道汽车自有数据筛选：</legend>
+                                <div class="layui-field-box">
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">推广地域：</label>
+                                        <div class="layui-input-block">
+                                            <input type="radio" name="diyu" value="自定义区域" title="自定义区域" checked="" lay-filter="diyu">
+                                            <input type="radio" name="diyu" value="不指定地域（全国范围）" lay-filter="diyu" title="不指定地域（全国范围）">
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item layui-form-text">
+                                        <!--<label class="layui-form-label">普通文本域</label>-->
+                                        <div class="layui-input-block">
+                                            <textarea id="textAreaContent" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                            <h3><font color="red">*</font>当用户的GPS或IP数据与推广地域匹配时可以看到推广，优先匹配GPS数据</h3>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">推广时段：</label>
+                                        <div class="layui-input-block">
+                                            <input type="radio" name="shiduan" value="全部时段" title="全部时段" />
+                                            <input type="radio" name="shiduan" value="8-22点时段" title="8-22点时段" />
+                                            <button class="layui-btn layui-btn-sm" style="margin-top: 10px;">自定义时段</button>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item" pane="">
+                                        <label class="layui-form-label">目标车型：</label>
+                                        <div class="layui-input-block">
+                                            <input type="checkbox" name="" lay-skin="primary" title="家轿" />
+                                            <input type="checkbox" name="" lay-skin="primary" title="SUV" />
+                                            <input type="checkbox" name="" lay-skin="primary" title="MPV" />
+                                            <input type="checkbox" name="" lay-skin="primary" title="新能源" />
+                                            <input type="checkbox" name="" lay-skin="primary" title="其他" />
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item" pane="">
+                                        <label class="layui-form-label">用户预算：</label>
+                                        <div class="layui-input-block">
+                                            <input type="checkbox" name="" lay-skin="primary" title="10万以下" />
+                                            <input type="checkbox" name="" lay-skin="primary" title="10万-20万" />
+                                            <input type="checkbox" name="" lay-skin="primary" title="20万-30万" />
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item" pane="">
+                                        <div class="layui-input-block">
+                                            <input type="checkbox" name="" lay-skin="primary" title="30万-50万" />
+                                            <input type="checkbox" name="" lay-skin="primary" title="50-100万" />
+                                            <input type="checkbox" name="" lay-skin="primary" title="100万以上" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset class="layui-elem-field">
+                                <legend>+全网潜客数据筛选：</legend>
+                                <div class="layui-field-box">
+                                    <div class="layui-form-item" pane="">
+                                        <label class="layui-form-label">用户年龄：</label>
+                                        <div class="layui-input-block">
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="18-25岁" />
+                                            <input type="checkbox" name="" lay-skin="primary" title="26-30岁" />
+                                            <input type="checkbox" name="" lay-skin="primary" title="31-40岁" />
+                                            <input type="checkbox" name="" lay-skin="primary" title="41-60岁" />
+                                            <input type="checkbox" name="" lay-skin="primary" title="41岁以上" />
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">用户性别：</label>
+                                        <div class="layui-input-block">
+                                            <input type="radio" name="sex" value="全部" title="全部" />
+                                            <input type="radio" name="sex" value="男性" checked title="男性" />
+                                            <input type="radio" name="sex" value="女性" title="女性" />
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">月收入水平:</label>
+                                        <div class="layui-input-block">
+                                            <input type="radio" name="shouru" value="5000元以下" title="5000元以下" />
+                                            <input type="radio" name="shouru" value="5000-8000元" checked title="5000-8000元" />
+                                            <input type="radio" name="shouru" value="8000-12000元" title="8000-12000元" />
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-input-block">
+                                            <input type="radio" name="shouru" value="20000元-25000元" title="20000元-25000元" />
+                                            <input type="radio" name="shouru" value="25000-50000元" checked title="25000-50000元" />
+                                            <input type="radio" name="shouru" value="50000以上元" title="50000以上元" />
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item" pane="">
+                                        <label class="layui-form-label">兴趣爱好：</label>
+                                        <div class="layui-input-block">
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="汽车" />
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="金融" />
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="房产" />
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="旅游" />
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="教育" />
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item" pane="">
+                                        <div class="layui-input-block">
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="家居" />
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="服饰" />
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="餐饮" />
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="母婴" />
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="数码" />
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item" pane="">
+                                        <div class="layui-input-block">
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="手机" />
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="游戏" />
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="体育" />
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="医疗" />
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="生活" />
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">手机运营商：</label>
+                                        <div class="layui-input-block">
+                                            <input type="radio" name="yunying" value="全部" checked title="全部" />
+                                            <input type="radio" name="yunying" value="移动" title="移动" />
+                                            <input type="radio" name="yunying" value="联通" title="联通" />
+                                            <input type="radio" name="yunying" value="电信" title="电信" />
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item" pane="">
+                                        <label class="layui-form-label">操作系统：</label>
+                                        <div class="layui-input-block">
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="IOS" />
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="Android" />
+                                            <input type="checkbox" name="" checked lay-skin="primary" title="其他" />
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">手机价位：</label>
+                                        <div class="layui-input-block">
+                                            <input type="radio" name="phoneMoney" value="1000元以下" title="1000元以下" />
+                                            <input type="radio" name="phoneMoney" value="1000-2000元" title="1000-2000元" />
+                                            <input type="radio" name="phoneMoney" value="2000-3000元" checked title="2000-3000元" />
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-input-block">
+                                            <input type="radio" name="phoneMoney" value="3000-5000元" title="3000-5000元" />
+                                            <input type="radio" name="phoneMoney" value="5000元以上" title="5000元以上" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit lay-filter="baocun">创建广告</button>
+                    <!--<button class="layui-btn" type="button" onclick="backList()">暂存草稿</button>-->
+                    <button class="layui-btn" lay-submit lay-filter="baocun">暂存草稿</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <#include "/common/footer.html">
+</div>
+<#include "/common/js.html">
+<!-- 自定义 js -->
+<script>
+    var t1 ;
+    var loading;
+    layui.use('form', function () {
+        function ok() {
+            layer.close(loading);
+            layer.msg('保存成功！',{
+                time: 0
+                ,btn: ['确定']
+                ,yes: function(index) {
+                    layer.close(index);
+                    window.clearTimeout(t1);
+                    window.location.reload();
+                }
+            })
+        }
+        var form = layui.form;
+        form.on('submit(baocun)', function (data) {
+            loading = layer.load(0,{shade: [0.4,'#000']});
+            t1 = window.setTimeout(ok,2000);
+        });
+        form.on('radio(diyu)', function (data) {
+            if(data.value === '不指定地域（全国范围）') {
+                $("#textAreaContent").val("");
+                $("#textAreaContent").attr("disabled", true);
+            }else {
+                $("#textAreaContent").attr("disabled", false);
+            }
+        })
+    });
+    function backList() {
+        window.location = "${base}/carSystem/info";
+    }
+</script>
+<#include "/common/bodyEnd.html">

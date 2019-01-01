@@ -1,0 +1,25 @@
+<div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+        <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+        <ul class="layui-nav layui-nav-tree">
+            <#list tree as t>
+                <li class="layui-nav-item">
+                    <#if t.obj.functionType?? && t.obj.functionType == '1'>
+                        <#if (t.obj.functionUrl)?? && (t.obj.functionUrl == '#')>
+                            <a class="" href="javascript:void(0);">${t.obj.functionName}</a>
+                            <#elseif (t.obj.functionUrl)?? && (t.obj.functionUrl?length>1)>
+                            <a href="${base}${t.obj.functionUrl}">${t.obj.functionName}</a>
+                        </#if>
+                        <#if (t.children)?? && (t.children?size>0)>
+                            <dl class="layui-nav-child">
+                                <#list t.children as child>
+                                <dd><a href="${base}${child.obj.functionUrl}">${child.obj.functionName}</a></dd>
+                            </#list>
+                            </dl>
+                        </#if>
+                     </#if>
+                </li>
+            </#list>
+        </ul>
+    </div>
+</div>

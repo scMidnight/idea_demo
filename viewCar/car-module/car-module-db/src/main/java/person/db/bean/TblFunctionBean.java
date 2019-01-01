@@ -11,6 +11,7 @@ public class TblFunctionBean implements Serializable,Comparable<TblFunctionBean>
     private String functionDescription;
     private String functionLevel;
     private String functionUrl;
+    private String functionType;//1:线上广告管理，2:线下潜客筛选，3:车金融潜客挖掘，4:线索优化管理，5:账号管理
 
     public String getId() {
         return id;
@@ -50,6 +51,14 @@ public class TblFunctionBean implements Serializable,Comparable<TblFunctionBean>
 
     public void setFunctionUrl(String functionUrl) {
         this.functionUrl = functionUrl;
+    }
+
+    public String getFunctionType() {
+        return functionType;
+    }
+
+    public void setFunctionType(String functionType) {
+        this.functionType = functionType;
     }
 
     @Override
