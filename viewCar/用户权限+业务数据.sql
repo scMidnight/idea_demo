@@ -460,6 +460,7 @@ CREATE TABLE `tbl_car_system` (
   `car_sys_name` varchar(255) DEFAULT NULL COMMENT '车系名称',
   `car_sys_id` varchar(255) DEFAULT NULL COMMENT '车系ID',
   `is_del` varchar(1) NOT NULL DEFAULT '0' COMMENT '是否删除0否1是',
+  `insert_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '插入时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
