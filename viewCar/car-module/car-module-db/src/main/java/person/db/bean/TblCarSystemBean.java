@@ -1,6 +1,7 @@
 package person.db.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by SunChang on 2018/8/27
@@ -14,6 +15,7 @@ public class TblCarSystemBean implements Serializable {
     private String carSysName;//车系名称
     private String carSysId;//车系ID
     private String isDel;//是否删除0否1是
+    private Date insertDate;//插入时间
 
     public String getId() {
         return id;
@@ -77,5 +79,13 @@ public class TblCarSystemBean implements Serializable {
 
     public void setIsDel(String isDel) {
         this.isDel = isDel;
+    }
+
+    public Date getInsertDate() {
+        return insertDate;
+    }
+
+    public void setInsertDate(Date insertDate) {
+        this.insertDate = insertDate;
     }
 }

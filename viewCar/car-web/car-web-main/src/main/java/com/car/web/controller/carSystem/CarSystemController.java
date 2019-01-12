@@ -59,9 +59,10 @@ public class CarSystemController {
             String val = request.getParameter("selectedVal");
             where = " AND t." + key + " like '%" + val + "%'";
         }
+        String orderBy = " order by t.insertDate desc";
         page.setPageNo(Integer.parseInt(pageNo));
         page.setPageSize(Integer.parseInt(limit));
-        Page<TblCarSystemBean> pageResult = carSystemHandler.queryByPageFilter(page,hql + where, valueMap);
+        Page<TblCarSystemBean> pageResult = carSystemHandler.queryByPageFilter(page,hql + where + orderBy, valueMap);
         JsonBean jsonBean = new JsonBean("0", "", String.valueOf(pageResult.getTotalCount()), pageResult.getResult());
         return JsonUtil.beanToJsonString(jsonBean);
     }
@@ -130,12 +131,13 @@ public class CarSystemController {
         //需要导出的结果集
         List<TblCarSystemBean> carSystemBeans = carSystemHandler.queryAll();
         //excel标题
-        String [] title = {"品牌ID", "品牌名称", "厂商ID", "厂商名称", "车系ID", "车系名称"};
+        String [] title = {"品牌ID", "品牌名称", "厂商ID", "厂商名称", "车系ID", "车系名称", "插入时间"};
         //excel文件名
         String fileName = "车系数据表" + CarUtil.getDateStr(new Date(), "yyyyMMdd HH:mm:ss") + ".xls";
         //sheet名
         String sheetName = "车系信息";
         String[][] contents = new String[carSystemBeans.size()][title.length];
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (int i = 0; i < carSystemBeans.size(); i++) {
             TblCarSystemBean tblCarSystemBean = carSystemBeans.get(i);
             contents[i][0] = tblCarSystemBean.getBrandId();
@@ -144,6 +146,7 @@ public class CarSystemController {
             contents[i][3] = tblCarSystemBean.getTradeName();
             contents[i][4] = tblCarSystemBean.getCarSysId();
             contents[i][5] = tblCarSystemBean.getCarSysName();
+            contents[i][6] = sdf.format(tblCarSystemBean.getInsertDate());
         }
         //创建HSSFWorkbook
         HSSFWorkbook wb = ExcelUtil.getHSSFWorkbook(sheetName, title, contents, null);

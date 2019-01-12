@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import person.util.PropertyUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,9 +43,10 @@ public class OffLineFilter {
     public void downFile(HttpServletRequest request, HttpServletResponse response) {
         Map<String,Object> map = new HashMap<String, Object>();
         try {
-            String filePath = "E:\\开发\\观车数据管理系统\\二期";
-            String fileName = "xxx.zip";
-            String fileNameCn = new String("友道阅车平台2期需求".getBytes("gbk"), "iso-8859-1");
+            String filePath = PropertyUtil.getProperty("offLineClientFilter.downloadFilePath");
+            String fileName = PropertyUtil.getProperty("offLineClientFilter.downloadSourceFileName");
+            String targetName = PropertyUtil.getProperty("offLineClientFilter.downloadTargetFileName");
+            String fileNameCn = new String(targetName.getBytes("gbk"), "iso-8859-1");
             File file  = new File(filePath,fileName);
             if(file.exists()){
                 response.setContentType("application/force-download");// 设置强制下载不打开
@@ -61,6 +63,7 @@ public class OffLineFilter {
                         os.write(buffer, 0, i);
                         i = bis.read(buffer);
                     }
+                    response.getOutputStream().flush();
                 }catch(Exception e){
                     e.printStackTrace();
                 }finally {

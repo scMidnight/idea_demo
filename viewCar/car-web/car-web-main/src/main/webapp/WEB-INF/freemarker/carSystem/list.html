@@ -50,6 +50,9 @@
 </div>
 <#include "/common/js.html">
 <!-- 自定义 js -->
+<script type="text/html" id="insertDate">
+    {{util.toDateString(d.insertDate,'yyyy-MM-dd')}}
+</script>
 <script>
     var addMsg = "${add_status!''}";
     var selectedVal = "";
@@ -95,6 +98,7 @@
                 ,{field: 'tradeName', title: '厂商名称', sort: true}
                 ,{field: 'carSysName', title: '车系名称'}
                 ,{field: 'carSysId', title: '车系ID', sort: true}
+                ,{field: 'insertDate', title: '插入时间', width:130, sort: true, align:'center', templet:'#insertDate'}
                 ,{fixed: 'right', title:'操作', toolbar: '#caozuo', width:70}
             ]]
             //,skin: 'line' //表格风格

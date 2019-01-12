@@ -1,8 +1,11 @@
 package person.db.entity;
 
+import org.springframework.stereotype.Controller;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * Created by SunChang on 2018/8/27
@@ -18,6 +21,7 @@ public class TblCarSystem extends IdEntity {
     private String carSysName;
     private String carSysId;
     private String isDel;
+    private Date insertDate;
 
     @Column(name = "BRAND_NAME")
     public String getBrandName() {
@@ -80,5 +84,14 @@ public class TblCarSystem extends IdEntity {
 
     public void setIsDel(String isDel) {
         this.isDel = isDel;
+    }
+
+    @Column(name = "insert_date")
+    public Date getInsertDate() {
+        return insertDate;
+    }
+
+    public void setInsertDate(Date insertDate) {
+        this.insertDate = insertDate;
     }
 }
