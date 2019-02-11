@@ -140,8 +140,9 @@
             ,elem: '#excelShowList'
             ,url:'${base}/offLine'
             ,method:'post'
+            ,autoSort: false
             ,cols:[[
-                {field: 'insertDate', title: '时间', align: 'center', templet:'#insertDate', sort: true}
+                {field: 'insertDate', title: '时间', align: 'center', sort: true,templet:'#insertDate'}
                 ,{field: 'source', title: '数据来源（经销商）', align: 'center'}
                 ,{field: 'city', title: '所在城市', align: 'center'}
                 ,{field: 'brandName', title: '所属品牌', sort:true, align: 'center'}
@@ -150,6 +151,18 @@
             ]]
             ,even: true //隔行换色
             ,page: true //是否显示分页
+        });
+        table.on('sort(excelShowList)', function (obj) {
+            if(obj.type == null) {
+                obj.type = "asc";
+            }
+            tableIns.reload({
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    field: obj.field //排序字段
+                    ,order: obj.type //排序方式
+                }
+            });
         });
         $(".layui-btn-sm").on("click", function () {
             var type = $(this).data('type');

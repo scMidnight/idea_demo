@@ -66,7 +66,7 @@
                 <div class="layui-col-md11">
                     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                         <legend>
-                            数据列表
+                            项目列表
                         </legend>
                     </fieldset>
                 </div>
@@ -166,6 +166,7 @@
             ,elem: '#excelShowList'
             ,url:'${base}/adProManage'
             ,method:'post'
+            ,autoSort: false
             ,cols:[[
                 {field: 'insertDate', title: '创建时间', align: 'center', templet:'#insertDate', sort: true}
                 ,{field: 'proId', title: '项目ID', align: 'center'}
@@ -186,6 +187,18 @@
             ]]
             ,even: true //隔行换色
             ,page: true //是否显示分页
+        });
+        table.on('sort(excelShowList)', function (obj) {
+            if(obj.type == null) {
+                obj.type = "asc";
+            }
+            tableIns.reload({
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    field: obj.field //排序字段
+                    ,order: obj.type //排序方式
+                }
+            });
         });
         form.on("select(status)", function (data) {
             carSysType = $("select[name = 'carSysType']").val();

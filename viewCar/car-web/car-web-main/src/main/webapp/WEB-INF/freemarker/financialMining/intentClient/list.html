@@ -75,6 +75,7 @@
             ,elem: '#excelShowList'
             ,url:'${base}/intentClient'
             ,method:'post'
+            ,autoSort: false
             ,cols:[[
                 {field: 'insertDate', title: '采集日期', align: 'center', templet:'#insertDate', sort: true}
                 ,{field: 'userName', title: '用户名', align: 'center'}
@@ -88,6 +89,18 @@
             ]]
             ,even: true //隔行换色
             ,page: true //是否显示分页
+        });
+        table.on('sort(excelShowList)', function (obj) {
+            if(obj.type == null) {
+                obj.type = "asc";
+            }
+            tableIns.reload({
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    field: obj.field //排序字段
+                    ,order: obj.type //排序方式
+                }
+            });
         });
     });
 </script>

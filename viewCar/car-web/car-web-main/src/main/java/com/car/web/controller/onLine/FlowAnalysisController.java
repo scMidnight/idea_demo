@@ -59,6 +59,8 @@ public class FlowAnalysisController {
         String limit = request.getParameter("limit");//limit是每页数据量
         String dateStr = request.getParameter("dateStr");
         String dateType = request.getParameter("dateType");
+        String field = request.getParameter("field");
+        String order = request.getParameter("order");
         String[] dates = null;
         String where = " WHERE 1=1";
         if(StringUtil.isNotBlank(dateStr)) {
@@ -74,9 +76,13 @@ public class FlowAnalysisController {
             }
         }
         String hql = "SELECT t FROM TblFlowAnalysis t";
+        String orderSql = " order by t.insertDate desc";
+        if(StringUtil.isNotBlank(field) && StringUtil.isNotBlank(order)) {
+            orderSql = " order by t." + field + " " + order;
+        }
         page.setPageNo(Integer.parseInt(pageNo));
         page.setPageSize(Integer.parseInt(limit));
-        Page<TblFlowAnalysisBean> pageResult = flowAnalysisHandler.queryByPageFilter(page,hql + where, maps);
+        Page<TblFlowAnalysisBean> pageResult = flowAnalysisHandler.queryByPageFilter(page,hql + where + orderSql, maps);
         JsonBean jsonBean = new JsonBean("0", "", String.valueOf(pageResult.getTotalCount()), pageResult.getResult());
         return JsonUtil.beanToJsonString(jsonBean);
     }

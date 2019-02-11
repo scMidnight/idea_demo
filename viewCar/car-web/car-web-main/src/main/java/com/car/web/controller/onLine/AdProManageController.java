@@ -68,6 +68,8 @@ public class AdProManageController {
         String proName = request.getParameter("proName");
         String status = request.getParameter("status");
         String carSysType = request.getParameter("carSysType");
+        String field = request.getParameter("field");
+        String order = request.getParameter("order");
         if(StringUtil.isNotBlank(proName)) {
             maps.put("proName", "%" + proName + "%");
             where += " AND t.proName like :proName";
@@ -83,6 +85,9 @@ public class AdProManageController {
         page.setPageNo(Integer.parseInt(pageNo));
         page.setPageSize(Integer.parseInt(limit));
         String orderBy = " order by t.insertDate desc";
+        if(StringUtil.isNotBlank(field) && StringUtil.isNotBlank(order)) {
+            orderBy = " order by t." + field + " " + order;
+        }
         Page<TblAdProManageBean> pageResult = null;
         String errMsg = "";
         try {

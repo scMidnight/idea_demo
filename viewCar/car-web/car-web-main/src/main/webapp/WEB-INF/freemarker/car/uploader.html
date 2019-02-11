@@ -168,6 +168,7 @@
             ,elem: '#excelShowList'
             ,url:'${base}/car/list/insert/list'
             ,method:'post'
+            ,autoSort: false
             ,cols: [[ //标题栏
                 {field: 'source', title: '来源'}
                 ,{field: 'intentionPerson', title: '意向人'}
@@ -178,7 +179,7 @@
                 ,{field: 'phone', title: '手机号'}
                 ,{field: 'networkNum', title: '网络跟踪频次', sort: true}
                 ,{field: 'analysis', title: '购车意向分析'}
-                ,{field: 'carMonth', title: '欲购车月份', sort: true}
+                // ,{field: 'carMonth', title: '欲购车月份', sort: true}
                 ,{field: 'insertDate', title: '载入时间', sort: true}
             ]]
             //,skin: 'line' //表格风格
@@ -186,6 +187,18 @@
             ,page: true //是否显示分页
             //,limits: [5, 7, 10]
             //,limit: 5 //每页默认显示的数量
+        });
+        table.on('sort(excelShowList)', function (obj) {
+            if(obj.type == null) {
+                obj.type = "asc";
+            }
+            tableIns.reload({
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    field: obj.field //排序字段
+                    ,order: obj.type //排序方式
+                }
+            });
         });
     });
 </script>

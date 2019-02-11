@@ -1,5 +1,6 @@
 package com.car.web.controller.financialMining;
 
+import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -57,10 +58,16 @@ public class IntentClientController {
         Map<String, Object> maps = new HashMap<>();
         String pageNo = request.getParameter("page");//page是当前页码
         String limit = request.getParameter("limit");//limit是每页数据量
+        String field = request.getParameter("field");
+        String order = request.getParameter("order");
         String hql = "SELECT t FROM TblIntentClient t";
+        String orderSql = " order by t.insertDate desc";
+        if(StringUtil.isNotBlank(field) && StringUtil.isNotBlank(order)) {
+            orderSql = " order by t." + field + " " + order;
+        }
         page.setPageNo(Integer.parseInt(pageNo));
         page.setPageSize(Integer.parseInt(limit));
-        Page<TblIntentClientBean> pageResult = intentClientHandler.queryByPageFilter(page,hql, maps);
+        Page<TblIntentClientBean> pageResult = intentClientHandler.queryByPageFilter(page,hql + orderSql, maps);
         JsonBean jsonBean = new JsonBean("0", "", String.valueOf(pageResult.getTotalCount()), pageResult.getResult());
         return JsonUtil.beanToJsonString(jsonBean);
     }

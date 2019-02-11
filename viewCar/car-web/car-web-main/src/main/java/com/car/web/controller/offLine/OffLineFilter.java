@@ -1,15 +1,19 @@
 package com.car.web.controller.offLine;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import person.handler.CarSystemHandler;
 import person.util.PropertyUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /*
@@ -18,6 +22,9 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/filter")
 public class OffLineFilter {
+
+    @Autowired
+    CarSystemHandler carSystemHandler;
 
     /**
      * @Author SunChang
@@ -86,5 +93,20 @@ public class OffLineFilter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/8/28 17:28
+     * @param request
+    * @param request
+    * @param response
+     * @Description 获取数据库品牌
+     */
+    @RequestMapping(value = "/brands", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
+    @ResponseBody
+    public Object brandListPost(HttpServletRequest request, HttpServletResponse response) {
+        List<Map<String, Object>> res = carSystemHandler.findForJdbc("select t.brand_name from tbl_car_system t where t.is_del = ? GROUP BY t.brand_name", "0");
+        return res;
     }
 }

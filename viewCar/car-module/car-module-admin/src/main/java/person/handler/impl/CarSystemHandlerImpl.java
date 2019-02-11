@@ -63,4 +63,9 @@ public class CarSystemHandlerImpl implements CarSystemHandler {
     public List<TblCarSystemBean> findByProperty(String propertyName, Object value) {
         return carSystemService.findByProperty(propertyName, value);
     }
+
+    @Override
+    public List<Map<String, Object>> findForJdbc(String sql, Object... objs) {
+        return carSystemService.findForJdbc(sql, objs);
+    }
 }

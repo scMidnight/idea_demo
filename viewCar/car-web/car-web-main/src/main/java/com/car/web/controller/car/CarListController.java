@@ -722,10 +722,16 @@ public class CarListController {
     public Object excelListPost(Page<TblShowBean> page, HttpServletRequest request, ModelMap map) {
         String pageNo = request.getParameter("page");//page是当前页码
         String limit = request.getParameter("limit");//limit是每页数据量
+        String field = request.getParameter("field");
+        String order = request.getParameter("order");
         String hql = "SELECT t FROM TblShow t";
+        String orderSql = " order by t.insertDate desc";
+        if(StringUtil.isNotBlank(field) && StringUtil.isNotBlank(order)) {
+            orderSql = " order by t." + field + " " + order;
+        }
         page.setPageNo(Integer.parseInt(pageNo));
         page.setPageSize(Integer.parseInt(limit));
-        Page<TblShowBean> pageResult = showHandler.queryByPageFilter(page,hql, null);
+        Page<TblShowBean> pageResult = showHandler.queryByPageFilter(page,hql + orderSql, null);
         JsonBean jsonBean = new JsonBean("0", "", String.valueOf(pageResult.getTotalCount()), pageResult.getResult());
         return JsonUtil.beanToJsonString(jsonBean);
     }

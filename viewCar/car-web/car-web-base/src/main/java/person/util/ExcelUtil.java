@@ -10,6 +10,7 @@ import person.db.bean.*;
 
 import java.io.*;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -415,7 +416,12 @@ public class ExcelUtil {
                                 SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd");
                                 val += dff.format(theDate);
                             }else {
-                                val += df.format(cell.getNumericCellValue()) + ",";
+                                NumberFormat nf = NumberFormat.getInstance();
+                                String temp = nf.format(cell.getNumericCellValue());
+                                if (temp.indexOf(",") >= 0) {
+                                    temp = temp.replace(",", "");
+                                }
+                                val += temp + ",";
                             }
                             break;
                         default:
@@ -437,7 +443,7 @@ public class ExcelUtil {
             offlineFilterBean.setCity(vals[2]);
             offlineFilterBean.setBrandName(vals[3]);
             offlineFilterBean.setOfflineFlow(vals[4]);
-            offlineFilterBean.setStayDate(vals[4]);
+            offlineFilterBean.setStayDate(vals[5]);
             list.add(offlineFilterBean);
         }
         return list;
@@ -499,8 +505,8 @@ public class ExcelUtil {
             tblShowBean.setPhone(vals[6]);
             tblShowBean.setNetworkNum(vals[7]);
             tblShowBean.setAnalysis(vals[8]);
-            tblShowBean.setCarMonth(vals[9]);
-            tblShowBean.setInsertDate(vals[10]);
+            //tblShowBean.setCarMonth(vals[9]);
+            tblShowBean.setInsertDate(vals[9]);
             list.add(tblShowBean);
         }
         return list;

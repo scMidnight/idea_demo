@@ -50,7 +50,20 @@
                             <div class="layui-form-item">
                                 <label class="layui-form-label" style="width: 100px;">车系所属类别：</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" name="carSysType" lay-verify="required" placeholder="车系所属类别" autocomplete="off" class="layui-input" />
+                                    <!--<input type="text" name="carSysType" lay-verify="required" placeholder="车系所属类别" autocomplete="off" class="layui-input" />-->
+                                    <select name="carSysType" lay-verify="required" lay-filter="carSysType">
+                                        <option value="">请选择车型</option>
+                                        <option value="微型和小型轿车">微型和小型轿车</option>
+                                        <option value="紧凑型轿车">紧凑型轿车</option>
+                                        <option value="中型轿车">中型轿车豪华轿车</option>
+                                        <option value="紧凑型SUV">紧凑型SUV</option>
+                                        <option value="中型SUV">中型SUV</option>
+                                        <option value="大型SUV">大型SUV</option>
+                                        <option value="豪华SUV">豪华SUV</option>
+                                        <option value="MPV">MPV</option>
+                                        <option value="新能源">新能源</option>
+                                        <option value="其他">其他</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="layui-form-item">
@@ -121,8 +134,8 @@
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">推广地域：</label>
                                         <div class="layui-input-block">
-                                            <input type="radio" name="diyu" value="自定义区域" title="自定义区域" checked="" lay-filter="diyu">
-                                            <input type="radio" name="diyu" value="不指定地域（全国范围）" lay-filter="diyu" title="不指定地域（全国范围）">
+                                            <input type="radio" name="diyu" value="自定义区域" title="自定义区域" lay-filter="diyu">
+                                            <input type="radio" name="diyu" value="不指定地域（全国范围）" checked="" lay-filter="diyu" title="不指定地域（全国范围）">
                                         </div>
                                     </div>
                                     <div class="layui-form-item layui-form-text">
@@ -277,6 +290,117 @@
     </div>
     <#include "/common/footer.html">
 </div>
+<div id="diyuC" class="layui-form" style="margin-left: 10px;margin-right: 10px;margin-top: 10px;display:none;">
+    <div class="layui-row">
+        <div class="layui-col-xs6 layui-col-md12">
+            <blockquote class="layui-elem-quote layui-quote-nm">
+                <input type="checkbox" name="ALL" lay-filter="ALL" lay-skin="primary" title="所有地域" />
+            </blockquote>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-xs6 layui-col-md3" style="padding-left: 20px;">
+            <input type="checkbox" name="huabeiAll" lay-filter="huabeiAll" lay-skin="primary" title="华北：" />
+        </div>
+        <div class="layui-col-xs6 layui-col-md9">
+            <input type="checkbox" name="huabei" lay-filter="diyu" lay-skin="primary" title="北京" />
+            <input type="checkbox" name="huabei" lay-filter="diyu" lay-skin="primary" title="天津" />
+            <input type="checkbox" name="huabei" lay-filter="diyu" lay-skin="primary" title="河北" />
+            <input type="checkbox" name="huabei" lay-filter="diyu" lay-skin="primary" title="山西" />
+            <input type="checkbox" name="huabei" lay-filter="diyu" lay-skin="primary" title="内蒙古" />
+        </div>
+    </div>
+    <div class="layui-row" style="margin-top: 20px;">
+        <div class="layui-col-xs6 layui-col-md3" style="padding-left: 20px;">
+            <input type="checkbox" name="huadongAll" lay-filter="huadongAll" lay-skin="primary" title="华东：" />
+        </div>
+        <div class="layui-col-xs6 layui-col-md9">
+            <input type="checkbox" name="huadong" lay-filter="diyu" lay-skin="primary" title="上海" />
+            <input type="checkbox" name="huadong" lay-filter="diyu" lay-skin="primary" title="江苏" />
+            <input type="checkbox" name="huadong" lay-filter="diyu" lay-skin="primary" title="浙江" />
+            <input type="checkbox" name="huadong" lay-filter="diyu" lay-skin="primary" title="安徽" />
+            <input type="checkbox" name="huadong" lay-filter="diyu" lay-skin="primary" title="福建" />
+        </div>
+    </div>
+    <div class="layui-row" style="margin-top: 20px;">
+        <div class="layui-col-xs6 layui-col-md3">
+            &nbsp;
+        </div>
+        <div class="layui-col-xs6 layui-col-md9">
+            <input type="checkbox" name="huadong" lay-filter="diyu" lay-skin="primary" title="江西" />
+            <input type="checkbox" name="huadong" lay-filter="diyu" lay-skin="primary" title="山东" />
+        </div>
+    </div>
+    <div class="layui-row" style="margin-top: 20px;">
+        <div class="layui-col-xs6 layui-col-md3" style="padding-left: 20px;">
+            <input type="checkbox" name="huazhongAll" lay-filter="huazhongAll" lay-skin="primary" title="华中：" />
+        </div>
+        <div class="layui-col-xs6 layui-col-md9">
+            <input type="checkbox" name="huazhong" lay-filter="diyu" lay-skin="primary" title="河南" />
+            <input type="checkbox" name="huazhong" lay-filter="diyu" lay-skin="primary" title="湖北" />
+            <input type="checkbox" name="huazhong" lay-filter="diyu" lay-skin="primary" title="湖南" />
+        </div>
+    </div>
+    <div class="layui-row" style="margin-top: 20px;">
+        <div class="layui-col-xs6 layui-col-md3" style="padding-left: 20px;">
+            <input type="checkbox" name="huananAll" lay-filter="huananAll" lay-skin="primary" title="华南：" />
+        </div>
+        <div class="layui-col-xs6 layui-col-md9">
+            <input type="checkbox" name="huanan" lay-filter="diyu" lay-skin="primary" title="广东" />
+            <input type="checkbox" name="huanan" lay-filter="diyu" lay-skin="primary" title="广西" />
+            <input type="checkbox" name="huanan" lay-filter="diyu" lay-skin="primary" title="海南" />
+        </div>
+    </div>
+    <div class="layui-row" style="margin-top: 20px;">
+        <div class="layui-col-xs6 layui-col-md3" style="padding-left: 20px;">
+            <input type="checkbox" name="xinanAll" lay-filter="xinanAll" lay-skin="primary" title="西南：" />
+        </div>
+        <div class="layui-col-xs6 layui-col-md9">
+            <input type="checkbox" name="xinan" lay-filter="diyu" lay-skin="primary" title="重庆" />
+            <input type="checkbox" name="xinan" lay-filter="diyu" lay-skin="primary" title="四川" />
+            <input type="checkbox" name="xinan" lay-filter="diyu" lay-skin="primary" title="贵州" />
+            <input type="checkbox" name="xinan" lay-filter="diyu" lay-skin="primary" title="云南" />
+            <input type="checkbox" name="xinan" lay-filter="diyu" lay-skin="primary" title="西藏" />
+        </div>
+    </div>
+    <div class="layui-row" style="margin-top: 20px;">
+        <div class="layui-col-xs6 layui-col-md3" style="padding-left: 20px;">
+            <input type="checkbox" name="xibeiAll" lay-filter="xibeiAll" lay-skin="primary" title="西北：" />
+        </div>
+        <div class="layui-col-xs6 layui-col-md9">
+            <input type="checkbox" name="xibei" lay-filter="diyu" lay-skin="primary" title="陕西" />
+            <input type="checkbox" name="xibei" lay-filter="diyu" lay-skin="primary" title="甘肃" />
+            <input type="checkbox" name="xibei" lay-filter="diyu" lay-skin="primary" title="青海" />
+            <input type="checkbox" name="xibei" lay-filter="diyu" lay-skin="primary" title="宁夏" />
+            <input type="checkbox" name="xibei" lay-filter="diyu" lay-skin="primary" title="新疆" />
+        </div>
+    </div>
+    <div class="layui-row" style="margin-top: 20px;">
+        <div class="layui-col-xs6 layui-col-md3" style="padding-left: 20px;">
+            <input type="checkbox" name="dongbeiAll" lay-filter="dongbeiAll" lay-skin="primary" title="东北：" />
+        </div>
+        <div class="layui-col-xs6 layui-col-md9">
+            <input type="checkbox" name="dongbei" lay-filter="diyu" lay-skin="primary" title="辽宁" />
+            <input type="checkbox" name="dongbei" lay-filter="diyu" lay-skin="primary" title="吉林" />
+            <input type="checkbox" name="dongbei" lay-filter="diyu" lay-skin="primary" title="黑龙江" />
+        </div>
+    </div>
+    <div class="layui-row" style="margin-top: 20px;">
+        <div class="layui-col-xs6 layui-col-md3" style="padding-left: 20px;">
+            <input type="checkbox" name="qitaAll" lay-filter="qitaAll" lay-skin="primary" title="其他：" />
+        </div>
+        <div class="layui-col-xs6 layui-col-md9">
+            <input type="checkbox" name="qita" lay-filter="diyu" lay-skin="primary" title="香港" />
+            <input type="checkbox" name="qita" lay-filter="diyu" lay-skin="primary" title="澳门" />
+            <input type="checkbox" name="qita" lay-filter="diyu" lay-skin="primary" title="台湾" />
+        </div>
+    </div>
+    <div class="layui-row" style="margin-top: 20px;">
+        <div class="layui-col-xs6 layui-col-md12" style="padding-left: 20px;">
+            *当全网的GPS或IP数据与推广地域匹配时可以看到推广，优先匹配GPS数据
+        </div>
+    </div>
+</div>
 <#include "/common/js.html">
 <!-- 自定义 js -->
 <script>
@@ -301,16 +425,139 @@
             t1 = window.setTimeout(ok,2000);
         });
         form.on('radio(diyu)', function (data) {
-            if(data.value === '不指定地域（全国范围）') {
-                $("#textAreaContent").val("");
-                $("#textAreaContent").attr("disabled", true);
-            }else {
-                $("#textAreaContent").attr("disabled", false);
+            $("#textAreaContent").val("");
+            $("#textAreaContent").attr("disabled", true);
+            if(data.value !== '不指定地域（全国范围）') {
+                layer.open({
+                    type: 1
+                    ,title: '不指定地域（全国范围）'
+                    ,content: $('#diyuC')
+                    ,area: ['600px', '550px']
+                    ,btn: ['确定', '取消']
+                    ,yes: function (index, layero) {
+                        var res = "";
+                        layero.find('div .layui-form input[name!="ALL"]').each(function (i, o) {
+                            if($(o).is(":checked")) {
+                                var name = $(o).attr("name");
+                                if(name.indexOf("All") == -1) {
+                                    res += "," + $(o).attr("title");
+                                }
+                            }
+                        });
+                        res = res.substr(1, res.length);
+                        $("#textAreaContent").val(res);
+                        layer.close(index);
+                    }
+                    ,btn2: function (index, layero) {
+                        layer.close(index);
+                    }
+                });
             }
-        })
+        });
+        form.on('checkbox(huabeiAll)', function (data) {
+            if((data.elem.checked)) {
+                $("input[name='huabei']").prop('checked',true);
+            }else {
+                $("input[name='huabei']").prop("checked",false);
+            }
+            form.render('checkbox');
+        });
+        form.on('checkbox(huadongAll)', function (data) {
+            if((data.elem.checked)) {
+                $("input[name='huadong']").prop('checked',true);
+            }else {
+                $("input[name='huadong']").prop("checked",false);
+            }
+            form.render('checkbox');
+        });
+        form.on('checkbox(huazhongAll)', function (data) {
+            if((data.elem.checked)) {
+                $("input[name='huazhong']").prop('checked',true);
+            }else {
+                $("input[name='huazhong']").prop("checked",false);
+            }
+            form.render('checkbox');
+        });
+        form.on('checkbox(huananAll)', function (data) {
+            if((data.elem.checked)) {
+                $("input[name='huanan']").prop('checked',true);
+            }else {
+                $("input[name='huanan']").prop("checked",false);
+            }
+            form.render('checkbox');
+        });
+        form.on('checkbox(xinanAll)', function (data) {
+            if((data.elem.checked)) {
+                $("input[name='xinan']").prop('checked',true);
+            }else {
+                $("input[name='xinan']").prop("checked",false);
+            }
+            form.render('checkbox');
+        });
+        form.on('checkbox(xibeiAll)', function (data) {
+            if((data.elem.checked)) {
+                $("input[name='xibei']").prop('checked',true);
+            }else {
+                $("input[name='xibei']").prop("checked",false);
+            }
+            form.render('checkbox');
+        });
+        form.on('checkbox(dongbeiAll)', function (data) {
+            if((data.elem.checked)) {
+                $("input[name='dongbei']").prop('checked',true);
+            }else {
+                $("input[name='dongbei']").prop("checked",false);
+            }
+            form.render('checkbox');
+        });
+        form.on('checkbox(qitaAll)', function (data) {
+            if((data.elem.checked)) {
+                $("input[name='qita']").prop('checked',true);
+            }else {
+                $("input[name='qita']").prop("checked",false);
+            }
+            form.render('checkbox');
+        });
+        form.on('checkbox(ALL)', function (data) {
+            if((data.elem.checked)) {
+                $("#diyuC input[type=checkbox]").prop('checked',true);
+            }else {
+                $("#diyuC input[type=checkbox]").prop("checked",false);
+            }
+            form.render('checkbox');
+        });
+        form.on('checkbox(diyu)', function (data) {
+            var temp = data.elem.name + "All";
+            if(!data.elem.checked) {
+                $("input[name='" + temp + "']").prop("checked",false);
+                $("input[name='ALL']").prop("checked",false);
+            }
+            if($("input[name='"+data.elem.name+"']").length ==
+            $("input[name='"+data.elem.name+"']:checked").length) {
+                $("input[name='" + temp + "']").prop("checked",true);
+            }else{
+                $("input[name='" + temp + "']").prop("checked",false);
+            }
+            if(data.elem.checked) {
+                if($("#diyuC input[type=checkbox]:checked").length ==
+                    $("#diyuC input[type=checkbox]").length - 1) {
+                    $("input[name='ALL']").prop("checked",true);
+                }
+            }
+            // $("input[name='"+data.elem.name+"']").each(function (i) {
+            //     console.log($(this));
+            //     console.log($(this).is(":checked"));
+            // });
+            form.render('checkbox');
+        });
     });
     function backList() {
         window.location = "${base}/carSystem/info";
     }
+    $().ready(function() {
+            $("#textAreaContent").val("");
+            $("#textAreaContent").attr("disabled", true);
+        }
+    );
 </script>
 <#include "/common/bodyEnd.html">
