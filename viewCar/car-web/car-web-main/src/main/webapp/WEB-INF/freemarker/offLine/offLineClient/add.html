@@ -64,7 +64,7 @@
                 </div>
                 <div class="guidaoyikaikanbujian" style="display: none">
                     <hr class="layui-bg-black" />
-                    经数据筛选后，符合您筛选条件的线下潜客数为：366&nbsp;<button id="downFile" class="layui-btn layui-btn-disabled">提取人群数据包</button>
+                    经数据筛选后，符合您筛选条件的线下潜客数为：<span id="numRand">366</span>&nbsp;<button id="downFile" class="layui-btn layui-btn-disabled">提取人群数据包</button>
                 </div>
             </div>
         </div>
@@ -208,6 +208,8 @@
     layui.use('form', function () {
         function ok() {
             layer.close(loading);
+            var num = randomNum(10000, 30000);
+            $("#numRand").html(num);
             $(".guidaoyikaikanbujian").show();
             layer.msg('筛选成功，请点击 提取人群数据包 按钮进行下载！',{
                 time: 0
