@@ -9,16 +9,20 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import person.db.bean.TblAreaBean;
 import person.db.bean.TblFileBean;
 import person.db.bean.TblFileDetailBean;
 import person.handler.FileDetailHandler;
 import person.handler.FileHandler;
+import person.security.cache.CacheManager;
 import person.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by SunChang on 2018/9/10
@@ -80,21 +84,26 @@ public class BatchExportController {
             hql = hql + where + where1 + ")";
         }
         //excel标题
-        String [] title = {"姓名", "手机号", "城市ID", "车系ID", "车型ID", "经销商ID"};
+        String [] title = {"姓名", "手机号", "城市ID", "车系ID", "车型ID", "经销商ID", "投放ID", "文件包名", "文件名", "上传时间"};
         //excel文件名
         String fileName = dateStr + ".xls";
         //sheet名
         String sheetName = dateStr;
         List<TblFileBean> fileBeans = fileHandler.queryByHql("FROM TblFile t where t.status = ? and date_format(t.uploadDate, '%Y-%m-%d') BETWEEN ? and ?", "1", dates[0], dates[1]);
+        Map<String, String> areaBeans = CacheManager.getInstance().getAreaMap();//地区码表
         if(fileBeans != null && fileBeans.size() > 0) {
             List<TblFileDetailBean> list = new ArrayList<TblFileDetailBean>();
             for (TblFileBean fileBean : fileBeans) {
                 List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.queryByHql(hql, fileBean.getId());
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                    if(StringUtil.isNotBlank(fileDetailBean.getArea()) && CarUtil.isInteger(fileDetailBean.getArea())) {
+                        fileDetailBean.setArea(areaBeans.get(fileDetailBean.getArea()));
+                    }
                     list.add(fileDetailBean);
                 }
             }
             String[][] contents = new String[list.size()][title.length];
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             for (int i = 0; i < list.size(); i++) {
                 contents[i][0] = list.get(i).getName();
                 contents[i][1] = list.get(i).getPhone();
@@ -102,6 +111,10 @@ public class BatchExportController {
                 contents[i][3] = list.get(i).getCarSys();
                 contents[i][4] = "";
                 contents[i][5] = "";
+                contents[i][6] = list.get(i).getTaskId();
+                contents[i][7] = list.get(i).getFileBean().getFileNameBak();
+                contents[i][8] = list.get(i).getFileName();
+                contents[i][9] = sdf.format(list.get(i).getUploadDate());
             }
             //创建HSSFWorkbook
             HSSFWorkbook wb = ExcelUtil.getHSSFWorkbook(sheetName, title, contents, null);
