@@ -48,29 +48,46 @@ public class CarUtil {
      * @Description 通过号码归属地与提供的城市名比对，得出城市ID
      */
     public static String checkCityId(List<TblAreaBean> areaBeans, String cityName, String mobileFrom) {
-        String mobile = "";
-        if(mobileFrom == null || mobileFrom.equals("&nbsp;")) {
-            mobile = cityName;
-        }else {
-            String[] mobileFroms = mobileFrom.split("&nbsp;");
-            if (mobileFroms.length > 1) {
-                mobile = mobileFroms[mobileFroms.length - 1];
-            } else {
-                mobile = mobileFroms[0];
-            }
-        }
         String id = "";
-        for (TblAreaBean areaBean : areaBeans) {
-            if (areaBean.getCityName().equals(cityName) && areaBean.getCityName().equals(mobile.trim())) {
-                id = areaBean.getId();
-                break;
+        if(StringUtil.isNotBlank(mobileFrom)) {
+            String mobile = "";
+            if (mobileFrom == null || mobileFrom.equals("&nbsp;")) {
+                mobile = cityName;
+            } else {
+                String[] mobileFroms = mobileFrom.split("&nbsp;");
+                if (mobileFroms.length > 1) {
+                    mobile = mobileFroms[mobileFroms.length - 1];
+                } else {
+                    mobile = mobileFroms[0];
+                }
             }
-        }
-        if(StringUtil.isBlank(id)) {
             for (TblAreaBean areaBean : areaBeans) {
-                if (areaBean.getCityName().contains(cityName) && areaBean.getCityName().contains(mobile.trim())) {
+                if (areaBean.getCityName().equals(cityName) && areaBean.getCityName().equals(mobile.trim())) {
                     id = areaBean.getId();
                     break;
+                }
+            }
+            if (StringUtil.isBlank(id)) {
+                for (TblAreaBean areaBean : areaBeans) {
+                    if (areaBean.getCityName().contains(cityName) && areaBean.getCityName().contains(mobile.trim())) {
+                        id = areaBean.getId();
+                        break;
+                    }
+                }
+            }
+        }else {
+            for (TblAreaBean areaBean : areaBeans) {
+                if (areaBean.getCityName().equals(cityName)) {
+                    id = areaBean.getId();
+                    break;
+                }
+            }
+            if (StringUtil.isBlank(id)) {
+                for (TblAreaBean areaBean : areaBeans) {
+                    if (areaBean.getCityName().contains(cityName)) {
+                        id = areaBean.getId();
+                        break;
+                    }
                 }
             }
         }

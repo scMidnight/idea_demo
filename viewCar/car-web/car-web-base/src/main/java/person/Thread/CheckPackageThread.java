@@ -71,7 +71,8 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                         fileDetailBeans1.add(fileDetailBean);
                         continue;
                     }
-                    String mobileFrom = MobileFromUtil.getMobileFrom(vals[1]);//得到归属地
+                    //String mobileFrom = MobileFromUtil.getMobileFrom(vals[1]);//得到归属地
+                    String mobileFrom = null;
                     //String mobileFrom = MobileFromUtil.getMobileFromBd(vals[1]);//得到归属地
                     String cityId = CarUtil.checkCityId(areaBeans, vals[2], mobileFrom);//判断城市ID
                     if (StringUtil.isNotBlank(cityId)) {
@@ -79,7 +80,11 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                     }else {
                         fileDetailBean.setArea(CarUtil.getCityId(areaBeans, vals[2]));
                         fileDetailBean.setStatus("5");//号段错误
-                        fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：号段错误，文件中是" + vals[2] + "，根据号码查询后为：" + mobileFrom);
+                        if(StringUtil.isNotBlank(mobileFrom)) {
+                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：号段错误，文件中是" + vals[2] + "，根据号码查询后为：" + mobileFrom);
+                        }else {
+                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：城市转id失败");
+                        }
                         //fileDetailBeans1.add(fileDetailBean);
                         //continue;
                     }
