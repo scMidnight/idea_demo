@@ -17,6 +17,8 @@
                                         <option value="brandName">品牌名称</option>
                                         <option value="tradeName">厂商名称</option>
                                         <option value="carSysName">车系名称</option>
+                                        <option value="carId">车系ID（模糊）</option>
+                                        <option value="carIdPre">车系ID（精准）</option>
                                     </select>
                                 </div>
                                 <div class="layui-inline">
@@ -81,6 +83,12 @@
                 }
                 if(val == "carSysName") {
                     $typeVal.attr("placeholder", "请输入车系名称");
+                }
+                if(val == "carId") {
+                    $typeVal.attr("placeholder", "请输入车系ID");
+                }
+                if(val == "carIdPre") {
+                    $typeVal.attr("placeholder", "请输入车系ID");
                 }
                 selectedVal = val;
                 $typeVal.val("");

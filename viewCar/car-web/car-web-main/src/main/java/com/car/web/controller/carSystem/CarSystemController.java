@@ -57,7 +57,13 @@ public class CarSystemController {
         String where = "";
         if(StringUtil.isNotBlank(key)) {
             String val = request.getParameter("selectedVal");
-            where = " AND t." + key + " like '%" + val + "%'";
+            if(key.equals("carId")) {
+                where = " AND t.carSysId like '%" + val + "%'";
+            }else if(key.equals("carIdPre")) {
+                where = " AND t.carSysId = '" + val + "'";
+            }else {
+                where = " AND t." + key + " like '%" + val + "%'";
+            }
         }
         String orderBy = " order by t.insertDate desc";
         page.setPageNo(Integer.parseInt(pageNo));
