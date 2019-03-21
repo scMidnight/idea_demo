@@ -382,7 +382,7 @@ public class CarListController {
         File[] fs = file.listFiles();
         for (File f : fs) {
             if(f.isDirectory()) {
-                list = getFilePaths(f);
+                list.addAll(getFilePaths(f));
             }
             if(f.isFile()) {
                 list.add(f.getPath());
