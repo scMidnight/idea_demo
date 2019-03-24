@@ -9,4 +9,5 @@ public interface UserService extends CommonService {
     TblUserBean loadByUsername(String userCode);
     void updateUserIsBlack(String userId, String isBlack);
     TblUserBean loadByUserId(String userId);
+    void updateUser(TblUserBean bean);
 }

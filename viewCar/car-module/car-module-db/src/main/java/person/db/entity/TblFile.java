@@ -23,6 +23,8 @@ public class TblFile extends IdEntity {
     private String blackHitCount;//黑名单命中条数
     private String numberErrCount;//号段错误条数
     private String idFailedCount;//id转失败条数
+    private String tradeCount;//厂商重复次数
+    private String brandCount;//品牌重复次数
 
     @Column(name = "FILE_NAME")
     public String getFileName() {
@@ -148,5 +150,23 @@ public class TblFile extends IdEntity {
 
     public void setIdFailedCount(String idFailedCount) {
         this.idFailedCount = idFailedCount;
+    }
+
+    @Column(name = "trade_count")
+    public String getTradeCount() {
+        return tradeCount;
+    }
+
+    public void setTradeCount(String tradeCount) {
+        this.tradeCount = tradeCount;
+    }
+
+    @Column(name = "brand_count")
+    public String getBrandCount() {
+        return brandCount;
+    }
+
+    public void setBrandCount(String brandCount) {
+        this.brandCount = brandCount;
     }
 }

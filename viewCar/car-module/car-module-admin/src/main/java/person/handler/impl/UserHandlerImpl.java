@@ -29,4 +29,9 @@ public class UserHandlerImpl implements UserHandler {
     public TblUserBean loadByUserId(String userId) {
         return userService.loadByUserId(userId);
     }
+
+    @Override
+    public void updateUser(TblUserBean bean) {
+        userService.updateUser(bean);
+    }
 }

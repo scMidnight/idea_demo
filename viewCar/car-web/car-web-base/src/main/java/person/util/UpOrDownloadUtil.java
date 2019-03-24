@@ -1,6 +1,5 @@
 package person.util;
 
-import com.sun.corba.se.spi.orbutil.fsm.Input;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import person.db.bean.TblFileBean;
@@ -273,6 +272,8 @@ public class UpOrDownloadUtil {
                 fileBean.setBlackHitCount("0");
                 fileBean.setNumberErrCount("0");
                 fileBean.setIdFailedCount("0");
+                fileBean.setBrandCount("0");
+                fileBean.setTradeCount("0");
                 fileBeans.add(fileBean);
             }
         }

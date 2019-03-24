@@ -42,56 +42,27 @@ public class CarUtil {
     /**
      * @Author SunChang
      * @Date 2018/9/6 19:52
-     * @param areaBeans
     * @param cityName
     * @param mobileFrom
      * @Description 通过号码归属地与提供的城市名比对，得出城市ID
      */
-    public static String checkCityId(List<TblAreaBean> areaBeans, String cityName, String mobileFrom) {
-        String id = "";
-        if(StringUtil.isNotBlank(mobileFrom)) {
-            String mobile = "";
-            if (mobileFrom == null || mobileFrom.equals("&nbsp;")) {
-                mobile = cityName;
+    public static boolean checkFromPhone(String cityName, String mobileFrom) {
+        String mobile = "";
+        if (mobileFrom == null || mobileFrom.equals("&nbsp;")) {
+            return true;
+        } else {
+            String[] mobileFroms = mobileFrom.split("&nbsp;");
+            if (mobileFroms.length > 1) {
+                mobile = mobileFroms[mobileFroms.length - 1];
             } else {
-                String[] mobileFroms = mobileFrom.split("&nbsp;");
-                if (mobileFroms.length > 1) {
-                    mobile = mobileFroms[mobileFroms.length - 1];
-                } else {
-                    mobile = mobileFroms[0];
-                }
-            }
-            for (TblAreaBean areaBean : areaBeans) {
-                if (areaBean.getCityName().equals(cityName) && areaBean.getCityName().equals(mobile.trim())) {
-                    id = areaBean.getId();
-                    break;
-                }
-            }
-            if (StringUtil.isBlank(id)) {
-                for (TblAreaBean areaBean : areaBeans) {
-                    if (areaBean.getCityName().contains(cityName) && areaBean.getCityName().contains(mobile.trim())) {
-                        id = areaBean.getId();
-                        break;
-                    }
-                }
-            }
-        }else {
-            for (TblAreaBean areaBean : areaBeans) {
-                if (areaBean.getCityName().equals(cityName)) {
-                    id = areaBean.getId();
-                    break;
-                }
-            }
-            if (StringUtil.isBlank(id)) {
-                for (TblAreaBean areaBean : areaBeans) {
-                    if (areaBean.getCityName().contains(cityName)) {
-                        id = areaBean.getId();
-                        break;
-                    }
-                }
+                mobile = mobileFroms[0];
             }
         }
-        return id;
+        if(mobile.contains(cityName) || cityName.contains(mobile)) {
+            return true;
+        }else {
+            return false;
+        }
     }
 
     /**
@@ -149,15 +120,15 @@ public class CarUtil {
     * @param carSysName
      * @Description 根据车系名称获取车系ID
      */
-    public static String getCarSysId(List<TblCarSystemBean> carSystemBeans, String carSysName) {
-        String carSysId = "";
+    public static TblCarSystemBean getCarSysId(List<TblCarSystemBean> carSystemBeans, String carSysName) {
+        TblCarSystemBean bean = null;
         for (TblCarSystemBean carSystemBean : carSystemBeans) {
             if(carSystemBean.getCarSysName().equals(carSysName)) {
-                carSysId = carSystemBean.getCarSysId();
+                bean = carSystemBean;
                 break;
             }
         }
-        return carSysId;
+        return bean;
     }
 
     /**
@@ -219,6 +190,44 @@ public class CarUtil {
             isBigLib = true;
         }
         return isBigLib;
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/9/6 20:38
+     * @param bean
+     * @Description 检测是否品牌重复
+     */
+    public static boolean checkBrand(TblFileDetailBean bean, FileDetailHandler fileDetailHandler) {
+        boolean res = false;
+        String brand = bean.getBrand();
+        String phone = bean.getPhone();
+        List<TblFileDetailBean> beans = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.brand = ? and t.phone = ?", brand, phone);
+        if(null != beans && !beans.isEmpty()) {
+            if(beans.size() > 1) {
+                res = true;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/9/6 20:38
+     * @param bean
+     * @Description 检测是否厂商重复
+     */
+    public static boolean checkTrade(TblFileDetailBean bean, FileDetailHandler fileDetailHandler) {
+        boolean res = false;
+        String brand = bean.getBrand();
+        String phone = bean.getPhone();
+        List<TblFileDetailBean> beans = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.trade = ? and t.phone = ?", brand, phone);
+        if(null != beans && !beans.isEmpty()) {
+            if(beans.size() > 1) {
+                res = true;
+            }
+        }
+        return res;
     }
 
     /**

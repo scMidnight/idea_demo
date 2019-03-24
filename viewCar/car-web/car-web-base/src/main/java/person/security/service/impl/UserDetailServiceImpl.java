@@ -47,6 +47,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
         user.setUserCode(userBean.getUserCode());
         user.setUserName(userBean.getUserName());
         user.setIsBlack(userBean.getIsBlack());
+        user.setIsBrand(userBean.getisBrand());
+        user.setIsTrade(userBean.getIsTrade());
+        user.setIsPhone(userBean.getIsPhone());
         return user;
     }
 

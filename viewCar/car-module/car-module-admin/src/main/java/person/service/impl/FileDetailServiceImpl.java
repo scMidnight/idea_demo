@@ -79,6 +79,8 @@ public class FileDetailServiceImpl extends CommonServiceImpl implements FileDeta
         file.setBlackHitCount(String.valueOf(queryByHqlOnErrCount(file.getId(), "4").size()));
         file.setNumberErrCount(String.valueOf(queryByHqlOnErrCount(file.getId(), "5").size()));
         file.setIdFailedCount(String.valueOf(queryByHqlOnErrCount(file.getId(), "6").size()));
+        file.setBrandCount(String.valueOf(queryByHqlOnErrCount(file.getId(), "7").size()));
+        file.setTradeCount(String.valueOf(queryByHqlOnErrCount(file.getId(), "8").size()));
         super.saveOrUpdate(file);
     }
 

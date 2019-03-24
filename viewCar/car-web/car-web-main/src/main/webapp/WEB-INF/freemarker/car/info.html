@@ -18,6 +18,8 @@
                                 <input type="checkbox" name="filter" value="'4'" title="黑名单命中" checked />
                                 <input type="checkbox" name="filter" value="'5'" title="号段错误" checked />
                                 <input type="checkbox" name="filter" value="'6'" title="ID转失败" checked />
+                                <input type="checkbox" name="filter" value="'7'" title="品牌重复" checked />
+                                <input type="checkbox" name="filter" value="'8'" title="厂商重复" checked />
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -54,6 +56,10 @@
     号段错误
     {{# } else if(d.status == '6') { }}
     ID转失败
+    {{# } else if(d.status == '7') { }}
+    品牌重复
+    {{# } else if(d.status == '8') { }}
+    厂商重复
     {{# } else { }}
     -
     {{# } }}
@@ -65,6 +71,9 @@
     <div class="layui-btn-container" style="font-size: 15px;">
         <span id="countNum"></span>
     </div>
+</script>
+<script type="text/html" id="uploadDate">
+    {{util.toDateString(d.uploadDate)}}
 </script>
 <!-- 自定义 js -->
 <script>
@@ -91,13 +100,15 @@
             ,toolbar: '#toolbar'
             ,defaultToolbar: []
             ,cols: [[
-                {field:'fileNameBak', title:'数据排期', templet:'#fileNameBak', align:'center'}
-                ,{field:'fileName', title:'排期名称', width:360, align:'center'}
-                ,{field:'taskId', title:'任务ID', align:'center'}
-                ,{field:'name', title:'姓名', align:'center'}
-                ,{field:'phone', title:'手机号', align:'center'}
-                ,{field:'area', title:'地区', align:'center'}
-                ,{field:'carSys', title:'车系', align:'center'}
+                {type:'numbers'}
+                ,{field:'uploadDate', title:'上传日期', templet:'#uploadDate', align:'center'}
+                ,{field:'fileNameBak', title:'数据排期', templet:'#fileNameBak', align:'center'}
+                ,{field:'fileName', title:'排期名称', width:360, align:'center', sort:true}
+                ,{field:'taskId', title:'任务ID', align:'center', sort:true}
+                ,{field:'name', title:'姓名', align:'center', sort:true}
+                ,{field:'phone', title:'手机号', align:'center', sort:true}
+                ,{field:'area', title:'地区', align:'center', sort:true}
+                ,{field:'carSys', title:'车系', align:'center', sort:true}
                 ,{field:'status', title:'状态', templet:'#status', align:'center'}
                 ,{title:'说明', templet:'#description'}
             ]]
@@ -127,12 +138,30 @@
                             fullColor(i, "#000000", "#FFFFFF");
                         }else if(dat.color == "huise") {
                             fullColor(i, "#808080", "#000000");
+                        }else if(dat.color == "shenlv") {
+                            fullColor(i, "#A2CD5A", "#000000");
+                        }else if(dat.color == "qianlv") {
+                            fullColor(i, "#ADFF2F", "#000000");
                         }
                     }
                 }
                 layer.close(loading);
             }
         });
+        // table.on('sort(infoList)', function (obj) {
+        //     if(obj.type == null) {
+        //         obj.type = "asc";
+        //     }
+        //     tableIns.reload({
+        //         initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+        //         ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+        //             fileId: fileId
+        //             ,arrs: arrs().join(',')
+        //             ,field: obj.field //排序字段
+        //             ,order: obj.type //排序方式
+        //         }
+        //     });
+        // });
         $("#seachInfo").on("click", function () {
             var type = $(this).data('type');
             if(!isNull(type) && type == 'reload') {

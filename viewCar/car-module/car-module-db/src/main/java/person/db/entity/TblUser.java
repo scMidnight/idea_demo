@@ -19,6 +19,9 @@ public class TblUser extends IdEntity {
     private String userName;
     private TreeSet<TblRole> roles;
     private String isBlack;//是否开启黑名单1是0否
+    private String isBrand;//是否开启品牌开关1是0否
+    private String isTrade;//是否开启厂商开关1是0否
+    private String isPhone;//是否开启号段检查1是0否
 
     @Column(name = "usercode")
     public String getUserCode() {
@@ -72,5 +75,32 @@ public class TblUser extends IdEntity {
 
     public void setIsBlack(String isBlack) {
         this.isBlack = isBlack;
+    }
+
+    @Column(name = "is_brand")
+    public String getisBrand() {
+        return isBrand;
+    }
+
+    public void setisBrand(String isBrand) {
+        this.isBrand = isBrand;
+    }
+
+    @Column(name = "is_trade")
+    public String getIsTrade() {
+        return isTrade;
+    }
+
+    public void setIsTrade(String isTrade) {
+        this.isTrade = isTrade;
+    }
+
+    @Column(name = "is_phone")
+    public String getIsPhone() {
+        return isPhone;
+    }
+
+    public void setIsPhone(String isPhone) {
+        this.isPhone = isPhone;
     }
 }

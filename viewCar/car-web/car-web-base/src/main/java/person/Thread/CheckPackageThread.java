@@ -10,7 +10,6 @@ import person.handler.UserHandler;
 import person.util.CarUtil;
 import person.util.ExcelUtil;
 import person.util.MobileFromUtil;
-import person.util.UserUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,6 +47,7 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
     @Override
     public List<TblFileDetailBean> call() throws Exception {
         List<TblFileDetailBean> fileDetailBeans1 = new ArrayList<TblFileDetailBean>();
+        TblUserBean userBean = userHandler.loadByUserId(userId);
         try {
             System.out.println("读取文件内容");
             LinkedList<String> list = ExcelUtil.read(excelPath);
@@ -71,25 +71,24 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                         fileDetailBeans1.add(fileDetailBean);
                         continue;
                     }
-                    //String mobileFrom = MobileFromUtil.getMobileFrom(vals[1]);//得到归属地
-                    String mobileFrom = null;
-                    //String mobileFrom = MobileFromUtil.getMobileFromBd(vals[1]);//得到归属地
-                    String cityId = CarUtil.checkCityId(areaBeans, vals[2], mobileFrom);//判断城市ID
+                    if(userBean.getIsPhone().equals("1")) {
+                        String mobileFrom = MobileFromUtil.getMobileFrom(vals[1]);//得到归属地
+                        //String mobileFrom = MobileFromUtil.getMobileFromBd(vals[1]);//得到归属地
+                        if(!CarUtil.checkFromPhone(vals[2], mobileFrom)) {
+                            fileDetailBean.setStatus("5");//号段错误或者城市转id失败
+                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：号段错误，文件中是" + vals[2] + "，根据号码查询后为：" + mobileFrom);
+                        }
+                    }
+                    String cityId = CarUtil.getCityId(areaBeans, vals[2]);
                     if (StringUtil.isNotBlank(cityId)) {
                         fileDetailBean.setArea(cityId);
                     }else {
-                        fileDetailBean.setArea(CarUtil.getCityId(areaBeans, vals[2]));
-                        fileDetailBean.setStatus("5");//号段错误
-                        if(StringUtil.isNotBlank(mobileFrom)) {
-                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：号段错误，文件中是" + vals[2] + "，根据号码查询后为：" + mobileFrom);
-                        }else {
-                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：城市转id失败");
-                        }
+                        fileDetailBean.setStatus("5");//号段错误或者城市转id失败
+                        fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：城市转id失败");
                         //fileDetailBeans1.add(fileDetailBean);
                         //continue;
                     }
                     if(CarUtil.isBlack(blacks, fileDetailBean.getPhone())) {
-                        TblUserBean userBean = userHandler.loadByUserId(userId);
                         if(userBean.getIsBlack().equals("1")) {
                             fileDetailBean.setStatus("4");//黑名单命中
                             fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：黑名单命中");
@@ -98,16 +97,37 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                         }
                     }
                     //获取车系对应ID，如果没有就视为转id失败
-                    String carSysId = CarUtil.getCarSysId(carSystemBeans, vals[3]);
-                    if(StringUtil.isNotBlank(carSysId)) {
-                        fileDetailBean.setCarSys(carSysId);
+                    TblCarSystemBean carSystemBean = CarUtil.getCarSysId(carSystemBeans, vals[3]);
+                    if(carSystemBean != null) {
+                        fileDetailBean.setCarSys(carSystemBean.getCarSysId());
+                        fileDetailBean.setBrand(carSystemBean.getBrandId());
+                        fileDetailBean.setTrade(carSystemBean.getTradeId());
                     }else {
                         fileDetailBean.setStatus("6");
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行车系转换错误，状态：ID转失败");
                         //fileDetailBeans1.add(fileDetailBean);
                         //continue;
                     }
-                    if(CarUtil.checkCarSys(carSysId, fileDetailBean.getPhone(), fileDetailHandler)) {
+
+                    if(!fileDetailBean.getStatus().equals("6")) {
+                        if(userBean.getisBrand().equals("1")) {//品牌
+                            if(CarUtil.checkBrand(fileDetailBean, fileDetailHandler)) {
+                                fileDetailBean.setStatus("7");
+                                fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行品牌重复，状态：品牌重复");
+                                fileDetailBeans1.add(fileDetailBean);
+                                continue;
+                            }
+                        }
+                        if(userBean.getIsTrade().equals("1")) {//厂商
+                            if(CarUtil.checkTrade(fileDetailBean, fileDetailHandler)) {
+                                fileDetailBean.setStatus("8");
+                                fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行厂商重复，状态：厂商重复");
+                                fileDetailBeans1.add(fileDetailBean);
+                                continue;
+                            }
+                        }
+                    }
+                    if(CarUtil.checkCarSys(carSystemBean.getCarSysId(), fileDetailBean.getPhone(), fileDetailHandler)) {
                         fileDetailBean.setStatus("3");//车系重复
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：车系重复");
                         //fileDetailBeans1.add(fileDetailBean);
@@ -125,7 +145,7 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                         fileDetailBeans1.add(fileDetailBean);
                         continue;
                     }
-                    if(!fileDetailBean.getStatus().equals("5") && !fileDetailBean.getStatus().equals("6") && !fileDetailBean.getStatus().equals("3")) {//如果不是号段错误，车系错误以及车第重复
+                    if(!fileDetailBean.getStatus().equals("5") && !fileDetailBean.getStatus().equals("6") && !fileDetailBean.getStatus().equals("3")) {//如果不是号段错误，车系错误以及车系重复
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行");
                         fileDetailBeans1.add(fileDetailBean);
                     }else {

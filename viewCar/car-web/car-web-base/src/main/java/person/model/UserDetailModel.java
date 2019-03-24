@@ -33,6 +33,9 @@ public class UserDetailModel extends User implements UserDetails {
     private String userName;
     private TreeSet<TblRoleBean> roles;
     private String isBlack;
+    private String isBrand;//是否开启品牌开关1是0否
+    private String isTrade;//是否开启厂商开关1是0否
+    private String isPhone;//是否开启号段检查1是0否
 
     public String getId() {
         return id;
@@ -89,5 +92,29 @@ public class UserDetailModel extends User implements UserDetails {
 
     public void setIsBlack(String isBlack) {
         this.isBlack = isBlack;
+    }
+
+    public String getIsBrand() {
+        return isBrand;
+    }
+
+    public void setIsBrand(String isBrand) {
+        this.isBrand = isBrand;
+    }
+
+    public String getIsTrade() {
+        return isTrade;
+    }
+
+    public void setIsTrade(String isTrade) {
+        this.isTrade = isTrade;
+    }
+
+    public String getIsPhone() {
+        return isPhone;
+    }
+
+    public void setIsPhone(String isPhone) {
+        this.isPhone = isPhone;
     }
 }

@@ -11,4 +11,6 @@ public interface UserHandler {
     void updateUserIsBlack(String userId, String isBlack);
 
     TblUserBean loadByUserId(String userId);
+
+    void updateUser(TblUserBean bean);
 }

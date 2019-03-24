@@ -24,6 +24,24 @@
                         <div class="layui-inline">
                             <button type="button" class="layui-btn layui-btn-normal" id="checkAgain" data-type="checkAgain">重新检查时间范围内数据包</button>
                         </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">厂商开关</label>
+                            <div class="layui-input-block">
+                                <input type="checkbox" name="isTrade" lay-skin="switch" lay-filter="switchFilter" lay-text="开启|关闭">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">品牌开关</label>
+                            <div class="layui-input-block">
+                                <input type="checkbox" name="isBrand" lay-skin="switch" lay-filter="switchFilter" lay-text="开启|关闭">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">号段开关</label>
+                            <div class="layui-input-block">
+                                <input type="checkbox" name="isPhone" lay-skin="switch" lay-filter="switchFilter" lay-text="开启|关闭">
+                            </div>
+                        </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label" style="width: 120px;">数据过滤</label>
@@ -34,6 +52,8 @@
                             <input type="checkbox" name="filter" value="4" title="黑名单命中" checked />
                             <input type="checkbox" name="filter" value="5" title="号段错误" />
                             <input type="checkbox" name="filter" value="6" title="ID转失败" checked />
+                            <input type="checkbox" name="filter" value="7" title="品牌重复" checked />
+                            <input type="checkbox" name="filter" value="8" title="厂商重复" />
                         </div>
                     </div>
                 </div>
@@ -77,6 +97,10 @@
     var host = window.location.host;
     var ws = null;
     var userCode = "${userCode!''}";
+    var isBrand = "${isBrand!''}";
+    var isTrade = "${isTrade!''}";
+    var isPhone = "${isPhone!''}";
+    var loading;
     if('WebSocket' in window) {
         ws = new WebSocket("ws://" + host + "/websocket/" + userCode);
     }else {
@@ -113,6 +137,40 @@
             var received_msg = evt.data;
             element.progress('bar', received_msg);
         };
+        form.val('one', {
+            "isTrade" : isTrade == '1' ? true : false
+            ,"isBrand" : isBrand == '1' ? true : false
+            ,"isPhone" : isPhone == '1' ? true : false
+        });
+        form.on('switch(switchFilter)', function (data) {
+            var checked = data.elem.checked;
+            var name = data.elem.name;
+            var res;
+            if(checked) {
+                res = "1";
+            }else {
+                res = "0";
+            }
+            $.ajax({
+                url:"${base}/car/switch",
+                data:{res: res, choice: name},
+                dataType:"json",
+                type:"post",
+                beforeSend:function(XMLHttpRequest) {
+                    loading = layer.load(0,{shade: [0.4,'#000']});
+                },
+                success:function (result) {
+                    if(result.status == "y") {
+                        layer.close(loading);
+                        location.reload();
+                    }else{
+                        layer.alert(result.msg);
+                    }
+                },
+                complete:function (XMLHttpRequest, textStatus) {
+                }
+            });
+        });
         laydate.render({
             elem:'#dateStr'
             ,range: '~'
@@ -130,7 +188,7 @@
             ,method:'post'
             ,height: 'full-400'
             ,cols: [[
-                {field:'fileNameBak', title:'数据源排期', width:300,fixed:'left', templet: function (d) {
+                {field:'fileNameBak', title:'数据源排期', width:90,   fixed:'left', templet: function (d) {
                         var fileNameBak = d.fileNameBak;
                         if(fileNameBak.indexOf(".") != -1) {
                             return subStrs(fileNameBak, fileNameBak.indexOf("."));
@@ -138,46 +196,60 @@
                             return fileNameBak;
                         }
                     }}
-                ,{field:'uploadDate', title:'时间', width:160, templet:'#uploadDate'}
-                ,{field:'fileCount', title:'媒体位总数', align:'center'}
-                ,{field:'sumCount', title:'合计条数', align:'center'}
-                ,{field:'problemCount', title:'问题条数', align:'center'}
-                ,{field:'taskRepeatCount', title:'任务重复', align:'center', templet: function (d) {
+                ,{field:'uploadDate', title:'时间', templet:'#uploadDate'}
+                ,{field:'fileCount', title:'媒体位总数', width:90, align:'center'}
+                ,{field:'sumCount', title:'合计条数', width:90, align:'center'}
+                ,{field:'problemCount', title:'问题条数', width:90, align:'center'}
+                ,{field:'taskRepeatCount', title:'任务重复', width:90, align:'center', templet: function (d) {
                         if(d.taskRepeatCount > 0) {
                             return "<a href=\"javascript:void(0);\" onclick=\"errInfo('2', '" + d.id + "')\" class=\"layui-table-link\">" + d.taskRepeatCount + "</a>";
                         }else {
                             return d.taskRepeatCount;
                         }
                     }}
-                ,{field:'carSysRepeatCount', title:'车系重复', align:'center', templet: function (d) {
+                ,{field:'carSysRepeatCount', title:'车系重复', width:90, align:'center', templet: function (d) {
                         if(d.carSysRepeatCount > 0) {
                             return "<a href=\"javascript:void(0);\" onclick=\"errInfo('3', '" + d.id + "')\" class=\"layui-table-link\">" + d.carSysRepeatCount + "</a>";
                         }else {
                             return d.carSysRepeatCount;
                         }
                     }}
-                ,{field:'bigLibRepeatCount', title:'大库重复', align:'center', templet: function (d) {
+                ,{field:'tradeCount', title:'厂商重复', width:90, align:'center', templet: function (d) {
+                        if(d.tradeCount > 0) {
+                            return "<a href=\"javascript:void(0);\" onclick=\"errInfo('8', '" + d.id + "')\" class=\"layui-table-link\">" + d.tradeCount + "</a>";
+                        }else {
+                            return d.tradeCount;
+                        }
+                    }}
+                ,{field:'brandCount', title:'品牌重复', width:90, align:'center', templet: function (d) {
+                        if(d.brandCount > 0) {
+                            return "<a href=\"javascript:void(0);\" onclick=\"errInfo('7', '" + d.id + "')\" class=\"layui-table-link\">" + d.brandCount + "</a>";
+                        }else {
+                            return d.brandCount;
+                        }
+                    }}
+                ,{field:'bigLibRepeatCount', title:'大库重复', width:90, align:'center', templet: function (d) {
                         if(d.bigLibRepeatCount > 0) {
                             return "<a href=\"javascript:void(0);\" onclick=\"errInfo('1', '" + d.id + "')\" class=\"layui-table-link\">" + d.bigLibRepeatCount + "</a>";
                         }else {
                             return d.bigLibRepeatCount;
                         }
                     }}
-                ,{field:'blackHitCount', title:'黑名单命中', align:'center', templet: function (d) {
+                ,{field:'blackHitCount', title:'黑名单命中', width:90, align:'center', templet: function (d) {
                         if(d.blackHitCount > 0) {
                             return "<a href=\"javascript:void(0);\" onclick=\"errInfo('4', '" + d.id + "')\" class=\"layui-table-link\">" + d.blackHitCount + "</a>";
                         }else {
                             return d.blackHitCount;
                         }
                     }}
-                ,{field:'numberErrCount', title:'号段错误', align:'center', templet: function (d) {
+                ,{field:'numberErrCount', title:'号段错误', width:90, align:'center', templet: function (d) {
                         if(d.numberErrCount > 0) {
                             return "<a href=\"javascript:void(0);\" onclick=\"errInfo('5', '" + d.id + "')\" class=\"layui-table-link\">" + d.numberErrCount + "</a>";
                         }else {
                             return d.numberErrCount;
                         }
                     }}
-                ,{field:'idFailedCount', title:'ID转失败', align:'center', templet: function (d) {
+                ,{field:'idFailedCount', title:'ID转失败', width:90, align:'center', templet: function (d) {
                         if(d.idFailedCount > 0) {
                             return "<a href=\"javascript:void(0);\" onclick=\"errInfo('6', '" + d.id + "')\" class=\"layui-table-link\">" + d.idFailedCount + "</a>";
                         }else {

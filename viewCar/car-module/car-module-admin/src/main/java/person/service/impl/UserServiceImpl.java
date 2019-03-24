@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import person.db.bean.TblUserBean;
 import person.db.entity.TblUser;
-import person.service.FunctionService;
 import person.service.RoleService;
 import person.service.UserService;
 
@@ -47,5 +46,12 @@ public class UserServiceImpl extends CommonServiceImpl implements UserService {
         TblUserBean userBean = new TblUserBean();
         BeanUtils.copyProperties(tblUser, userBean);
         return userBean;
+    }
+
+    @Override
+    public void updateUser(TblUserBean bean) {
+        TblUser tblUser = this.get(TblUser.class, bean.getId());
+        BeanUtils.copyProperties(bean, tblUser);
+        super.updateEntitie(tblUser);
     }
 }

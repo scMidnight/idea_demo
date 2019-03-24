@@ -84,6 +84,30 @@ public class CarListController {
         return JsonUtil.beanToJsonString(jsonBean);
     }
 
+    @RequestMapping(value = "/car/switch", method = RequestMethod.POST)
+    @ResponseBody
+    public MessageBean carSwitch(HttpServletRequest request) {
+        String choice = request.getParameter("choice");
+        String res = request.getParameter("res");
+        MessageBean messageBean = new MessageBean();
+        try {
+            TblUserBean userBean = userHandler.loadByUserId(UserUtil.getUser().getId());
+            if(choice.equals("isTrade")) {
+                userBean.setIsTrade(res);
+            }else if(choice.equals("isBrand")) {
+                userBean.setisBrand(res);
+            }else if(choice.equals("isPhone")) {
+                userBean.setIsPhone(res);
+            }
+            userHandler.updateUser(userBean);
+            messageBean.setStatus("y");
+        } catch (Exception e) {
+            System.err.println("更新状态有误：" + e.getMessage());
+            messageBean.setMsg("更新状态有误，请联系管理员。");
+        }
+        return messageBean;
+    }
+
     /**
      * @Author SunChang
      * @Date 2018/8/30 16:21
@@ -93,7 +117,11 @@ public class CarListController {
      */
     @RequestMapping(value = "/car/list", method = RequestMethod.GET)
     public String carListGet(HttpServletRequest request, ModelMap modelMap) {
+        TblUserBean userBean = userHandler.loadByUserId(UserUtil.getUser().getId());
         modelMap.put("userCode", UserUtil.getName());
+        modelMap.put("isBrand", userBean.getisBrand());
+        modelMap.put("isTrade", userBean.getIsTrade());
+        modelMap.put("isPhone", userBean.getIsPhone());
         return "/car/list";
     }
 
@@ -482,8 +510,66 @@ public class CarListController {
             }
             String hql = "FROM TblFileDetail t where t.fileId = ? and t.status = ?";
             List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.queryByHql(hql, fileId, errCode);
-            CarUtil.updateCarSysAndAreaName(fileDetailBeans);
-            JsonBean jsonBean = new JsonBean("0", "", String.valueOf(fileDetailBeans.size()), fileDetailBeans);
+            LinkedList<TblFileDetailBean> linkedList = new LinkedList<>();
+            if(null != fileDetailBeans && !fileDetailBeans.isEmpty()) {
+                for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                    fileDetailBean.setErrInfo("本包数据");
+                    if(errCode.equals("1")) {//大库重复
+                        fileDetailBean.setColor("shenlan");
+                        linkedList.add(fileDetailBean);
+                        List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("phone", fileDetailBean.getPhone());
+                        for (TblFileDetailBean temp : temps) {
+                            if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
+                                temp.setStatus("1");
+                                temp.setErrInfo("历史数据");
+                                temp.setColor("qianlan");
+                                linkedList.add(temp);
+                            }
+                        }
+                    }
+                    if(errCode.equals("3")) { //车系重复
+                        fileDetailBean.setColor("shenhuang");
+                        linkedList.add(fileDetailBean);
+                        List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("carSys", fileDetailBean.getCarSys());
+                        for (TblFileDetailBean temp : temps) {
+                            if(!temp.getFileId().equals(fileDetailBean.getFileId()) && fileDetailBean.getPhone().equals(temp.getPhone())) {
+                                temp.setStatus("3");
+                                temp.setErrInfo("历史数据");
+                                temp.setColor("qianhuang");
+                                linkedList.add(temp);
+                            }
+                        }
+                    }
+                    if(errCode.equals("7")) {//品牌重复
+                        fileDetailBean.setColor("shenlv");
+                        linkedList.add(fileDetailBean);
+                        List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.brand = ? and t.phone = ?", fileDetailBean.getBrand(), fileDetailBean.getPhone());
+                        for (TblFileDetailBean temp : temps) {
+                            if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
+                                temp.setStatus("7");
+                                temp.setErrInfo("历史数据");
+                                temp.setColor("qianlv");
+                                linkedList.add(temp);
+                            }
+                        }
+                    }
+                    if(errCode.equals("8")) {//厂商重复
+                        fileDetailBean.setColor("shenlv");
+                        linkedList.add(fileDetailBean);
+                        List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.trade = ? and t.phone = ?", fileDetailBean.getTrade(), fileDetailBean.getPhone());
+                        for (TblFileDetailBean temp : temps) {
+                            if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
+                                temp.setStatus("8");
+                                temp.setErrInfo("历史数据");
+                                temp.setColor("qianlv");
+                                linkedList.add(temp);
+                            }
+                        }
+                    }
+                }
+            }
+            CarUtil.updateCarSysAndAreaName(linkedList);
+            JsonBean jsonBean = new JsonBean("0", "", String.valueOf(linkedList.size()), linkedList);
             return JsonUtil.beanToJsonString(jsonBean);
         }else {
             JsonBean jsonBean = new JsonBean("0", "", "0", null);
@@ -524,7 +610,13 @@ public class CarListController {
                 where += ",'0'";
             }
             String hql = "FROM TblFileDetail t where t.fileId = ? and t.status in (" + where + ")";
-            List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.queryByHql(hql, fileId);
+            String field = request.getParameter("field");
+            String order = request.getParameter("order");
+            String orderHql = "";
+            if(StringUtil.isNotBlank(field) && StringUtil.isNotBlank(order)) {
+                orderHql = " order by t." + field + " " + order;
+            }
+            List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.queryByHql(hql + orderHql, fileId);
             LinkedList<TblFileDetailBean> linkedList = new LinkedList<TblFileDetailBean>();
             if (null != fileDetailBeans && fileDetailBeans.size() > 0) {
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
@@ -564,6 +656,42 @@ public class CarListController {
                                     temp.setStatus("3");
                                     temp.setErrInfo("历史数据");
                                     temp.setColor("qianhuang");
+                                    linkedList.add(temp);
+                                }
+                            }
+                        }
+                    }
+                }
+                for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                    if(fileDetailBean.getStatus().equals("7")) {//品牌重复
+                        fileDetailBean.setErrInfo("本包数据");
+                        fileDetailBean.setColor("shenlv");
+                        linkedList.add(fileDetailBean);
+                        if(arrs.contains("history")) {
+                            List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.brand = ? and t.phone = ?", fileDetailBean.getBrand(), fileDetailBean.getPhone());
+                            for (TblFileDetailBean temp : temps) {
+                                if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
+                                    temp.setStatus("7");
+                                    temp.setErrInfo("历史数据");
+                                    temp.setColor("qianlv");
+                                    linkedList.add(temp);
+                                }
+                            }
+                        }
+                    }
+                }
+                for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                    if(fileDetailBean.getStatus().equals("8")) {//厂商重复
+                        fileDetailBean.setErrInfo("本包数据");
+                        fileDetailBean.setColor("shenlv");
+                        linkedList.add(fileDetailBean);
+                        if(arrs.contains("history")) {
+                            List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.trade = ? and t.phone = ?", fileDetailBean.getTrade(), fileDetailBean.getPhone());
+                            for (TblFileDetailBean temp : temps) {
+                                if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
+                                    temp.setStatus("8");
+                                    temp.setErrInfo("历史数据");
+                                    temp.setColor("qianlv");
                                     linkedList.add(temp);
                                 }
                             }

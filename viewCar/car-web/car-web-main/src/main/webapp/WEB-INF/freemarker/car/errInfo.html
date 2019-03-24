@@ -32,12 +32,26 @@
     号段错误
     {{# } else if(d.status == '6') { }}
     ID转失败
+    {{# } else if(d.status == '7') { }}
+    品牌重复
+    {{# } else if(d.status == '8') { }}
+    厂商重复
     {{# } else { }}
     状态异常
     {{# } }}
 </script>
+<script type="text/html" id="description">
+    {{d.errInfo}}
+</script>
+<script type="text/html" id="uploadDate">
+    {{util.toDateString(d.uploadDate)}}
+</script>
 <!-- 自定义 js -->
 <script>
+    function fullColor(i, backGroundColor, fontColor) {
+        $(".layui-table-main tr[data-index='" + i + "']").css('background-color', backGroundColor);
+        $(".layui-table-main tr[data-index='" + i + "']").css('color', fontColor);
+    }
     var errCode = "${errCode!''}";
     var fileId = "${fileId!''}";
     var loading;
@@ -49,17 +63,46 @@
             ,url: '${base}/car/list/errInfo'
             ,method:'post'
             ,cols: [[
-                {field:'fileNameBak', title:'文件包名', fixed:'left', templet:'#fileNameBak', align:'center'}
-                ,{field:'fileName', title:'文件名', width:360, fixed:'left', align:'center'}
+                {type:'numbers'}
+                ,{field:'uploadDate', title:'上传日期', templet:'#uploadDate', align:'center'}
+                ,{field:'fileNameBak', title:'文件包名', templet:'#fileNameBak', align:'center'}
+                ,{field:'fileName', title:'文件名', width:360, align:'center'}
                 ,{field:'taskId', title:'任务ID', align:'center'}
                 ,{field:'name', title:'姓名', align:'center'}
                 ,{field:'phone', title:'手机号', align:'center'}
                 ,{field:'area', title:'地区', align:'center'}
                 ,{field:'carSys', title:'车系', align:'center'}
                 ,{field:'status', title:'状态', templet:'#status', align:'center'}
+                ,{title:'说明', templet:'#description'}
             ]]
             ,even: true //隔行换色
             ,done: function (res, curr, count) {
+                for(var i = 0; i< res.data.length; i++) {
+                    var dat = res.data[i];
+                    if(!isNull(dat.color)) {
+                        if(dat.color == "shenlan") {
+                            fullColor(i, "#000080", "#FFFFFF");
+                        }else if(dat.color == "qianlan") {
+                            fullColor(i, "#ADD8E6", "#000000");
+                        }else if(dat.color == "hong") {
+                            fullColor(i, "#FF0000", "#FFFFFF");
+                        }else if(dat.color == "shenhuang") {
+                            fullColor(i, "#B8860B", "#000000");
+                        }else if(dat.color == "qianhuang") {
+                            fullColor(i, "#EEE8AA", "#000000");
+                        }else if(dat.color == "zise") {
+                            fullColor(i, "#800080", "#FFFFFF");
+                        }else if(dat.color == "heise") {
+                            fullColor(i, "#000000", "#FFFFFF");
+                        }else if(dat.color == "huise") {
+                            fullColor(i, "#808080", "#000000");
+                        }else if(dat.color == "shenlv") {
+                            fullColor(i, "#A2CD5A", "#000000");
+                        }else if(dat.color == "qianlv") {
+                            fullColor(i, "#ADFF2F", "#000000");
+                        }
+                    }
+                }
                 layer.close(loading);
             }
             ,where:{

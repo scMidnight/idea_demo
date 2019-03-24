@@ -15,6 +15,9 @@ public class TblUserBean implements Serializable {
     private String userName;
     private TreeSet<TblRoleBean> roles;
     private String isBlack;//是否开启黑名单1是0否
+    private String isBrand;//是否开启品牌开关1是0否
+    private String isTrade;//是否开启厂商开关1是0否
+    private String isPhone;//是否开启号段检查1是0否
 
     public String getId() {
         return id;
@@ -70,5 +73,29 @@ public class TblUserBean implements Serializable {
 
     public void setIsBlack(String isBlack) {
         this.isBlack = isBlack;
+    }
+
+    public String getisBrand() {
+        return isBrand;
+    }
+
+    public void setisBrand(String isBrand) {
+        this.isBrand = isBrand;
+    }
+
+    public String getIsTrade() {
+        return isTrade;
+    }
+
+    public void setIsTrade(String isTrade) {
+        this.isTrade = isTrade;
+    }
+
+    public String getIsPhone() {
+        return isPhone;
+    }
+
+    public void setIsPhone(String isPhone) {
+        this.isPhone = isPhone;
     }
 }

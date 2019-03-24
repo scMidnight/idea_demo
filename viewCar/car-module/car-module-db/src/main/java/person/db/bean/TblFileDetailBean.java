@@ -2,7 +2,6 @@ package person.db.bean;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 public class TblFileDetailBean implements Serializable {
     private String id;
@@ -13,12 +12,14 @@ public class TblFileDetailBean implements Serializable {
     private String phone;//手机
     private String area;//地区
     private String carSys;//车系
-    private String status;//状态：0 正常，1 大库重复，2 任务重复，3 车系重复，4 黑名单命中，5 号段错误，6 ID转失败
+    private String status;//状态：0 正常，1 大库重复，2 任务重复，3 车系重复，4 黑名单命中，5 号段错误，6 ID转失败，7 品牌重复， 8 厂商重复
     private TblFileBean fileBean;//文件表
     private String errInfo;//错误描述，用来生成错误txt文件
     private String color;
     private Date uploadDate;//上传时间
     private String orderNum;//排序字段
+    private String brand;//品牌
+    private String trade;//厂商
 
     public String getId() {
         return id;
@@ -130,5 +131,21 @@ public class TblFileDetailBean implements Serializable {
 
     public void setOrderNum(String orderNum) {
         this.orderNum = orderNum;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getTrade() {
+        return trade;
+    }
+
+    public void setTrade(String trade) {
+        this.trade = trade;
     }
 }
