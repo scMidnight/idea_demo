@@ -60,4 +60,18 @@ public class CarSystemServiceImpl extends CommonServiceImpl implements CarSystem
         }
         return carSystemBeans;
     }
+
+    @Override
+    public List<TblCarSystemBean> queryByHql(String hql, Object[] param) {
+        List<TblCarSystem> carSystems = super.findHql(hql, param);
+        List<TblCarSystemBean> carSystemBeans = new ArrayList<TblCarSystemBean>();
+        if (carSystems != null && carSystems.size() > 0) {
+            for (TblCarSystem carSystem : carSystems) {
+                TblCarSystemBean carSystemBean = new TblCarSystemBean();
+                BeanUtils.copyProperties(carSystem, carSystemBean);
+                carSystemBeans.add(carSystemBean);
+            }
+        }
+        return carSystemBeans;
+    }
 }

@@ -110,6 +110,12 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                     }
 
                     if(!fileDetailBean.getStatus().equals("6")) {
+                        if (CarUtil.checkCarSys(carSystemBean.getCarSysId(), fileDetailBean.getPhone(), fileDetailHandler)) {
+                            fileDetailBean.setStatus("3");//车系重复
+                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：车系重复");
+                            //fileDetailBeans1.add(fileDetailBean);
+                            //continue;
+                        }
                         if(userBean.getisBrand().equals("1")) {//品牌
                             if(CarUtil.checkBrand(fileDetailBean, fileDetailHandler)) {
                                 fileDetailBean.setStatus("7");
@@ -125,14 +131,6 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                                 fileDetailBeans1.add(fileDetailBean);
                                 continue;
                             }
-                        }
-                    }
-                    if(carSystemBean != null) {
-                        if (CarUtil.checkCarSys(carSystemBean.getCarSysId(), fileDetailBean.getPhone(), fileDetailHandler)) {
-                            fileDetailBean.setStatus("3");//车系重复
-                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：车系重复");
-                            //fileDetailBeans1.add(fileDetailBean);
-                            //continue;
                         }
                     }
                     if(CarUtil.checkTask(fileDetailBean.getTaskId(), fileDetailBean.getPhone(), fileDetailHandler)) {

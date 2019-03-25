@@ -41,4 +41,6 @@ public interface CarSystemService extends CommonService {
      * @Description 根据字段名称查询结果
      */
     List<TblCarSystemBean> findByProperty(String propertyName, Object value);
+
+    List<TblCarSystemBean> queryByHql(String hql, Object[] param);
 }

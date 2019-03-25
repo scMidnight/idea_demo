@@ -15,10 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import person.Thread.CheckPackageThread;
 import person.db.bean.*;
 import person.db.entity.Page;
-import person.handler.FileDetailHandler;
-import person.handler.FileHandler;
-import person.handler.ShowHandler;
-import person.handler.UserHandler;
+import person.handler.*;
 import person.security.cache.CacheManager;
 import person.util.*;
 import person.util.webSocket.MyClient;
@@ -47,6 +44,9 @@ public class CarListController {
 
     @Autowired
     ShowHandler showHandler;
+
+    @Autowired
+    CarSystemHandler carSystemHandler;
 
     /**
      * @Author SunChang
@@ -202,7 +202,7 @@ public class CarListController {
         try {
             List<String> blacks = TxtUtil.readTxtToList();//黑名单
             List<TblAreaBean> areaBeans = CacheManager.getInstance().getAreaAll();//地区码表
-            List<TblCarSystemBean> carSystemBeans = CacheManager.getInstance().getCarSysAll();//车系码表
+            List<TblCarSystemBean> carSystemBeans = carSystemHandler.queryByHql("FROM TblCarSystem t WHERE t.isDel = '0'");//车系码表
             TblFileBean fileBean = fileHandler.queryById(id);
             ZipUtil.unZip(fileBean.getFilePath(), fileBean.getFilePath() + "a" + File.separatorChar);//解压原包
             List<String> listStr = getFilePaths(new File(fileBean.getFilePath() + "a" + File.separatorChar));
@@ -502,7 +502,7 @@ public class CarListController {
     public String carerrInfoPost(HttpServletRequest request, ModelMap modelMap) {
         String errCode = request.getParameter("errCode");
         String fileId = request.getParameter("fileId");
-        Map<String, String> carMap = CacheManager.getInstance().getCarMap();
+        List<TblCarSystemBean> carSystemBeans = carSystemHandler.queryByHql("FROM TblCarSystem t WHERE t.isDel = '0'");
         if(StringUtil.isNotBlank(errCode)) {
             if(StringUtil.isBlank(errCode) || StringUtil.isBlank(fileId)) {
                 JsonBean jsonBean = new JsonBean("0", "", "0", null);
@@ -514,8 +514,11 @@ public class CarListController {
             if(null != fileDetailBeans && !fileDetailBeans.isEmpty()) {
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
                     String carsys = fileDetailBean.getCarSys();
-                    if(carMap.get(carsys) != null) {
-                        fileDetailBean.setCarSys(carMap.get(carsys));
+                    for (TblCarSystemBean carSystemBean : carSystemBeans) {
+                        if(carSystemBean.getCarSysId().equals(carsys)) {
+                            fileDetailBean.setCarSys(carSystemBean.getCarSysName());
+                            break;
+                        }
                     }
                     fileDetailBean.setErrInfo("本包数据");
                     if(errCode.equals("1")) {//大库重复
@@ -545,26 +548,22 @@ public class CarListController {
                     }else if(errCode.equals("7")) {//品牌重复
                         fileDetailBean.setColor("shenlv");
                         linkedList.add(fileDetailBean);
-                        List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.brand = ? and t.phone = ?", fileDetailBean.getBrand(), fileDetailBean.getPhone());
+                        List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys in (select carSysId from TblCarSystem where brandId = ?) and t.phone = ? and t.fileId != ?", fileDetailBean.getBrand(), fileDetailBean.getPhone(), fileDetailBean.getFileId());
                         for (TblFileDetailBean temp : temps) {
-                            if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
-                                temp.setStatus("7");
-                                temp.setErrInfo("历史数据");
-                                temp.setColor("qianlv");
-                                linkedList.add(temp);
-                            }
+                            temp.setStatus("7");
+                            temp.setErrInfo("历史数据");
+                            temp.setColor("qianlv");
+                            linkedList.add(temp);
                         }
                     }else if(errCode.equals("8")) {//厂商重复
                         fileDetailBean.setColor("shenlv");
                         linkedList.add(fileDetailBean);
-                        List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.trade = ? and t.phone = ?", fileDetailBean.getTrade(), fileDetailBean.getPhone());
+                        List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys in (select carSysId from TblCarSystem where tradeId = ?) and t.phone = ? and t.fileId != ?", fileDetailBean.getTrade(), fileDetailBean.getPhone(), fileDetailBean.getFileId());
                         for (TblFileDetailBean temp : temps) {
-                            if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
-                                temp.setStatus("8");
-                                temp.setErrInfo("历史数据");
-                                temp.setColor("qianlv");
-                                linkedList.add(temp);
-                            }
+                            temp.setStatus("8");
+                            temp.setErrInfo("历史数据");
+                            temp.setColor("qianlv");
+                            linkedList.add(temp);
                         }
                     }else if(errCode.equals("2")) {//任务重复
                         fileDetailBean.setColor("hong");
@@ -618,6 +617,7 @@ public class CarListController {
         String fileId = request.getParameter("fileId");
         String arrs = request.getParameter("arrs");
         Map<String, String> carMap = CacheManager.getInstance().getCarMap();
+        List<TblCarSystemBean> carSystemBeans = carSystemHandler.queryByHql("FROM TblCarSystem t WHERE t.isDel = '0'");//车系码表
         String where = arrs;
         if(StringUtil.isNotBlank(arrs)) {
             if(where.contains("history")) {
@@ -637,8 +637,11 @@ public class CarListController {
             if (null != fileDetailBeans && fileDetailBeans.size() > 0) {
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
                     String carsys = fileDetailBean.getCarSys();
-                    if(carMap.get(carsys) != null) {
-                        fileDetailBean.setCarSys(carMap.get(carsys));
+                    for (TblCarSystemBean carSystemBean : carSystemBeans) {
+                        if(carSystemBean.getCarSysId().equals(carsys)) {
+                            fileDetailBean.setCarSys(carMap.get(carsys));
+                            break;
+                        }
                     }
                     if (fileDetailBean.getStatus().equals("1")) {//大库重复
                         fileDetailBean.setErrInfo("本包数据");
@@ -699,14 +702,12 @@ public class CarListController {
                         fileDetailBean.setColor("shenlv");
                         linkedList.add(fileDetailBean);
                         if(arrs.contains("history")) {
-                            List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.brand = ? and t.phone = ?", fileDetailBean.getBrand(), fileDetailBean.getPhone());
+                            List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys in (select carSysId from TblCarSystem where brandId = ?) and t.phone = ? and t.fileId != ?", fileDetailBean.getBrand(), fileDetailBean.getPhone(), fileDetailBean.getFileId());
                             for (TblFileDetailBean temp : temps) {
-                                if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
-                                    temp.setStatus("7");
-                                    temp.setErrInfo("历史数据");
-                                    temp.setColor("qianlv");
-                                    linkedList.add(temp);
-                                }
+                                temp.setStatus("7");
+                                temp.setErrInfo("历史数据");
+                                temp.setColor("qianlv");
+                                linkedList.add(temp);
                             }
                         }
                     }
@@ -717,14 +718,12 @@ public class CarListController {
                         fileDetailBean.setColor("shenlv");
                         linkedList.add(fileDetailBean);
                         if(arrs.contains("history")) {
-                            List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.trade = ? and t.phone = ?", fileDetailBean.getTrade(), fileDetailBean.getPhone());
+                            List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys in (select carSysId from TblCarSystem where tradeId = ?) and t.phone = ? and t.fileId != ?", fileDetailBean.getTrade(), fileDetailBean.getPhone(), fileDetailBean.getFileId());
                             for (TblFileDetailBean temp : temps) {
-                                if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
-                                    temp.setStatus("8");
-                                    temp.setErrInfo("历史数据");
-                                    temp.setColor("qianlv");
-                                    linkedList.add(temp);
-                                }
+                                temp.setStatus("8");
+                                temp.setErrInfo("历史数据");
+                                temp.setColor("qianlv");
+                                linkedList.add(temp);
                             }
                         }
                     }

@@ -200,13 +200,10 @@ public class CarUtil {
      */
     public static boolean checkBrand(TblFileDetailBean bean, FileDetailHandler fileDetailHandler) {
         boolean res = false;
-        String brand = bean.getBrand();
         String phone = bean.getPhone();
-        List<TblFileDetailBean> beans = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.brand = ? and t.phone = ?", brand, phone);
+        List<TblFileDetailBean> beans = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys in (select carSysId from TblCarSystem where brandId = ?) and t.phone = ? and t.fileId != ?", bean.getBrand(), phone, bean.getFileId());
         if(null != beans && !beans.isEmpty()) {
-            if(beans.size() > 1) {
-                res = true;
-            }
+            res = true;
         }
         return res;
     }
@@ -219,13 +216,10 @@ public class CarUtil {
      */
     public static boolean checkTrade(TblFileDetailBean bean, FileDetailHandler fileDetailHandler) {
         boolean res = false;
-        String brand = bean.getBrand();
         String phone = bean.getPhone();
-        List<TblFileDetailBean> beans = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.trade = ? and t.phone = ?", brand, phone);
+        List<TblFileDetailBean> beans = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys in (select carSysId from TblCarSystem where tradeId = ?) and t.phone = ? and t.fileId != ?", bean.getTrade(), phone, bean.getFileId());
         if(null != beans && !beans.isEmpty()) {
-            if(beans.size() > 1) {
-                res = true;
-            }
+            res = true;
         }
         return res;
     }

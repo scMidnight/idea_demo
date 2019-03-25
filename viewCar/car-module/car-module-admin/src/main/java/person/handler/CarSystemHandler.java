@@ -1,6 +1,7 @@
 package person.handler;
 
 import person.db.bean.TblCarSystemBean;
+import person.db.bean.TblFileDetailBean;
 import person.db.entity.Page;
 
 import java.util.List;
@@ -52,4 +53,6 @@ public interface CarSystemHandler {
     List<TblCarSystemBean> findByProperty(String propertyName, Object value);
 
     List<Map<String, Object>> findForJdbc(String sql, Object... objs);
+
+    List<TblCarSystemBean> queryByHql(String hql, Object... param);
 }

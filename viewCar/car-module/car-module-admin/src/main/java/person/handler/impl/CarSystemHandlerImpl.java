@@ -68,4 +68,9 @@ public class CarSystemHandlerImpl implements CarSystemHandler {
     public List<Map<String, Object>> findForJdbc(String sql, Object... objs) {
         return carSystemService.findForJdbc(sql, objs);
     }
+
+    @Override
+    public List<TblCarSystemBean> queryByHql(String hql, Object... param) {
+        return carSystemService.queryByHql(hql, param);
+    }
 }
