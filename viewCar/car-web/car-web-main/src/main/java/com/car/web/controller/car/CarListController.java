@@ -502,7 +502,7 @@ public class CarListController {
     public String carerrInfoPost(HttpServletRequest request, ModelMap modelMap) {
         String errCode = request.getParameter("errCode");
         String fileId = request.getParameter("fileId");
-
+        Map<String, String> carMap = CacheManager.getInstance().getCarMap();
         if(StringUtil.isNotBlank(errCode)) {
             if(StringUtil.isBlank(errCode) || StringUtil.isBlank(fileId)) {
                 JsonBean jsonBean = new JsonBean("0", "", "0", null);
@@ -513,6 +513,10 @@ public class CarListController {
             LinkedList<TblFileDetailBean> linkedList = new LinkedList<>();
             if(null != fileDetailBeans && !fileDetailBeans.isEmpty()) {
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                    String carsys = fileDetailBean.getCarSys();
+                    if(carMap.get(carsys) != null) {
+                        fileDetailBean.setCarSys(carMap.get(carsys));
+                    }
                     fileDetailBean.setErrInfo("本包数据");
                     if(errCode.equals("1")) {//大库重复
                         fileDetailBean.setColor("shenlan");
@@ -562,6 +566,18 @@ public class CarListController {
                                 linkedList.add(temp);
                             }
                         }
+                    }else if(errCode.equals("2")) {//任务重复
+                        fileDetailBean.setColor("hong");
+                        linkedList.add(fileDetailBean);
+                        List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.taskId = ? and t.phone = ?", fileDetailBean.getTaskId(), fileDetailBean.getPhone());
+                        for (TblFileDetailBean temp : temps) {
+                            if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
+                                temp.setStatus("2");
+                                temp.setErrInfo("历史数据");
+                                temp.setColor("qianhong");
+                                linkedList.add(temp);
+                            }
+                        }
                     }else {
                         linkedList.add(fileDetailBean);
                     }
@@ -601,6 +617,7 @@ public class CarListController {
     public String carInfoPost(HttpServletRequest request, ModelMap modelMap) {
         String fileId = request.getParameter("fileId");
         String arrs = request.getParameter("arrs");
+        Map<String, String> carMap = CacheManager.getInstance().getCarMap();
         String where = arrs;
         if(StringUtil.isNotBlank(arrs)) {
             if(where.contains("history")) {
@@ -619,6 +636,10 @@ public class CarListController {
             LinkedList<TblFileDetailBean> linkedList = new LinkedList<TblFileDetailBean>();
             if (null != fileDetailBeans && fileDetailBeans.size() > 0) {
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                    String carsys = fileDetailBean.getCarSys();
+                    if(carMap.get(carsys) != null) {
+                        fileDetailBean.setCarSys(carMap.get(carsys));
+                    }
                     if (fileDetailBean.getStatus().equals("1")) {//大库重复
                         fileDetailBean.setErrInfo("本包数据");
                         fileDetailBean.setColor("shenlan");
@@ -638,9 +659,20 @@ public class CarListController {
                 }
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
                     if (fileDetailBean.getStatus().equals("2")) {//任务重复
-                        fileDetailBean.setErrInfo("任务重复");
+                        fileDetailBean.setErrInfo("本包数据");
                         fileDetailBean.setColor("hong");
                         linkedList.add(fileDetailBean);
+                        if(arrs.contains("history")) {
+                            List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.taskId = ? and t.phone = ?", fileDetailBean.getTaskId(), fileDetailBean.getPhone());
+                            for (TblFileDetailBean temp : temps) {
+                                if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
+                                    temp.setStatus("2");
+                                    temp.setErrInfo("历史数据");
+                                    temp.setColor("qianhong");
+                                    linkedList.add(temp);
+                                }
+                            }
+                        }
                     }
                 }
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
