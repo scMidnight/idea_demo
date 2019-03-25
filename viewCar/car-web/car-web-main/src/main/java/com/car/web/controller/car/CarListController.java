@@ -526,8 +526,7 @@ public class CarListController {
                                 linkedList.add(temp);
                             }
                         }
-                    }
-                    if(errCode.equals("3")) { //车系重复
+                    }else if(errCode.equals("3")) { //车系重复
                         fileDetailBean.setColor("shenhuang");
                         linkedList.add(fileDetailBean);
                         List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("carSys", fileDetailBean.getCarSys());
@@ -539,8 +538,7 @@ public class CarListController {
                                 linkedList.add(temp);
                             }
                         }
-                    }
-                    if(errCode.equals("7")) {//品牌重复
+                    }else if(errCode.equals("7")) {//品牌重复
                         fileDetailBean.setColor("shenlv");
                         linkedList.add(fileDetailBean);
                         List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.brand = ? and t.phone = ?", fileDetailBean.getBrand(), fileDetailBean.getPhone());
@@ -552,8 +550,7 @@ public class CarListController {
                                 linkedList.add(temp);
                             }
                         }
-                    }
-                    if(errCode.equals("8")) {//厂商重复
+                    }else if(errCode.equals("8")) {//厂商重复
                         fileDetailBean.setColor("shenlv");
                         linkedList.add(fileDetailBean);
                         List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.trade = ? and t.phone = ?", fileDetailBean.getTrade(), fileDetailBean.getPhone());
@@ -565,6 +562,8 @@ public class CarListController {
                                 linkedList.add(temp);
                             }
                         }
+                    }else {
+                        linkedList.add(fileDetailBean);
                     }
                 }
             }

@@ -127,11 +127,13 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                             }
                         }
                     }
-                    if(CarUtil.checkCarSys(carSystemBean.getCarSysId(), fileDetailBean.getPhone(), fileDetailHandler)) {
-                        fileDetailBean.setStatus("3");//车系重复
-                        fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：车系重复");
-                        //fileDetailBeans1.add(fileDetailBean);
-                        //continue;
+                    if(carSystemBean != null) {
+                        if (CarUtil.checkCarSys(carSystemBean.getCarSysId(), fileDetailBean.getPhone(), fileDetailHandler)) {
+                            fileDetailBean.setStatus("3");//车系重复
+                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：车系重复");
+                            //fileDetailBeans1.add(fileDetailBean);
+                            //continue;
+                        }
                     }
                     if(CarUtil.checkTask(fileDetailBean.getTaskId(), fileDetailBean.getPhone(), fileDetailHandler)) {
                         fileDetailBean.setStatus("2");//任务重复
