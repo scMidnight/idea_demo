@@ -12,7 +12,7 @@ public class TblFileDetailBean implements Serializable {
     private String phone;//手机
     private String area;//地区
     private String carSys;//车系
-    private String status;//状态：0 正常，1 大库重复，2 任务重复，3 车系重复，4 黑名单命中，5 号段错误，6 ID转失败，7 品牌重复， 8 厂商重复
+    private String status;//状态：0 正常，1 大库重复，2 任务重复，3 车系重复，4 黑名单命中，5 号段错误，6 ID转失败，7 品牌重复， 8 厂商重复,
     private TblFileBean fileBean;//文件表
     private String errInfo;//错误描述，用来生成错误txt文件
     private String color;
@@ -20,6 +20,8 @@ public class TblFileDetailBean implements Serializable {
     private String orderNum;//排序字段
     private String brand;//品牌
     private String trade;//厂商
+    private String isLian;//后四位连号重复，30天内数据
+    private String isChong;//前6位重复，30天内数据
 
     public String getId() {
         return id;
@@ -147,5 +149,21 @@ public class TblFileDetailBean implements Serializable {
 
     public void setTrade(String trade) {
         this.trade = trade;
+    }
+
+    public String getIsLian() {
+        return isLian;
+    }
+
+    public void setIsLian(String isLian) {
+        this.isLian = isLian;
+    }
+
+    public String getIsChong() {
+        return isChong;
+    }
+
+    public void setIsChong(String isChong) {
+        this.isChong = isChong;
     }
 }

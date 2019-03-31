@@ -16,12 +16,14 @@ public class TblFileDetail extends IdEntity {
     private String phone;//手机
     private String area;//地区
     private String carSys;//车系
-    private String status;//状态：0 正常，1 大库重复，2 任务重复，3 车系重复，4 黑名单命中，5 号段错误，6 ID转失败，7 品牌重复， 8 厂商重复
+    private String status;//状态：0 正常，1 大库重复，2 任务重复，3 车系重复，4 黑名单命中，5 号段错误，6 ID转失败，7 品牌重复， 8 厂商重复,
     private String errInfo;//错误描述，用来生成错误txt文件
     private Date uploadDate;//上传时间
     private String orderNum;//排序字段
     private String brand;//品牌
     private String trade;//厂商
+    private String isLian;//是否后四位连号重复，30天内数据 0否1是
+    private String isChong;//是否前6位重复，30天内数据 0否1是
 
     @Column(name = "FILE_ID")
     public String getFileId() {
@@ -121,6 +123,7 @@ public class TblFileDetail extends IdEntity {
         this.orderNum = orderNum;
     }
 
+    @Column(name = "brand")
     public String getBrand() {
         return brand;
     }
@@ -129,11 +132,30 @@ public class TblFileDetail extends IdEntity {
         this.brand = brand;
     }
 
+    @Column(name = "trade")
     public String getTrade() {
         return trade;
     }
 
     public void setTrade(String trade) {
         this.trade = trade;
+    }
+
+    @Column(name = "IS_LIAN")
+    public String getIsLian() {
+        return isLian;
+    }
+
+    public void setIsLian(String isLian) {
+        this.isLian = isLian;
+    }
+
+    @Column(name = "IS_CHONG")
+    public String getIsChong() {
+        return isChong;
+    }
+
+    public void setIsChong(String isChong) {
+        this.isChong = isChong;
     }
 }

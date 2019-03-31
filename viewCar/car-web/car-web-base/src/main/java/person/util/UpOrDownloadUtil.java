@@ -274,6 +274,8 @@ public class UpOrDownloadUtil {
                 fileBean.setIdFailedCount("0");
                 fileBean.setBrandCount("0");
                 fileBean.setTradeCount("0");
+                fileBean.setHousiCount("0");
+                fileBean.setQianliuCount("0");
                 fileBeans.add(fileBean);
             }
         }

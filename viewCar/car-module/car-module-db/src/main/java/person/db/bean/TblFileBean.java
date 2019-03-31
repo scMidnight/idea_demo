@@ -21,6 +21,8 @@ public class TblFileBean implements Serializable {
     private String idFailedCount;//id转失败条数
     private String tradeCount;//厂商重复次数
     private String brandCount;//品牌重复次数
+    private String housiCount;//后四连号
+    private String qianliuCount;//前六重复
 
     public String getId() {
         return id;
@@ -156,5 +158,21 @@ public class TblFileBean implements Serializable {
 
     public void setBrandCount(String brandCount) {
         this.brandCount = brandCount;
+    }
+
+    public String getHousiCount() {
+        return housiCount;
+    }
+
+    public void setHousiCount(String housiCount) {
+        this.housiCount = housiCount;
+    }
+
+    public String getQianliuCount() {
+        return qianliuCount;
+    }
+
+    public void setQianliuCount(String qianliuCount) {
+        this.qianliuCount = qianliuCount;
     }
 }

@@ -9,6 +9,7 @@ import person.security.cache.CacheManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -201,7 +202,7 @@ public class CarUtil {
     public static boolean checkBrand(TblFileDetailBean bean, FileDetailHandler fileDetailHandler) {
         boolean res = false;
         String phone = bean.getPhone();
-        List<TblFileDetailBean> beans = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys in (select carSysId from TblCarSystem where brandId = ?) and t.phone = ? and t.fileId != ?", bean.getBrand(), phone, bean.getFileId());
+        List<TblFileDetailBean> beans = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys in (select carSysId from TblCarSystem where brandId = ? and carSysId != ?) and t.phone = ? and t.fileId != ?", bean.getBrand(), bean.getCarSys(), phone, bean.getFileId());
         if(null != beans && !beans.isEmpty()) {
             res = true;
         }
@@ -217,11 +218,41 @@ public class CarUtil {
     public static boolean checkTrade(TblFileDetailBean bean, FileDetailHandler fileDetailHandler) {
         boolean res = false;
         String phone = bean.getPhone();
-        List<TblFileDetailBean> beans = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys in (select carSysId from TblCarSystem where tradeId = ?) and t.phone = ? and t.fileId != ?", bean.getTrade(), phone, bean.getFileId());
+        List<TblFileDetailBean> beans = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys in (select carSysId from TblCarSystem where tradeId = ? and carSysId != ? and brandId != ?) and t.phone = ? and t.fileId != ?", bean.getTrade(), bean.getCarSys(), bean.getBrand(), phone, bean.getFileId());
         if(null != beans && !beans.isEmpty()) {
             res = true;
         }
         return res;
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/9/6 20:38
+     * @param bean
+     * @Description 手机号后4位连号3+三个以上+品牌相同30天内数据
+     */
+    public static boolean check4(TblFileDetailBean bean, FileDetailHandler fileDetailHandler) {
+        LinkedList<TblFileDetailBean> list = getPhoneLian(bean, fileDetailHandler);
+        if(null != list && list.size() >= 3) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @Author SunChang
+     * @Date 2018/9/6 20:38
+     * @param bean
+     * @Description 手机号前6位相同+三个以上+品牌相同+30天内数据
+     */
+    public static boolean check6(TblFileDetailBean bean, FileDetailHandler fileDetailHandler) {
+        String phone = bean.getPhone();
+        String phone6 = phone.substring(0, 6);
+        LinkedList<TblFileDetailBean> list = getPhoneChong(bean, fileDetailHandler);
+        if(null != list && list.size() >= 3) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -262,5 +293,131 @@ public class CarUtil {
         SimpleDateFormat sdf = new SimpleDateFormat(formatStr);
         String dateNowStr = sdf.format(d);
         return dateNowStr;
+    }
+
+    public static LinkedList<TblFileDetailBean> getPhoneChong(TblFileDetailBean bean, FileDetailHandler fileDetailHandler) {
+        LinkedList<TblFileDetailBean> list = new LinkedList<>();
+        list.add(bean);
+        String phone = bean.getPhone();
+        String phone6 = phone.substring(0, 6);
+        List<Map<String, Object>> maps = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ? ) and t.phone like ?", bean.getBrand(), phone6 + "%");
+        for (Map<String, Object> map : maps) {
+            if(!map.get("id").toString().equals(bean.getId())) {
+                list.add(getBean(map));
+            }
+        }
+        return list;
+    }
+
+    public static LinkedList<TblFileDetailBean> getPhoneLian(TblFileDetailBean bean, FileDetailHandler fileDetailHandler) {
+        LinkedList<TblFileDetailBean> list = new LinkedList<>();
+        list.add(bean);
+        String phone = bean.getPhone();
+        String hou4 = phone.substring(phone.length() - 4);
+        List<Map<String, Object>> xiaos = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ?) and cast(right(t.phone, 4) as SIGNED) < cast(right(?, 4) as SIGNED) ORDER BY cast(right(t.phone, 4) as SIGNED)", bean.getBrand(), bean.getPhone());
+        List<Map<String, Object>> das = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ?) and cast(right(t.phone, 4) as SIGNED) > cast(right(?, 4) as SIGNED) ORDER BY cast(right(t.phone, 4) as SIGNED)", bean.getBrand(), bean.getPhone());
+        addLinked(bean.getId(), hou4, list, xiaos, "xiao");
+        addLinked(bean.getId(), hou4, list, das, "da");
+        return list;
+    }
+
+    public static void sort(List<Map<String, Object>> list) {
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 0; j < list.size() - 1 - i; j++) {
+                Map<String, Object> map = list.get(j);
+                Map<String, Object> map1 = list.get(j + 1);
+                String a = map.get("phone").toString();
+                String b = a.substring(a.length() - 4);
+                String c = map1.get("phone").toString();
+                String d = c.substring(c.length() - 4);
+                if(Integer.parseInt(b) > Integer.parseInt(d)) {
+                    list.set(j, map1);
+                    list.set(j + 1, map);
+                }
+            }
+        }
+    }
+    
+    public static TblFileDetailBean getBean(Map<String, Object> map) {
+        TblFileDetailBean temp = new TblFileDetailBean();
+        temp.setId(map.get("id") != null ? map.get("id").toString() : "");
+        temp.setFileId(map.get("file_id") != null ? map.get("file_id").toString() : "");
+        temp.setFileName(map.get("file_name") != null ? map.get("file_name").toString() : "");
+        temp.setTaskId(map.get("task_id") != null ? map.get("task_id").toString() : "");
+        temp.setName(map.get("name") != null ? map.get("name").toString() : "");
+        temp.setPhone(map.get("phone") != null ? map.get("phone").toString() : "");
+        temp.setArea(map.get("area") != null ? map.get("area").toString() : "");
+        temp.setCarSys(map.get("car_sys") != null ? map.get("car_sys").toString() : "");
+        temp.setStatus(map.get("status") != null ? map.get("status").toString() : "");
+        temp.setErrInfo(map.get("err_info") != null ? map.get("err_info").toString() : "");
+        temp.setUploadDate(map.get("UPLOAD_DATE") != null ? (Date) map.get("UPLOAD_DATE") : null);
+        temp.setOrderNum(map.get("ORDER_NUM") != null ? map.get("ORDER_NUM").toString() : "");
+        temp.setBrand(map.get("brand") != null ? map.get("brand").toString() : "");
+        temp.setTrade(map.get("trade") != null ? map.get("trade").toString() : "");
+        temp.setIsLian(map.get("IS_LIAN") != null ? map.get("IS_LIAN").toString() : "");
+        temp.setIsChong(map.get("IS_CHONG") != null ? map.get("IS_CHONG").toString() : "");
+        return temp;
+    }
+
+    public static void addLinked(String id, String hou4, LinkedList<TblFileDetailBean> list, List<Map<String, Object>> maps, String flag) {
+        int i = 1;
+        String phoneTemp = "";
+        TblFileDetailBean temp = null;
+        if(null != maps && maps.size() > 1) {
+            for (Map<String, Object> map : maps) {
+                String p = map.get("phone").toString();
+                String p4 = p.substring(p.length() - 4);
+                if(!map.get("id").toString().equals(id)) {
+                    if (flag.equals("xiao")) {
+                        if (Integer.parseInt(hou4) - Integer.parseInt(p4) == i) {
+                            i = i + 1;
+                            temp = getBean(map);
+                            list.add(temp);
+                            phoneTemp = temp.getPhone();
+                        } else if(map.get("phone").toString().equals(phoneTemp)) {
+                            temp = getBean(map);
+                            list.add(temp);
+                        }else {
+                            break;
+                        }
+                    }
+                    if (flag.equals("da")) {
+                        if (Integer.parseInt(p4) - Integer.parseInt(hou4) == i) {
+                            i = i + 1;
+                            temp = getBean(map);
+                            list.add(temp);
+                            phoneTemp = temp.getPhone();
+                        } else if(map.get("phone").toString().equals(phoneTemp)){
+                            temp = getBean(map);
+                            list.add(temp);
+                        }else {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        String phone = "15502119051";
+        System.out.println(phone.substring(phone.length() - 4));
+        System.out.println(phone.substring(0, 6));
+        String a = "8801";
+        System.out.println(Integer.parseInt(a) - 2);
+        LinkedList<String> temp = new LinkedList<>();
+        temp.add("1");
+        temp.add("2");
+        temp.add("3");
+        temp.add("4");
+        LinkedList<String> temp1 = new LinkedList<>();
+        temp1.add("5");
+        temp1.add("6");
+        temp1.add("7");
+        temp1.add("8");
+        temp.addAll(temp1);
+        for (String s : temp) {
+            System.out.println(s);
+        }
     }
 }

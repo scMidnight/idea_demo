@@ -25,6 +25,8 @@ public class TblFile extends IdEntity {
     private String idFailedCount;//id转失败条数
     private String tradeCount;//厂商重复次数
     private String brandCount;//品牌重复次数
+    private String housiCount;//后四连号
+    private String qianliuCount;//前六重复
 
     @Column(name = "FILE_NAME")
     public String getFileName() {
@@ -168,5 +170,23 @@ public class TblFile extends IdEntity {
 
     public void setBrandCount(String brandCount) {
         this.brandCount = brandCount;
+    }
+
+    @Column(name = "housi_count")
+    public String getHousiCount() {
+        return housiCount;
+    }
+
+    public void setHousiCount(String housiCount) {
+        this.housiCount = housiCount;
+    }
+
+    @Column(name = "qianliu_count")
+    public String getQianliuCount() {
+        return qianliuCount;
+    }
+
+    public void setQianliuCount(String qianliuCount) {
+        this.qianliuCount = qianliuCount;
     }
 }

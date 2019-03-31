@@ -81,6 +81,8 @@ public class FileDetailServiceImpl extends CommonServiceImpl implements FileDeta
         file.setIdFailedCount(String.valueOf(queryByHqlOnErrCount(file.getId(), "6").size()));
         file.setBrandCount(String.valueOf(queryByHqlOnErrCount(file.getId(), "7").size()));
         file.setTradeCount(String.valueOf(queryByHqlOnErrCount(file.getId(), "8").size()));
+        file.setHousiCount(String.valueOf(queryByHqlLian(file.getId())));
+        file.setQianliuCount(String.valueOf(queryByHqlChong(file.getId())));
         super.saveOrUpdate(file);
     }
 
@@ -112,6 +114,24 @@ public class FileDetailServiceImpl extends CommonServiceImpl implements FileDeta
             }
         }
         return fileDetailBeans;
+    }
+
+    public int queryByHqlLian(String fileId) {
+        List<TblFileDetail> fileDetails = super.findHql("from TblFileDetail t where t.fileId = ? and t.isLian = ?", fileId, "1");
+        if(null != fileDetails && fileDetails.size() > 0) {
+            return fileDetails.size();
+        }else {
+            return 0;
+        }
+    }
+
+    public int queryByHqlChong(String fileId) {
+        List<TblFileDetail> fileDetails = super.findHql("from TblFileDetail t where t.fileId = ? and t.isChong = ?", fileId, "1");
+        if(null != fileDetails && fileDetails.size() > 0) {
+            return fileDetails.size();
+        }else {
+            return 0;
+        }
     }
 
     @Override

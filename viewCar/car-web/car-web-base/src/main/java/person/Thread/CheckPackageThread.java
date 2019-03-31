@@ -71,23 +71,6 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                         fileDetailBeans1.add(fileDetailBean);
                         continue;
                     }
-                    if(userBean.getIsPhone().equals("1")) {
-                        String mobileFrom = MobileFromUtil.getMobileFrom(vals[1]);//得到归属地
-                        //String mobileFrom = MobileFromUtil.getMobileFromBd(vals[1]);//得到归属地
-                        if(!CarUtil.checkFromPhone(vals[2], mobileFrom)) {
-                            fileDetailBean.setStatus("5");//号段错误或者城市转id失败
-                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：号段错误，文件中是" + vals[2] + "，根据号码查询后为：" + mobileFrom);
-                        }
-                    }
-                    String cityId = CarUtil.getCityId(areaBeans, vals[2]);
-                    if (StringUtil.isNotBlank(cityId)) {
-                        fileDetailBean.setArea(cityId);
-                    }else {
-                        fileDetailBean.setStatus("5");//号段错误或者城市转id失败
-                        fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：城市转id失败");
-                        //fileDetailBeans1.add(fileDetailBean);
-                        //continue;
-                    }
                     if(CarUtil.isBlack(blacks, fileDetailBean.getPhone())) {
                         if(userBean.getIsBlack().equals("1")) {
                             fileDetailBean.setStatus("4");//黑名单命中
@@ -105,32 +88,52 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                     }else {
                         fileDetailBean.setStatus("6");
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行车系转换错误，状态：ID转失败");
-                        //fileDetailBeans1.add(fileDetailBean);
-                        //continue;
+                        fileDetailBeans1.add(fileDetailBean);
+                        continue;
                     }
-
-                    if(!fileDetailBean.getStatus().equals("6")) {
-                        if (CarUtil.checkCarSys(carSystemBean.getCarSysId(), fileDetailBean.getPhone(), fileDetailHandler)) {
-                            fileDetailBean.setStatus("3");//车系重复
-                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：车系重复");
-                            //fileDetailBeans1.add(fileDetailBean);
-                            //continue;
+                    String cityId = CarUtil.getCityId(areaBeans, vals[2]);
+                    if (StringUtil.isNotBlank(cityId)) {
+                        fileDetailBean.setArea(cityId);
+                    }else {
+                        fileDetailBean.setStatus("6");//城市转id失败
+                        fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行城市转id错误，状态：ID转失败");
+                        fileDetailBeans1.add(fileDetailBean);
+                        continue;
+                    }
+                    if(CarUtil.check4(fileDetailBean, fileDetailHandler)) {//检查手机号后4位连号3+三个以上+品牌相同30天内数据
+                        fileDetailBean.setIsLian("1");
+                    }
+                    if(CarUtil.check6(fileDetailBean, fileDetailHandler)) {//检查手机号前6位相同+三个以上+品牌相同+30天内数据
+                        fileDetailBean.setIsChong("1");
+                    }
+                    if(userBean.getIsPhone().equals("1")) {
+                        String mobileFrom = MobileFromUtil.getMobileFrom(vals[1]);//得到归属地
+                        //String mobileFrom = MobileFromUtil.getMobileFromBd(vals[1]);//得到归属地
+                        if(!CarUtil.checkFromPhone(vals[2], mobileFrom)) {
+                            fileDetailBean.setStatus("5");//号段错误或者城市转id失败
+                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：号段错误，文件中是" + vals[2] + "，根据号码查询后为：" + mobileFrom);
                         }
-                        if(userBean.getisBrand().equals("1")) {//品牌
-                            if(CarUtil.checkBrand(fileDetailBean, fileDetailHandler)) {
-                                fileDetailBean.setStatus("7");
-                                fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行品牌重复，状态：品牌重复");
-                                fileDetailBeans1.add(fileDetailBean);
-                                continue;
-                            }
+                    }
+                    if (CarUtil.checkCarSys(carSystemBean.getCarSysId(), fileDetailBean.getPhone(), fileDetailHandler)) {
+                        fileDetailBean.setStatus("3");//车系重复
+                        fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：车系重复");
+                        fileDetailBeans1.add(fileDetailBean);
+                        continue;
+                    }
+                    if(userBean.getisBrand().equals("1")) {//品牌
+                        if(CarUtil.checkBrand(fileDetailBean, fileDetailHandler)) {
+                            fileDetailBean.setStatus("7");
+                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行品牌重复，状态：品牌重复");
+                            fileDetailBeans1.add(fileDetailBean);
+                            continue;
                         }
-                        if(userBean.getIsTrade().equals("1")) {//厂商
-                            if(CarUtil.checkTrade(fileDetailBean, fileDetailHandler)) {
-                                fileDetailBean.setStatus("8");
-                                fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行厂商重复，状态：厂商重复");
-                                fileDetailBeans1.add(fileDetailBean);
-                                continue;
-                            }
+                    }
+                    if(userBean.getIsTrade().equals("1")) {//厂商
+                        if(CarUtil.checkTrade(fileDetailBean, fileDetailHandler)) {
+                            fileDetailBean.setStatus("8");
+                            fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行厂商重复，状态：厂商重复");
+                            fileDetailBeans1.add(fileDetailBean);
+                            continue;
                         }
                     }
                     if(CarUtil.checkTask(fileDetailBean.getTaskId(), fileDetailBean.getPhone(), fileDetailHandler)) {
@@ -145,7 +148,7 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                         fileDetailBeans1.add(fileDetailBean);
                         continue;
                     }
-                    if(!fileDetailBean.getStatus().equals("5") && !fileDetailBean.getStatus().equals("6") && !fileDetailBean.getStatus().equals("3")) {//如果不是号段错误，车系错误以及车系重复
+                    if(!fileDetailBean.getStatus().equals("5")) {//如果不是号段错误
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行");
                         fileDetailBeans1.add(fileDetailBean);
                     }else {

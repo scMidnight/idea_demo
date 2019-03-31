@@ -199,6 +199,20 @@
                 ,{field:'uploadDate', title:'时间', templet:'#uploadDate'}
                 ,{field:'fileCount', title:'媒体位总数', width:90, align:'center'}
                 ,{field:'sumCount', title:'合计条数', width:90, align:'center'}
+                ,{field:'housiCount', title:'后四连号', width:90, align:'center', templet: function (d) {
+                        if(d.housiCount > 0) {
+                            return "<a href=\"javascript:void(0);\" onclick=\"checkPhoneInfo('housi', '" + d.id + "')\" class=\"layui-table-link\">" + d.housiCount + "</a>";
+                        }else {
+                            return d.housiCount;
+                        }
+                    }}
+                ,{field:'qianliuCount', title:'前六重复', width:90, align:'center', templet: function (d) {
+                        if(d.qianliuCount > 0) {
+                            return "<a href=\"javascript:void(0);\" onclick=\"checkPhoneInfo('qianliu', '" + d.id + "')\" class=\"layui-table-link\">" + d.qianliuCount + "</a>";
+                        }else {
+                            return d.qianliuCount;
+                        }
+                    }}
                 ,{field:'problemCount', title:'问题条数', width:90, align:'center'}
                 ,{field:'taskRepeatCount', title:'任务重复', width:90, align:'center', templet: function (d) {
                         if(d.taskRepeatCount > 0) {
@@ -436,6 +450,9 @@
     });
     function errInfo(code, fileId) {
         window.location = "${base}/car/list/errInfo?err=" + code + "&fileId=" + fileId;
+    }
+    function checkPhoneInfo(code, fileId) {
+        window.location = "${base}/car/list/phoneInfo?err=" + code + "&fileId=" + fileId;
     }
 </script>
 <#include "/common/bodyEnd.html">
