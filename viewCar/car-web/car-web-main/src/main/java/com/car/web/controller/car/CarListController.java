@@ -534,6 +534,7 @@ public class CarListController {
                         fileDetailBean.setColor("qianlan");
                     }
                 }
+                CarUtil.updateCarSysAndAreaName(list);
                 JsonBean jsonBean = new JsonBean("0", "", String.valueOf(list.size()), list);
                 return JsonUtil.beanToJsonString(jsonBean);
             }else if(errCode.equals("qianliu")) {

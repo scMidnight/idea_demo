@@ -304,7 +304,7 @@ public class CarUtil {
         List<Map<String, Object>> maps = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ? ) and t.phone like ?", bean.getBrand(), phone6 + "%");
         for (Map<String, Object> map : maps) {
             if(!map.get("id").toString().equals(bean.getId())) {
-                list.add(getBean(map, null));
+                list.add(getBean(map, fileDetailHandler));
             }
         }
         return list;
