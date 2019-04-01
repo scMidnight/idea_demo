@@ -114,6 +114,12 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                             fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：号段错误，文件中是" + vals[2] + "，根据号码查询后为：" + mobileFrom);
                         }
                     }
+                    if(CarUtil.checkTask(fileDetailBean.getTaskId(), fileDetailBean.getPhone(), fileDetailHandler)) {
+                        fileDetailBean.setStatus("2");//任务重复
+                        fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：任务重复");
+                        fileDetailBeans1.add(fileDetailBean);
+                        continue;
+                    }
                     if (CarUtil.checkCarSys(carSystemBean.getCarSysId(), fileDetailBean.getPhone(), fileDetailHandler)) {
                         fileDetailBean.setStatus("3");//车系重复
                         fileDetailBean.setErrInfo(list.getLast() + " 第" + (i + 1) + "行错误，状态：车系重复");
@@ -135,12 +141,6 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                             fileDetailBeans1.add(fileDetailBean);
                             continue;
                         }
-                    }
-                    if(CarUtil.checkTask(fileDetailBean.getTaskId(), fileDetailBean.getPhone(), fileDetailHandler)) {
-                        fileDetailBean.setStatus("2");//任务重复
-                        fileDetailBean.setErrInfo(list.getLast() + " 第" + (i+1) + "行错误，状态：任务重复");
-                        fileDetailBeans1.add(fileDetailBean);
-                        continue;
                     }
                     if(CarUtil.checkBigLib(fileDetailBean.getPhone(), fileDetailHandler)) {
                         fileDetailBean.setStatus("1");//大库重复

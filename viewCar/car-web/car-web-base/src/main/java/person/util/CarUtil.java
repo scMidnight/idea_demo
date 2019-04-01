@@ -3,6 +3,7 @@ package person.util;
 import jodd.util.StringUtil;
 import person.db.bean.TblAreaBean;
 import person.db.bean.TblCarSystemBean;
+import person.db.bean.TblFileBean;
 import person.db.bean.TblFileDetailBean;
 import person.handler.FileDetailHandler;
 import person.security.cache.CacheManager;
@@ -303,7 +304,7 @@ public class CarUtil {
         List<Map<String, Object>> maps = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ? ) and t.phone like ?", bean.getBrand(), phone6 + "%");
         for (Map<String, Object> map : maps) {
             if(!map.get("id").toString().equals(bean.getId())) {
-                list.add(getBean(map));
+                list.add(getBean(map, null));
             }
         }
         return list;
@@ -316,8 +317,8 @@ public class CarUtil {
         String hou4 = phone.substring(phone.length() - 4);
         List<Map<String, Object>> xiaos = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ?) and cast(right(t.phone, 4) as SIGNED) < cast(right(?, 4) as SIGNED) ORDER BY cast(right(t.phone, 4) as SIGNED)", bean.getBrand(), bean.getPhone());
         List<Map<String, Object>> das = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ?) and cast(right(t.phone, 4) as SIGNED) > cast(right(?, 4) as SIGNED) ORDER BY cast(right(t.phone, 4) as SIGNED)", bean.getBrand(), bean.getPhone());
-        addLinked(bean.getId(), hou4, list, xiaos, "xiao");
-        addLinked(bean.getId(), hou4, list, das, "da");
+        addLinked(bean.getId(), hou4, list, xiaos, "xiao", fileDetailHandler);
+        addLinked(bean.getId(), hou4, list, das, "da", fileDetailHandler);
         return list;
     }
 
@@ -338,28 +339,29 @@ public class CarUtil {
         }
     }
     
-    public static TblFileDetailBean getBean(Map<String, Object> map) {
+    public static TblFileDetailBean getBean(Map<String, Object> map, FileDetailHandler fileDetailHandler) {
         TblFileDetailBean temp = new TblFileDetailBean();
-        temp.setId(map.get("id") != null ? map.get("id").toString() : "");
-        temp.setFileId(map.get("file_id") != null ? map.get("file_id").toString() : "");
-        temp.setFileName(map.get("file_name") != null ? map.get("file_name").toString() : "");
-        temp.setTaskId(map.get("task_id") != null ? map.get("task_id").toString() : "");
-        temp.setName(map.get("name") != null ? map.get("name").toString() : "");
-        temp.setPhone(map.get("phone") != null ? map.get("phone").toString() : "");
-        temp.setArea(map.get("area") != null ? map.get("area").toString() : "");
-        temp.setCarSys(map.get("car_sys") != null ? map.get("car_sys").toString() : "");
-        temp.setStatus(map.get("status") != null ? map.get("status").toString() : "");
-        temp.setErrInfo(map.get("err_info") != null ? map.get("err_info").toString() : "");
-        temp.setUploadDate(map.get("UPLOAD_DATE") != null ? (Date) map.get("UPLOAD_DATE") : null);
-        temp.setOrderNum(map.get("ORDER_NUM") != null ? map.get("ORDER_NUM").toString() : "");
-        temp.setBrand(map.get("brand") != null ? map.get("brand").toString() : "");
-        temp.setTrade(map.get("trade") != null ? map.get("trade").toString() : "");
-        temp.setIsLian(map.get("IS_LIAN") != null ? map.get("IS_LIAN").toString() : "");
-        temp.setIsChong(map.get("IS_CHONG") != null ? map.get("IS_CHONG").toString() : "");
+        //temp.setId(map.get("id") != null ? map.get("id").toString() : "");
+        //temp.setFileId(map.get("file_id") != null ? map.get("file_id").toString() : "");
+        //temp.setFileName(map.get("file_name") != null ? map.get("file_name").toString() : "");
+        //temp.setTaskId(map.get("task_id") != null ? map.get("task_id").toString() : "");
+        //temp.setName(map.get("name") != null ? map.get("name").toString() : "");
+        //temp.setPhone(map.get("phone") != null ? map.get("phone").toString() : "");
+        //temp.setArea(map.get("area") != null ? map.get("area").toString() : "");
+        //temp.setCarSys(map.get("car_sys") != null ? map.get("car_sys").toString() : "");
+        //temp.setStatus(map.get("status") != null ? map.get("status").toString() : "");
+        //temp.setErrInfo(map.get("err_info") != null ? map.get("err_info").toString() : "");
+        //temp.setUploadDate(map.get("UPLOAD_DATE") != null ? (Date) map.get("UPLOAD_DATE") : null);
+        //temp.setOrderNum(map.get("ORDER_NUM") != null ? map.get("ORDER_NUM").toString() : "");
+        //temp.setBrand(map.get("brand") != null ? map.get("brand").toString() : "");
+        //temp.setTrade(map.get("trade") != null ? map.get("trade").toString() : "");
+        //temp.setIsLian(map.get("IS_LIAN") != null ? map.get("IS_LIAN").toString() : "");
+        //temp.setIsChong(map.get("IS_CHONG") != null ? map.get("IS_CHONG").toString() : "");
+        temp = fileDetailHandler.findByProperty("id", map.get("id").toString()).get(0);
         return temp;
     }
 
-    public static void addLinked(String id, String hou4, LinkedList<TblFileDetailBean> list, List<Map<String, Object>> maps, String flag) {
+    public static void addLinked(String id, String hou4, LinkedList<TblFileDetailBean> list, List<Map<String, Object>> maps, String flag, FileDetailHandler fileDetailHandler) {
         int i = 1;
         String phoneTemp = "";
         TblFileDetailBean temp = null;
@@ -371,11 +373,11 @@ public class CarUtil {
                     if (flag.equals("xiao")) {
                         if (Integer.parseInt(hou4) - Integer.parseInt(p4) == i) {
                             i = i + 1;
-                            temp = getBean(map);
+                            temp = getBean(map, fileDetailHandler);
                             list.add(temp);
                             phoneTemp = temp.getPhone();
                         } else if(map.get("phone").toString().equals(phoneTemp)) {
-                            temp = getBean(map);
+                            temp = getBean(map, fileDetailHandler);
                             list.add(temp);
                         }else {
                             break;
@@ -384,11 +386,11 @@ public class CarUtil {
                     if (flag.equals("da")) {
                         if (Integer.parseInt(p4) - Integer.parseInt(hou4) == i) {
                             i = i + 1;
-                            temp = getBean(map);
+                            temp = getBean(map, fileDetailHandler);
                             list.add(temp);
                             phoneTemp = temp.getPhone();
                         } else if(map.get("phone").toString().equals(phoneTemp)){
-                            temp = getBean(map);
+                            temp = getBean(map, fileDetailHandler);
                             list.add(temp);
                         }else {
                             break;
