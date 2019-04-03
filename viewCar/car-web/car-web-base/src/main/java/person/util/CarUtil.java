@@ -8,6 +8,7 @@ import person.db.bean.TblFileDetailBean;
 import person.handler.FileDetailHandler;
 import person.security.cache.CacheManager;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -25,20 +26,25 @@ public class CarUtil {
      * @param strs
      * @Description 对filedetailBean赋初值
      */
-    public static TblFileDetailBean getFileDetailBean(String[] strs) {
-        TblFileDetailBean fileDetailBean = new TblFileDetailBean();
-        fileDetailBean.setId(IdUtils.randomString());
-        fileDetailBean.setName(StringUtil.isNotBlank(strs[0]) ? strs[0] : "");
-        fileDetailBean.setPhone(StringUtil.isNotBlank(strs[1]) ? strs[1] : "");
-        fileDetailBean.setArea(StringUtil.isNotBlank(strs[2]) ? strs[2] : "");
-        fileDetailBean.setCarSys(StringUtil.isNotBlank(strs[3]) ? strs[3] : "");
-        if(strs.length > 4) {
-            fileDetailBean.setTaskId(StringUtil.isNotBlank(strs[6]) ? strs[6] : "");
-        }else {
-            fileDetailBean.setTaskId("");
+    public static TblFileDetailBean getFileDetailBean(String[] strs) throws Exception {
+        try {
+            TblFileDetailBean fileDetailBean = new TblFileDetailBean();
+            fileDetailBean.setId(IdUtils.randomString());
+            fileDetailBean.setName(StringUtil.isNotBlank(strs[0]) ? strs[0] : "");
+            fileDetailBean.setPhone(StringUtil.isNotBlank(strs[1]) ? strs[1] : "");
+            fileDetailBean.setArea(StringUtil.isNotBlank(strs[2]) ? strs[2] : "");
+            fileDetailBean.setCarSys(StringUtil.isNotBlank(strs[3]) ? strs[3] : "");
+            if(strs.length > 4) {
+                fileDetailBean.setTaskId(StringUtil.isNotBlank(strs[6]) ? strs[6] : "");
+            }else {
+                fileDetailBean.setTaskId("");
+            }
+            fileDetailBean.setStatus("0");
+            return fileDetailBean;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            throw new Exception("文件异常，非常规数据格式，请查检文件");
         }
-        fileDetailBean.setStatus("0");
-        return fileDetailBean;
     }
 
     /**
@@ -314,11 +320,10 @@ public class CarUtil {
         LinkedList<TblFileDetailBean> list = new LinkedList<>();
         list.add(bean);
         String phone = bean.getPhone();
-        String hou4 = phone.substring(phone.length() - 4);
-        List<Map<String, Object>> xiaos = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ?) and cast(right(t.phone, 4) as SIGNED) < cast(right(?, 4) as SIGNED) ORDER BY cast(right(t.phone, 4) as SIGNED)", bean.getBrand(), bean.getPhone());
-        List<Map<String, Object>> das = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ?) and cast(right(t.phone, 4) as SIGNED) > cast(right(?, 4) as SIGNED) ORDER BY cast(right(t.phone, 4) as SIGNED)", bean.getBrand(), bean.getPhone());
-        addLinked(bean.getId(), hou4, list, xiaos, "xiao", fileDetailHandler);
-        addLinked(bean.getId(), hou4, list, das, "da", fileDetailHandler);
+        List<Map<String, Object>> xiaos = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ?) and cast(t.phone as SIGNED) < cast(? as SIGNED) ORDER BY cast(t.phone as SIGNED)", bean.getBrand(), bean.getPhone());
+        List<Map<String, Object>> das = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ?) and cast(t.phone as SIGNED) > cast(? as SIGNED) ORDER BY cast(t.phone as SIGNED)", bean.getBrand(), bean.getPhone());
+        addLinked(bean.getId(), phone, list, xiaos, "xiao", fileDetailHandler);
+        addLinked(bean.getId(), phone, list, das, "da", fileDetailHandler);
         return list;
     }
 
@@ -361,17 +366,16 @@ public class CarUtil {
         return temp;
     }
 
-    public static void addLinked(String id, String hou4, LinkedList<TblFileDetailBean> list, List<Map<String, Object>> maps, String flag, FileDetailHandler fileDetailHandler) {
+    public static void addLinked(String id, String phone, LinkedList<TblFileDetailBean> list, List<Map<String, Object>> maps, String flag, FileDetailHandler fileDetailHandler) {
         int i = 1;
         String phoneTemp = "";
         TblFileDetailBean temp = null;
         if(null != maps && maps.size() > 1) {
             for (Map<String, Object> map : maps) {
                 String p = map.get("phone").toString();
-                String p4 = p.substring(p.length() - 4);
                 if(!map.get("id").toString().equals(id)) {
                     if (flag.equals("xiao")) {
-                        if (Integer.parseInt(hou4) - Integer.parseInt(p4) == i) {
+                        if (new BigInteger(phone).subtract(new BigInteger(p)).compareTo(new BigInteger("" + i)) == 0) {
                             i = i + 1;
                             temp = getBean(map, fileDetailHandler);
                             list.add(temp);
@@ -384,7 +388,7 @@ public class CarUtil {
                         }
                     }
                     if (flag.equals("da")) {
-                        if (Integer.parseInt(p4) - Integer.parseInt(hou4) == i) {
+                        if (new BigInteger(p).subtract(new BigInteger(phone)).compareTo(new BigInteger("" + i)) == 0) {
                             i = i + 1;
                             temp = getBean(map, fileDetailHandler);
                             list.add(temp);
@@ -403,23 +407,9 @@ public class CarUtil {
 
     public static void main(String[] args) {
         String phone = "15502119051";
-        System.out.println(phone.substring(phone.length() - 4));
-        System.out.println(phone.substring(0, 6));
-        String a = "8801";
-        System.out.println(Integer.parseInt(a) - 2);
-        LinkedList<String> temp = new LinkedList<>();
-        temp.add("1");
-        temp.add("2");
-        temp.add("3");
-        temp.add("4");
-        LinkedList<String> temp1 = new LinkedList<>();
-        temp1.add("5");
-        temp1.add("6");
-        temp1.add("7");
-        temp1.add("8");
-        temp.addAll(temp1);
-        for (String s : temp) {
-            System.out.println(s);
-        }
+        String phone1 = "15602119052";
+        BigInteger b = new BigInteger(phone);
+        BigInteger c = new BigInteger(phone1);
+        System.out.println(c.subtract(b) == new BigInteger(""+100000001));
     }
 }

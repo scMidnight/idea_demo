@@ -603,6 +603,16 @@ public class CarListController {
             LinkedList<TblFileDetailBean> linkedList = new LinkedList<>();
             if(null != fileDetailBeans && !fileDetailBeans.isEmpty()) {
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                    String errInfo = fileDetailBean.getErrInfo();
+                    if(fileDetailBean.getStatus().equals("6")) {
+                        String temp = "";
+                        if(errInfo.indexOf("行错误") != -1) {
+                            temp = errInfo.substring(errInfo.indexOf("行错误") + 7);
+                        }else {
+                            temp = errInfo.substring(errInfo.indexOf("行") + 1);
+                        }
+                        fileDetailBean.setStatusDesc(temp);
+                    }
                     fileDetailBean.setErrInfo("本包数据");
                     if(errCode.equals("1")) {//大库重复
                         fileDetailBean.setColor("shenlan");
@@ -820,7 +830,14 @@ public class CarListController {
                 }
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
                     if(fileDetailBean.getStatus().equals("6")) {//ID转失败
-                        fileDetailBean.setErrInfo("ID转失败");
+                        String errInfo = fileDetailBean.getErrInfo();
+                        String temp = "";
+                        if(errInfo.indexOf("行错误") != -1) {
+                            temp = errInfo.substring(errInfo.indexOf("行错误") + 7);
+                        }else {
+                            temp = errInfo.substring(errInfo.indexOf("行") + 1);
+                        }
+                        fileDetailBean.setErrInfo(temp);
                         fileDetailBean.setColor("huise");
                         linkedList.add(fileDetailBean);
                     }
@@ -971,14 +988,15 @@ public class CarListController {
     }
 
     public static void main(String[] args) {
-        String path = "/usr/local/uploader/bak/7848520180918132617325a/原标-浔阳0822";
-        //String path2 = path.substring(0, path.lastIndexOf("/"));
-        //path2 += path.substring(path.lastIndexOf("/"), path.length());
-        String path2 = path.substring(path.lastIndexOf("/") + 1, path.length());
-        String[] temps = path2.split("-");
-        String a = "/ID-" + temps[1];
-        a = path.substring(0, path.lastIndexOf("/")) + a;
-        System.out.println(a);
+        String a = "ddd";
+        String b = "行车系转换错误，状态：ID转失败";
+        String temp = "";
+        if(a.indexOf("行错误") != -1) {
+            temp = a.substring(a.indexOf("行错误") + 7);
+        }else {
+            temp = b.substring(b.indexOf("行") + 1);
+        }
+        System.out.println(temp);
     }
 
 }

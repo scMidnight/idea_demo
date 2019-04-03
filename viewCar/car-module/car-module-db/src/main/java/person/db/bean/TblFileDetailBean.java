@@ -16,6 +16,7 @@ public class TblFileDetailBean implements Serializable {
     private TblFileBean fileBean;//文件表
     private String errInfo;//错误描述，用来生成错误txt文件
     private String color;
+    private String statusDesc;//状态描述
     private Date uploadDate;//上传时间
     private String orderNum;//排序字段
     private String brand;//品牌
@@ -165,5 +166,13 @@ public class TblFileDetailBean implements Serializable {
 
     public void setIsChong(String isChong) {
         this.isChong = isChong;
+    }
+
+    public String getStatusDesc() {
+        return statusDesc;
+    }
+
+    public void setStatusDesc(String statusDesc) {
+        this.statusDesc = statusDesc;
     }
 }

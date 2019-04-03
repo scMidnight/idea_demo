@@ -519,46 +519,52 @@ public class ExcelUtil {
      * @Description 读取excel内容
      */
     public static LinkedList<String> read(String filePath) throws IOException {
-        LinkedList<String> list = new LinkedList<>();
-        String fileType = filePath.substring(filePath.lastIndexOf(".") + 1, filePath.length());
-        InputStream stream = new FileInputStream(filePath);
-        Workbook wb = null;
-        if (fileType.equals("xls")) {
-            wb = new HSSFWorkbook(stream);
-        } else if (fileType.equals("xlsx")) {
-            wb = new XSSFWorkbook(stream);
-        } else {
-            System.out.println("您输入的excel格式不正确");
-        }
-        Sheet sheet1 = wb.getSheetAt(0);
-        for (Row row : sheet1) {
-            String c = "";
-            for (int i = 0; i < row.getLastCellNum();i++) {
-                Cell cell = row.getCell(i);
-                String mobile = "";
-                if(cell !=null) {
-                    mobile = cell.toString();
-                    DecimalFormat df = new DecimalFormat("#");
-                    switch (cell.getCellType()) {
-                        case HSSFCell.CELL_TYPE_NUMERIC:// 数字
-                            mobile = df.format(cell.getNumericCellValue());
-                            break;
+        LinkedList<String> list = null;
+        try {
+            list = new LinkedList<>();
+            String fileType = filePath.substring(filePath.lastIndexOf(".") + 1, filePath.length());
+            InputStream stream = new FileInputStream(filePath);
+            Workbook wb = null;
+            if (fileType.equals("xls")) {
+                wb = new HSSFWorkbook(stream);
+            } else if (fileType.equals("xlsx")) {
+                wb = new XSSFWorkbook(stream);
+            } else {
+                System.out.println("您输入的excel格式不正确");
+            }
+            Sheet sheet1 = wb.getSheetAt(0);
+            for (Row row : sheet1) {
+                String c = "";
+                for (int i = 0; i < row.getLastCellNum();i++) {
+                    Cell cell = row.getCell(i);
+                    String mobile = "";
+                    if(cell !=null) {
+                        mobile = cell.toString();
+                        DecimalFormat df = new DecimalFormat("#");
+                        switch (cell.getCellType()) {
+                            case HSSFCell.CELL_TYPE_NUMERIC:// 数字
+                                mobile = df.format(cell.getNumericCellValue());
+                                break;
+                        }
+                    }
+                    if(i == 3) {
+                        c += mobile.trim() + "\t";
+                    }else {
+                        mobile = mobile.replaceAll("\\s*", "");
+                        mobile = mobile.replace("  ", "");
+                        mobile = mobile.replace(" ", "");
+                        c += mobile.replace("\"", "").trim() + "\t";
                     }
                 }
-                if(i == 3) {
-                    c += mobile.trim() + "\t";
-                }else {
-                    mobile = mobile.replaceAll("\\s*", "");
-                    mobile = mobile.replace("  ", "");
-                    mobile = mobile.replace(" ", "");
-                    c += mobile.replace("\"", "").trim() + "\t";
+                if (c.trim().length() > 0) {
+                    list.add(c);
                 }
             }
-            if (c.trim().length() > 0) {
-                list.add(c);
-            }
+            list.add(new File(filePath).getName());
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            throw new IOException("文件异常，无法读取");
         }
-        list.add(new File(filePath).getName());
         return list;
     }
 

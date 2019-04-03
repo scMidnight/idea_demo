@@ -199,7 +199,7 @@
                 ,{field:'uploadDate', title:'时间', templet:'#uploadDate'}
                 ,{field:'fileCount', title:'媒体位总数', width:90, align:'center'}
                 ,{field:'sumCount', title:'合计条数', width:90, align:'center'}
-                ,{field:'housiCount', title:'后四连号', width:90, align:'center', templet: function (d) {
+                ,{field:'housiCount', title:'连号', width:90, align:'center', templet: function (d) {
                         if(d.housiCount > 0) {
                             return "<a href=\"javascript:void(0);\" onclick=\"checkPhoneInfo('housi', '" + d.id + "')\" class=\"layui-table-link\">" + d.housiCount + "</a>";
                         }else {
