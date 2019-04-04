@@ -144,4 +144,31 @@ public class FileDetailServiceImpl extends CommonServiceImpl implements FileDeta
         }
         super.deleteAllEntitie(fileDetails);
     }
+
+    @Override
+    public void updateFileDetailBeansAndUpdateFileStatus(List<TblFileDetailBean> fileDetailBeans) {
+        List<TblFileDetail> fileDetails = new ArrayList<TblFileDetail>();
+        for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+            TblFileDetail fileDetail = this.get(TblFileDetail.class, fileDetailBean.getId());
+            BeanUtils.copyProperties(fileDetailBean, fileDetail);
+            fileDetails.add(fileDetail);
+        }
+        super.batchUpdateEntitie(fileDetails);
+        TblFile file = this.get(TblFile.class, fileDetailBeans.get(0).getFileId());
+        file.setStatus("1");
+        file.setFileCount(String.valueOf(queryByHql("FROM TblFileDetail t where t.fileId = ? group by t.fileName", file.getId()).size()));
+        file.setSumCount(String.valueOf(fileDetails.size()));
+        file.setProblemCount(String.valueOf(queryByHql("from TblFileDetail t where t.fileId = ? and t.status != ?", file.getId(), "0").size()));
+        file.setTaskRepeatCount(String.valueOf(queryByHqlOnErrCount(file.getId(), "2").size()));
+        file.setCarSysRepeatCount(String.valueOf(queryByHqlOnErrCount(file.getId(), "3").size()));
+        file.setBigLibRepeatCount(String.valueOf(queryByHqlOnErrCount(file.getId(), "1").size()));
+        file.setBlackHitCount(String.valueOf(queryByHqlOnErrCount(file.getId(), "4").size()));
+        file.setNumberErrCount(String.valueOf(queryByHqlOnErrCount(file.getId(), "5").size()));
+        file.setIdFailedCount(String.valueOf(queryByHqlOnErrCount(file.getId(), "6").size()));
+        file.setBrandCount(String.valueOf(queryByHqlOnErrCount(file.getId(), "7").size()));
+        file.setTradeCount(String.valueOf(queryByHqlOnErrCount(file.getId(), "8").size()));
+        file.setHousiCount(String.valueOf(queryByHqlLian(file.getId())));
+        file.setQianliuCount(String.valueOf(queryByHqlChong(file.getId())));
+        super.saveOrUpdate(file);
+    }
 }

@@ -36,6 +36,8 @@ public interface FileDetailHandler {
 
     void batchSaveFileDetailBeansAndUpdateFileStatus(List<TblFileDetailBean> fileDetailBeans);
 
+    void updateFileDetailBeansAndUpdateFileStatus(List<TblFileDetailBean> fileDetailBeans);
+
     List<TblFileDetailBean> queryByHql(String hql, Object... param);
 
     List<TblFileDetailBean> queryByHqlOnErrCount(String fileId, String status);

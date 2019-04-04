@@ -236,7 +236,7 @@ public class CarUtil {
      * @Author SunChang
      * @Date 2018/9/6 20:38
      * @param bean
-     * @Description 手机号后4位连号3+三个以上+品牌相同30天内数据
+     * @Description 手机号连号+三个以上+品牌相同30天内数据
      */
     public static boolean check4(TblFileDetailBean bean, FileDetailHandler fileDetailHandler) {
         LinkedList<TblFileDetailBean> list = getPhoneLian(bean, fileDetailHandler);
@@ -320,8 +320,8 @@ public class CarUtil {
         LinkedList<TblFileDetailBean> list = new LinkedList<>();
         list.add(bean);
         String phone = bean.getPhone();
-        List<Map<String, Object>> xiaos = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ?) and cast(t.phone as SIGNED) < cast(? as SIGNED) ORDER BY cast(t.phone as SIGNED)", bean.getBrand(), bean.getPhone());
-        List<Map<String, Object>> das = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ?) and cast(t.phone as SIGNED) > cast(? as SIGNED) ORDER BY cast(t.phone as SIGNED)", bean.getBrand(), bean.getPhone());
+        List<Map<String, Object>> xiaos = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ?) and cast(t.phone as SIGNED) < cast(? as SIGNED) ORDER BY cast(t.phone as SIGNED) desc", bean.getBrand(), bean.getPhone());
+        List<Map<String, Object>> das = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ?) and cast(t.phone as SIGNED) > cast(? as SIGNED) ORDER BY cast(t.phone as SIGNED) asc", bean.getBrand(), bean.getPhone());
         addLinked(bean.getId(), phone, list, xiaos, "xiao", fileDetailHandler);
         addLinked(bean.getId(), phone, list, das, "da", fileDetailHandler);
         return list;

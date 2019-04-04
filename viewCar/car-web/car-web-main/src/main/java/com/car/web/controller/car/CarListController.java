@@ -270,6 +270,15 @@ public class CarListController {
                     }
                 }
                 fileDetailHandler.batchSaveFileDetailBeansAndUpdateFileStatus(fileDetailBeans);
+                for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                    if(CarUtil.check4(fileDetailBean, fileDetailHandler)) {
+                        fileDetailBean.setIsLian("1");
+                    }
+                    if(CarUtil.check6(fileDetailBean, fileDetailHandler)) {
+                        fileDetailBean.setIsChong("1");
+                    }
+                }
+                fileDetailHandler.updateFileDetailBeansAndUpdateFileStatus(fileDetailBeans);
                 FileUtils.deleteDirectory(new File(fileBean.getFilePath() + "a" + File.separatorChar));
                 return JsonUtil.toString("Y", "操作成功！");
             }else {
@@ -833,9 +842,9 @@ public class CarListController {
                         String errInfo = fileDetailBean.getErrInfo();
                         String temp = "";
                         if(errInfo.indexOf("行错误") != -1) {
-                            temp = errInfo.substring(errInfo.indexOf("行错误") + 7);
+                            temp = errInfo.substring(errInfo.indexOf("行错误") + 13);
                         }else {
-                            temp = errInfo.substring(errInfo.indexOf("行") + 1);
+                            temp = errInfo.substring(errInfo.indexOf("行") + 1, errInfo.indexOf("，"));
                         }
                         fileDetailBean.setErrInfo(temp);
                         fileDetailBean.setColor("huise");
@@ -988,13 +997,14 @@ public class CarListController {
     }
 
     public static void main(String[] args) {
-        String a = "ddd";
-        String b = "行车系转换错误，状态：ID转失败";
+        //String a = "行错误，状态：ID转失败，字段为空";
+        String a = "aaa";
+        String b = "行城市转id错误，状态：ID转失败";
         String temp = "";
         if(a.indexOf("行错误") != -1) {
-            temp = a.substring(a.indexOf("行错误") + 7);
+            temp = a.substring(a.indexOf("行错误") + 13);
         }else {
-            temp = b.substring(b.indexOf("行") + 1);
+            temp = b.substring(b.indexOf("行") + 1, b.indexOf("，"));
         }
         System.out.println(temp);
     }

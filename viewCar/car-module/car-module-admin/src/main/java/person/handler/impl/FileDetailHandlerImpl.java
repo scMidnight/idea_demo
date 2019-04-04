@@ -35,6 +35,11 @@ public class FileDetailHandlerImpl implements FileDetailHandler {
     }
 
     @Override
+    public void updateFileDetailBeansAndUpdateFileStatus(List<TblFileDetailBean> fileDetailBeans) {
+        fileDetailService.updateFileDetailBeansAndUpdateFileStatus(fileDetailBeans);
+    }
+
+    @Override
     public List<TblFileDetailBean> queryByHql(String hql, Object... param) {
         return fileDetailService.queryByHql(hql, param);
     }

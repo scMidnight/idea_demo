@@ -48,4 +48,6 @@ public interface FileDetailService extends CommonService {
     void batchDel(List<TblFileDetailBean> fileDetailBeans);
 
     List<Map<String, Object>> findForJdbc(String sql, Object... objs);
+
+    void updateFileDetailBeansAndUpdateFileStatus(List<TblFileDetailBean> fileDetailBeans);
 }

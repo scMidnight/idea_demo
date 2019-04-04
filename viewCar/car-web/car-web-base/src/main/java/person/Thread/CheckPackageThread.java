@@ -100,12 +100,12 @@ public class CheckPackageThread implements Callable<List<TblFileDetailBean>> {
                         fileDetailBeans1.add(fileDetailBean);
                         continue;
                     }
-                    if(CarUtil.check4(fileDetailBean, fileDetailHandler)) {//检查手机号后4位连号3+三个以上+品牌相同30天内数据
-                        fileDetailBean.setIsLian("1");
-                    }
-                    if(CarUtil.check6(fileDetailBean, fileDetailHandler)) {//检查手机号前6位相同+三个以上+品牌相同+30天内数据
-                        fileDetailBean.setIsChong("1");
-                    }
+                    //if(CarUtil.check4(fileDetailBean, fileDetailHandler)) {//检查手机号后4位连号3+三个以上+品牌相同30天内数据
+                    //    fileDetailBean.setIsLian("1");
+                    //}
+                    //if(CarUtil.check6(fileDetailBean, fileDetailHandler)) {//检查手机号前6位相同+三个以上+品牌相同+30天内数据
+                    //    fileDetailBean.setIsChong("1");
+                    //}
                     if(userBean.getIsPhone().equals("1")) {
                         String mobileFrom = MobileFromUtil.getMobileFrom(vals[1]);//得到归属地
                         //String mobileFrom = MobileFromUtil.getMobileFromBd(vals[1]);//得到归属地
