@@ -16,6 +16,9 @@ public class TblCarSystemBean implements Serializable {
     private String carSysId;//车系ID
     private String isDel;//是否删除0否1是
     private Date insertDate;//插入时间
+    private String type;//分类
+    private String typeId;//分类ID
+    private String remark;//备注
 
     public String getId() {
         return id;
@@ -87,5 +90,29 @@ public class TblCarSystemBean implements Serializable {
 
     public void setInsertDate(Date insertDate) {
         this.insertDate = insertDate;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

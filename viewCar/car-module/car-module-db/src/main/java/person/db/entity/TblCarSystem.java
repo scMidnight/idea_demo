@@ -14,14 +14,17 @@ import java.util.Date;
 @Entity
 @Table(name = "TBL_CAR_SYSTEM")
 public class TblCarSystem extends IdEntity {
-    private String brandName;
-    private String brandId;
-    private String tradeName;
-    private String tradeId;
-    private String carSysName;
-    private String carSysId;
-    private String isDel;
-    private Date insertDate;
+    private String brandName;//品牌口称
+    private String brandId;//品牌ID
+    private String tradeName;//厂商名称
+    private String tradeId;//厂商ID
+    private String carSysName;//车系名称
+    private String carSysId;//车系ID
+    private String isDel;//是否删除0否1是
+    private Date insertDate;//插入时间
+    private String type;//分类
+    private String typeId;//分类ID
+    private String remark;//备注
 
     @Column(name = "BRAND_NAME")
     public String getBrandName() {
@@ -93,5 +96,32 @@ public class TblCarSystem extends IdEntity {
 
     public void setInsertDate(Date insertDate) {
         this.insertDate = insertDate;
+    }
+
+    @Column(name = "type")
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @Column(name="type_id")
+    public String getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
+    }
+
+    @Column(name = "remark")
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }
