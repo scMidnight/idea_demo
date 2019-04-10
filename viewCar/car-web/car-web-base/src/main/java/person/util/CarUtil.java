@@ -307,10 +307,24 @@ public class CarUtil {
         list.add(bean);
         String phone = bean.getPhone();
         String phone6 = phone.substring(0, 6);
-        List<Map<String, Object>> maps = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ? ) and t.phone like ?", bean.getBrand(), phone6 + "%");
-        for (Map<String, Object> map : maps) {
+        String carSysId = bean.getCarSys();
+        Map<String, TblCarSystemBean> carMapBean = CacheManager.getInstance().getCarMapBean();
+        TblCarSystemBean carSystemBean = carMapBean.get(carSysId);
+        List<Map<String, Object>> gMaps = null;
+        List<Map<String, Object>> oMaps = null;
+        if(carSystemBean.getTypeId().equals("1")) {//国产
+            gMaps = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ? ) and t.phone like ?", bean.getBrand(), phone6 + "%");
+        }else {
+            oMaps = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where trade_id = ? ) and t.phone like ?", bean.getTrade(), phone6 + "%");
+        }
+        for (Map<String, Object> map : gMaps) {
             if(!map.get("id").toString().equals(bean.getId())) {
                 list.add(getBean(map, fileDetailHandler));
+            }
+        }
+        for (Map<String, Object> oMap : oMaps) {
+            if(!oMap.get("id").toString().equals(bean.getId())) {
+                list.add(getBean(oMap, fileDetailHandler));
             }
         }
         return list;

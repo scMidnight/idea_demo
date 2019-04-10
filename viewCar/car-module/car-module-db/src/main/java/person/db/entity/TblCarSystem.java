@@ -22,7 +22,7 @@ public class TblCarSystem extends IdEntity {
     private String carSysId;//车系ID
     private String isDel;//是否删除0否1是
     private Date insertDate;//插入时间
-    private String type;//分类
+    private String type;//分类 1国产，2合资，3进口
     private String typeId;//分类ID
     private String remark;//备注
 
