@@ -2,7 +2,7 @@
 <#include "/common/bodyStart.html">
 <div class="layui-layout layui-layout-admin">
     <#include "/common/headContent.html">
-    <#include "/common/left4.html">
+    <#include "/common/left.html">
     <div class="layui-body">
         <div style="padding: 15px;">
             <blockquote class="layui-elem-quote">
@@ -101,8 +101,8 @@
             ,defaultToolbar: []
             ,cols: [[
                 {type:'numbers', title:'序号'}
-                ,{field:'uploadDate', title:'上传日期', widht:120, templet:'#uploadDate', align:'center'}
-                ,{field:'fileNameBak', title:'数据排期', widht:50, templet:'#fileNameBak', align:'center'}
+                ,{field:'uploadDate', title:'上传日期', width:180, templet:'#uploadDate', align:'center'}
+                ,{field:'fileNameBak', title:'数据排期', width:100, templet:'#fileNameBak', align:'center'}
                 ,{field:'fileName', title:'排期名称', width:220, align:'center', sort:true}
                 ,{field:'taskId', title:'任务ID', align:'center', sort:true}
                 ,{field:'name', title:'姓名', align:'center', sort:true}

@@ -3,17 +3,13 @@ package person.util;
 import jodd.util.StringUtil;
 import person.db.bean.TblAreaBean;
 import person.db.bean.TblCarSystemBean;
-import person.db.bean.TblFileBean;
 import person.db.bean.TblFileDetailBean;
 import person.handler.FileDetailHandler;
 import person.security.cache.CacheManager;
 
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -310,8 +306,8 @@ public class CarUtil {
         String carSysId = bean.getCarSys();
         Map<String, TblCarSystemBean> carMapBean = CacheManager.getInstance().getCarMapBean();
         TblCarSystemBean carSystemBean = carMapBean.get(carSysId);
-        List<Map<String, Object>> gMaps = null;
-        List<Map<String, Object>> oMaps = null;
+        List<Map<String, Object>> gMaps = new ArrayList<>();
+        List<Map<String, Object>> oMaps = new ArrayList<>();
         if(carSystemBean.getTypeId().equals("1")) {//国产
             gMaps = fileDetailHandler.findForJdbc("select * from tbl_file_detail t where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t.UPLOAD_DATE) and t.car_sys in (select car_sys_id from tbl_car_system where brand_id = ? ) and t.phone like ?", bean.getBrand(), phone6 + "%");
         }else {
