@@ -137,7 +137,7 @@ public class CarSystemController {
         //需要导出的结果集
         List<TblCarSystemBean> carSystemBeans = carSystemHandler.queryAll();
         //excel标题
-        String [] title = {"品牌ID", "品牌名称", "厂商ID", "厂商名称", "车系ID", "车系名称", "插入时间"};
+        String [] title = {"品牌ID", "品牌名称", "厂商ID", "厂商名称", "车系ID", "车系名称", "分类ID", "分类名称", "插入时间"};
         //excel文件名
         String fileName = "车系数据表" + CarUtil.getDateStr(new Date(), "yyyyMMdd HH:mm:ss") + ".xls";
         //sheet名
@@ -152,7 +152,9 @@ public class CarSystemController {
             contents[i][3] = tblCarSystemBean.getTradeName();
             contents[i][4] = tblCarSystemBean.getCarSysId();
             contents[i][5] = tblCarSystemBean.getCarSysName();
-            contents[i][6] = sdf.format(tblCarSystemBean.getInsertDate());
+            contents[i][6] = tblCarSystemBean.getTypeId();
+            contents[i][7] = tblCarSystemBean.getType();
+            contents[i][8] = sdf.format(tblCarSystemBean.getInsertDate());
         }
         //创建HSSFWorkbook
         HSSFWorkbook wb = ExcelUtil.getHSSFWorkbook(sheetName, title, contents, null);

@@ -188,7 +188,7 @@
             ,method:'post'
             ,height: 'full-400'
             ,cols: [[
-                {field:'fileNameBak', title:'数据源排期', width:90,   fixed:'left', templet: function (d) {
+                {field:'fileNameBak', title:'数据源排期', width:120, fixed:'left', templet: function (d) {
                         var fileNameBak = d.fileNameBak;
                         if(fileNameBak.indexOf(".") != -1) {
                             return subStrs(fileNameBak, fileNameBak.indexOf("."));
@@ -196,7 +196,7 @@
                             return fileNameBak;
                         }
                     }}
-                ,{field:'uploadDate', title:'时间', templet:'#uploadDate'}
+                ,{field:'uploadDate', title:'时间',width:180, align:'center', templet:'#uploadDate'}
                 ,{field:'fileCount', title:'媒体位总数', width:90, align:'center'}
                 ,{field:'sumCount', title:'合计条数', width:90, align:'center'}
                 ,{field:'housiCount', title:'连号', width:90, align:'center', templet: function (d) {
