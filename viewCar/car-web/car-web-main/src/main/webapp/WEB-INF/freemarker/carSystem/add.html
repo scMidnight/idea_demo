@@ -48,17 +48,29 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">分类名称</label>
+                    <label class="layui-form-label">分类选择</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="type" lay-verify="required" lay-verType="tips" placeholder="分类名称" autocomplete="off" class="layui-input" />
+                        <select name="typeId" lay-verify="required" lay-filter="selectTypeId">
+                            <option value="">请选择分类名称</option>
+                            <option value="1" name="国产">国产</option>
+                            <option value="2" name="合资">合资</option>
+                            <option value="3" name="进口">进口</option>
+                        </select>
+                        <input type="text" name="type" hidden/>
                     </div>
                 </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">分类ID</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="typeId" lay-verify="required" lay-verType="tips" placeholder="分类ID" autocomplete="off" class="layui-input" />
-                    </div>
-                </div>
+                <!--<div class="layui-form-item">-->
+                    <!--<label class="layui-form-label">分类名称</label>-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<input type="text" name="type" lay-verify="required" lay-verType="tips" placeholder="分类名称" autocomplete="off" class="layui-input" />-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="layui-form-item">-->
+                    <!--<label class="layui-form-label">分类ID</label>-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<input type="text" name="typeId" lay-verify="required" lay-verType="tips" placeholder="分类ID" autocomplete="off" class="layui-input" />-->
+                    <!--</div>-->
+                <!--</div>-->
                 <div class="layui-form-item">
                     <label class="layui-form-label">备注</label>
                     <div class="layui-input-inline">
@@ -81,6 +93,9 @@
         var form = layui.form;
         form.on('submit(baocun)', function (data) {
            layer.load(0,{shade: [0.4,'#000']});
+        });
+        form.on('select(selectTypeId)', function (data) {
+            $("input[name='type']").val(data.elem.options[data.elem.selectedIndex].text);
         });
     });
     function backList() {

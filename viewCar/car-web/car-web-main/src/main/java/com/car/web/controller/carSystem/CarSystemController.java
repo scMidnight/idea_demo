@@ -5,6 +5,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -88,6 +89,22 @@ public class CarSystemController {
     }
 
     /**
+     * 车系信息修改
+     **/
+    @RequestMapping(value = "/carSystem/info/edit", method = RequestMethod.POST)
+    @ResponseBody
+    public Object edit(@RequestBody TblCarSystemBean bean) {
+        try {
+            bean.setInsertDate(new Date());
+            carSystemHandler.addCarSystemInfo(bean);
+            TblCarSysCache.getInstance().refresh(carSystemHandler.queryAll());
+            return JsonUtil.toString("Y", "操作成功！");
+        } catch (Exception e) {
+            return JsonUtil.toString("N", "失败异常：" + e.getMessage());
+        }
+    }
+
+    /**
      * @Author SunChang
      * @Date 2018/8/28 18:58
      * @param request
@@ -122,6 +139,8 @@ public class CarSystemController {
         }
         return "redirect:/carSystem/info";
     }
+
+
 
     /**
      * @Author SunChang

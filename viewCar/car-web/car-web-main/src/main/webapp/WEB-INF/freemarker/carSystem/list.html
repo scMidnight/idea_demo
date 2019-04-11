@@ -44,11 +44,73 @@
             </fieldset>
             <table class="layui-hide" id="carSystem" lay-filter="carSystem"></table>
             <script type="text/html" id="caozuo">
+                <a class="layui-btn layui-btn-sm layui-btn-xs" lay-event="edit">编辑</a>
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
             </script>
         </div>
     </div>
     <#include "/common/footer.html">
+</div>
+<div class="layui-form" id="editPage" style="margin-top:10px; display: none;" lay-filter="editPage" >
+    <div class="layui-form-item">
+        <label class="layui-form-label">品牌ID</label>
+        <div class="layui-input-inline">
+            <input type="text" name="brandId" placeholder="请输入品牌ID" autocomplete="off" class="layui-input" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">品牌名称</label>
+        <div class="layui-input-inline">
+            <input type="text" name="brandName" placeholder="请输入品牌名称" autocomplete="off" class="layui-input" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">厂商ID</label>
+        <div class="layui-input-inline">
+            <input type="text" name="tradeId" placeholder="厂商ID" autocomplete="off" class="layui-input" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">厂商名称</label>
+        <div class="layui-input-inline">
+            <input type="text" name="tradeName" placeholder="厂商名称" autocomplete="off" class="layui-input" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">车系ID</label>
+        <div class="layui-input-inline">
+            <input type="text" name="carSysId" placeholder="车系ID" autocomplete="off" class="layui-input" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">车系名称</label>
+        <div class="layui-input-inline">
+            <input type="text" name="carSysName" placeholder="车系名称" autocomplete="off" class="layui-input" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">分类选择</label>
+        <div class="layui-input-inline">
+            <select name="typeId" lay-verify="required" lay-filter="selectTypeId">
+                <option value="">请选择分类名称</option>
+                <option value="1" name="国产">国产</option>
+                <option value="2" name="合资">合资</option>
+                <option value="3" name="进口">进口</option>
+            </select>
+            <input type="text" name="type" hidden/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-inline">
+            <input type="text" name="remark" placeholder="备注" autocomplete="off" class="layui-input" />
+        </div>
+    </div>
+    <input type="text" name="id" hidden/>
+    <input type="text" name="isDel" hidden/>
+    <div class="layui-form-item">
+        <button class="layui-btn" lay-submit="" id="update" lay-filter="baocun" style="display: none">保存</button>
+    </div>
 </div>
 <#include "/common/js.html">
 <!-- 自定义 js -->
@@ -58,10 +120,14 @@
 <script>
     var addMsg = "${add_status!''}";
     var selectedVal = "";
+    var loading,index;
     layui.use(['table','form','layer'], function(){
         var table = layui.table;
         var form = layui.form;
         var layer = layui.layer;
+        form.on('select(selectTypeId)', function (data) {
+            $("input[name='type']").val(data.elem.options[data.elem.selectedIndex].text);
+        });
         if(!isNull(addMsg) && addMsg == "success") {
             layer.msg('添加成功', {icon: 6, time: 2000});
         }else if(!isNull(addMsg) && addMsg == "error"){
@@ -109,13 +175,38 @@
                 ,{field: 'type', title: '分类'}
                 ,{field: 'remark', title: '备注'}
                 ,{field: 'insertDate', title: '插入时间', width:130, sort: true, align:'center', templet:'#insertDate'}
-                ,{fixed: 'right', title:'操作', toolbar: '#caozuo', width:70}
+                ,{fixed: 'right', title:'操作', toolbar: '#caozuo', width:120, align:'center'}
             ]]
             //,skin: 'line' //表格风格
             ,even: true //隔行换色
             ,page: true //是否显示分页
             //,limits: [5, 7, 10]
             //,limit: 5 //每页默认显示的数量
+        });
+        form.on('submit(baocun)', function (data) {
+            index = layer.load(0,{shade: [0.4,'#000']});
+            var fields = data.field; //当前容器的全部表单字段，名值对形式：{name: value}
+            console.log(JSON.stringify(fields));
+            $.ajax({
+                url:"${base}/carSystem/info/edit",
+                type:'post',
+                dataType:'json',
+                data:JSON.stringify(fields),
+                contentType: "application/json; charset=utf-8",
+                success:function (result) {
+                    layer.close(index);
+                    if(result.status=="Y"){
+                        layer.msg('修改成功！', {
+                            icon: 1,
+                            time: 1000 //1秒关闭（如果不配置，默认是3秒）
+                        });
+                        tableIns.reload();
+                    }else{
+                        layer.alert(result.msg);
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
         table.on('tool(carSystem)', function(obj) {
             var $data = obj.data;
@@ -139,6 +230,36 @@
                             }
                         }
                     });
+                });
+            }
+            if(obj.event == 'edit') {
+                loading = layer.open({
+                    type: 1,
+                    title: '编辑',
+                    btn: ['保存', '取消'],
+                    closeBtn: 0,
+                    skin: 'layui-layer-molv',
+                    btnAlign: 'c',
+                    content: $("#editPage"),
+                    area: ['auto', '600px'],
+                    success: function(loading, layero) {
+                        form.val('editPage', {
+                            "brandId": $data.brandId,
+                            "brandName": $data.brandName,
+                            "tradeId": $data.tradeId,
+                            "tradeName": $data.tradeName,
+                            "carSysId": $data.carSysId,
+                            "carSysName": $data.carSysName,
+                            "typeId": $data.typeId,
+                            "type": $data.type,
+                            "id": $data.id,
+                            "isDel": $data.isDel
+                        });
+                    },
+                    yes: function (loading, layero) {
+                        $("#update").click();
+                        layer.close(loading);
+                    }
                 });
             }
         });

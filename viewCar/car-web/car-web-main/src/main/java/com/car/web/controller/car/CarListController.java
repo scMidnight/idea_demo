@@ -271,11 +271,13 @@ public class CarListController {
                 }
                 fileDetailHandler.batchSaveFileDetailBeansAndUpdateFileStatus(fileDetailBeans);
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
-                    if(CarUtil.check4(fileDetailBean, fileDetailHandler)) {
-                        fileDetailBean.setIsLian("1");
-                    }
-                    if(CarUtil.check6(fileDetailBean, fileDetailHandler)) {
-                        fileDetailBean.setIsChong("1");
+                    if(!fileDetailBean.getStatus().equals("4") && !fileDetailBean.getStatus().equals("6")) {
+                        if (CarUtil.check4(fileDetailBean, fileDetailHandler)) {
+                            fileDetailBean.setIsLian("1");
+                        }
+                        if (CarUtil.check6(fileDetailBean, fileDetailHandler)) {
+                            fileDetailBean.setIsChong("1");
+                        }
                     }
                 }
                 fileDetailHandler.updateFileDetailBeansAndUpdateFileStatus(fileDetailBeans);

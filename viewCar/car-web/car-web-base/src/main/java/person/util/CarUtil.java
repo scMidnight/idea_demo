@@ -127,7 +127,7 @@ public class CarUtil {
     public static TblCarSystemBean getCarSysId(List<TblCarSystemBean> carSystemBeans, String carSysName) {
         TblCarSystemBean bean = null;
         for (TblCarSystemBean carSystemBean : carSystemBeans) {
-            if(carSystemBean.getCarSysName().equals(carSysName)) {
+            if(carSystemBean.getCarSysName().trim().equals(carSysName)) {
                 bean = carSystemBean;
                 break;
             }
@@ -380,7 +380,7 @@ public class CarUtil {
         int i = 1;
         String phoneTemp = "";
         TblFileDetailBean temp = null;
-        if(null != maps && maps.size() > 1) {
+        if(null != maps && maps.size() > 0) {
             for (Map<String, Object> map : maps) {
                 String p = map.get("phone").toString();
                 if(!map.get("id").toString().equals(id)) {
