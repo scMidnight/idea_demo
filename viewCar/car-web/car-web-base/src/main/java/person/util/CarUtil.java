@@ -251,7 +251,7 @@ public class CarUtil {
      */
     public static boolean check6(TblFileDetailBean bean, FileDetailHandler fileDetailHandler) {
         String phone = bean.getPhone();
-        String phone6 = phone.substring(0, 6);
+        String phone6 = phone.substring(0, 7);
         LinkedList<TblFileDetailBean> list = getPhoneChong(bean, fileDetailHandler);
         if(null != list && list.size() >= 3) {
             return true;
@@ -303,7 +303,7 @@ public class CarUtil {
         LinkedList<TblFileDetailBean> list = new LinkedList<>();
         list.add(bean);
         String phone = bean.getPhone();
-        String phone6 = phone.substring(0, 6);
+        String phone6 = phone.substring(0, 7);
         String carSysId = bean.getCarSys();
         Map<String, TblCarSystemBean> carMapBean = CacheManager.getInstance().getCarMapBean();
         TblCarSystemBean carSystemBean = carMapBean.get(carSysId);
@@ -422,9 +422,6 @@ public class CarUtil {
 
     public static void main(String[] args) {
         String phone = "15502119051";
-        String phone1 = "15602119052";
-        BigInteger b = new BigInteger(phone);
-        BigInteger c = new BigInteger(phone1);
-        System.out.println(c.subtract(b) == new BigInteger(""+100000001));
+        System.out.println(phone.substring(0,7));
     }
 }
