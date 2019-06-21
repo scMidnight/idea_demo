@@ -140,6 +140,18 @@ public class CarListController {
         String hql = "SELECT t FROM TblFile t WHERE 1 = 1";
         Map<String,Object> valueMap = new HashMap<String, Object>();
         String where = "";
+        String dateStr = request.getParameter("dateStr");//获取时间
+        if(StringUtil.isNotBlank(dateStr)) {
+            String[] dates = dateStr.split(" ~ ");
+            where += " AND date_format(t.uploadDate, '%Y-%m-%d') BETWEEN :begin and :end";
+            valueMap.put("begin", dates[0]);
+            valueMap.put("end", dates[1]);
+        }
+        String packageName = request.getParameter("packageName");//包名关键字
+        if(StringUtil.isNotBlank(packageName)) {
+            where += " AND t.fileNameBak like :packageName";
+            valueMap.put("packageName", "%" + packageName + "%");
+        }
         page.setPageNo(Integer.parseInt(pageNo));
         page.setPageSize(Integer.parseInt(limit));
         Page<TblFileBean> pageResult = fileHandler.queryByPageFilter(page,hql + where + " order by t.uploadDate desc", valueMap);

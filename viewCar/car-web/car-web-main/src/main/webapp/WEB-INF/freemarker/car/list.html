@@ -22,7 +22,8 @@
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <button type="button" class="layui-btn layui-btn-normal" id="checkAgain" data-type="checkAgain">重新检查时间范围内数据包</button>
+                            <button type="button" class="layui-btn layui-btn-normal" id="find" data-type="find">搜索</button>
+                            <button type="button" class="layui-btn layui-btn-normal" id="checkAgain" data-type="checkAgain">重新检查</button>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">厂商开关</label>
@@ -41,6 +42,14 @@
                             <div class="layui-input-block">
                                 <input type="checkbox" name="isPhone" lay-skin="switch" lay-filter="switchFilter" lay-text="开启|关闭">
                             </div>
+                        </div>
+                        <div class="layui-inline">
+                            <div class="layui-input-block">
+                                <input type="text" name="packageName" class="layui-input" placeholder="请输入包名关键字">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="button" class="layui-btn layui-btn-normal" id="packageFind" >搜索</button>
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -395,6 +404,32 @@
                 t = setTimeout(function () { getExportPackageRes(index); }, 1000);
             }
         }
+        $("#find").on("click", function () {
+            var dateStr = $("input[name='dateStr']").val();
+            if(isNull(dateStr)) {
+                layer.msg("请选择时间范围！");
+                return;
+            }
+            tableIns.reload({
+                page:{
+                    curr:1
+                },
+                where:{
+                    dateStr : dateStr
+                }
+            });
+        })
+        $("#packageFind").on("click", function () {
+            var packageName = $("input[name='packageName']").val();
+            tableIns.reload({
+                page:{
+                    curr:1
+                },
+                where:{
+                    packageName : packageName
+                }
+            });
+        })
         $("#checkAgain").on("click", function () {
             var dateStr = $("input[name='dateStr']").val();
             if(isNull(dateStr)) {
