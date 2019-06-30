@@ -3,6 +3,7 @@ package person.service.impl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import person.db.bean.CarFindBean;
 import person.db.bean.TblFileBean;
 import person.db.entity.TblFile;
 import person.service.FileService;
@@ -19,7 +20,7 @@ public class FileServiceImpl extends CommonServiceImpl implements FileService {
         TblFile file = new TblFile();
         BeanUtils.copyProperties(fileBean, file);
         file.setUploadDate(new Date());//新增时间
-        super.save(file);
+        super.saveOrUpdate(file);
     }
 
     @Override
@@ -60,5 +61,34 @@ public class FileServiceImpl extends CommonServiceImpl implements FileService {
             }
         }
         return fileBeans;
+    }
+
+    @Override
+    public List<CarFindBean> queryByhqlFind(String hql, Object... param) {
+        List<Object> objs = super.findHql(hql, param);
+        List<CarFindBean> carFindBeans = new ArrayList<>();
+        for (Object obj : objs) {
+            Object[] os = (Object[]) obj;
+            CarFindBean bean = new CarFindBean();
+            bean.setUploadDate((Date) os[0]);
+            bean.setTaskId((String) os[1]);
+            bean.setName((String) os[2]);
+            bean.setPhone((String) os[3]);
+            bean.setProvName((String) os[4]);
+            bean.setCityName((String) os[5]);
+            bean.setCarSys((String) os[6]);
+            bean.setBrand((String) os[7]);
+            bean.setTrade((String) os[8]);
+            bean.setFileNameBak((String) os[9]);
+            bean.setFileName((String) os[10]);
+            bean.setSourceTag((String) os[11]);
+            bean.setBigLibRepeatCount((String) os[12]);
+            bean.setBrandCount((String) os[13]);
+            bean.setTradeCount((String) os[14]);
+            bean.setCarSysRepeatCount((String) os[15]);
+            bean.setId((String) os[16]);
+            carFindBeans.add(bean);
+        }
+        return carFindBeans;
     }
 }

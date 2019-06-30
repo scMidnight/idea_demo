@@ -10,10 +10,41 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2019-06-20 14:36:20
+Date: 2019-06-22 23:10:05
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for sources
+-- ----------------------------
+DROP TABLE IF EXISTS `sources`;
+CREATE TABLE `sources` (
+  `ID` varchar(32) NOT NULL,
+  `SOURCE_TAG` varchar(255) DEFAULT NULL COMMENT '来源标签名称',
+  `INSERT_DATE` datetime DEFAULT NULL COMMENT '插入时间',
+  `IS_DEL` varchar(255) DEFAULT NULL COMMENT '是否删除0否1是',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sources
+-- ----------------------------
+INSERT INTO `sources` VALUES ('384636FE01F25030954D8E8F011B03CB', 'test5', '2019-06-21 14:44:25', '0');
+INSERT INTO `sources` VALUES ('3BA97BD8141733EA024508E71607EC3A', 'test10', '2019-06-21 14:59:07', '0');
+INSERT INTO `sources` VALUES ('442896AA3BDD95B917174CD1C76328E2', 'test8', '2019-06-21 14:53:31', '0');
+INSERT INTO `sources` VALUES ('5C1996621C444547707EABA860A9AECD', 'test3', '2019-06-21 14:41:13', '0');
+INSERT INTO `sources` VALUES ('713D66C70D77CE273C9AC18ACF86920F', 'test1', '2019-06-21 14:38:13', '0');
+INSERT INTO `sources` VALUES ('7C3B4B7AEA83AF7B8E40D7D0855E8368', 'test6', '2019-06-21 14:46:42', '0');
+INSERT INTO `sources` VALUES ('855BFAB74952B43F0EC51F12B42281CB', 'test12', '2019-06-21 15:45:14', '0');
+INSERT INTO `sources` VALUES ('86865F301C1AA9E031E33C31A6D49972', null, '2019-06-21 15:16:37', '1');
+INSERT INTO `sources` VALUES ('92369DC4C175E410A447D17B5F53DEE5', 'test4', '2019-06-21 14:43:40', '0');
+INSERT INTO `sources` VALUES ('9244AE5535FE1E1A81537975FBA592CA', 'test9', '2019-06-21 14:58:35', '0');
+INSERT INTO `sources` VALUES ('9C9EFF867709B086DDC802FE7E3AC1E4', 'test2', '2019-06-21 14:39:32', '0');
+INSERT INTO `sources` VALUES ('C806B8F93DB786FAA2708C8CE5699DC2', 'test11', '2019-06-21 15:01:45', '0');
+INSERT INTO `sources` VALUES ('D92FCF09D6C7E0A732F93E9899603FCF', '13test13', '2019-06-21 15:46:15', '0');
+INSERT INTO `sources` VALUES ('DFD265132464858192A2B2C45D363552', null, '2019-06-21 15:25:51', '1');
+INSERT INTO `sources` VALUES ('E8129108962FF615BA5FADC4D169799B', 'test7', '2019-06-21 14:52:26', '0');
 
 -- ----------------------------
 -- Table structure for tbl_ad_pro_manage
@@ -648,6 +679,7 @@ INSERT INTO `tbl_car_system` VALUES ('114', 'smart', '45', 'smart', '187', 'smar
 INSERT INTO `tbl_car_system` VALUES ('1140', '丰田', '3', '丰田(进口)', '63', 'ME.WE', '3133', '0', '2019-04-10 21:37:33', '进口', '3', '');
 INSERT INTO `tbl_car_system` VALUES ('1141', '丰田', '3', '丰田(进口)', '63', '世纪', '3168', '0', '2019-04-10 21:37:33', '进口', '3', '');
 INSERT INTO `tbl_car_system` VALUES ('1142', '丰田', '3', '丰田(进口)', '63', '丰田FCV', '3239', '0', '2019-04-10 21:37:33', '进口', '3', '');
+INSERT INTO `tbl_car_system` VALUES ('1142E8E1F5C77F334DC58312E2A00A08', null, null, null, null, null, null, '0', '2019-06-21 14:43:40', null, null, null);
 INSERT INTO `tbl_car_system` VALUES ('1143', '丰田', '3', '丰田(进口)', '63', 'Premi Aqua', '3249', '0', '2019-04-10 21:37:33', '进口', '3', '');
 INSERT INTO `tbl_car_system` VALUES ('1144', '丰田', '3', '丰田(进口)', '63', 'AQUA', '3258', '0', '2019-04-10 21:37:33', '进口', '3', '');
 INSERT INTO `tbl_car_system` VALUES ('1145', '丰田', '3', '丰田(进口)', '63', 'JPN Taxi', '3262', '0', '2019-04-10 21:37:33', '进口', '3', '');
@@ -1598,6 +1630,7 @@ INSERT INTO `tbl_car_system` VALUES ('1996', '林肯', '51', '林肯', '56', 'Mo
 INSERT INTO `tbl_car_system` VALUES ('1997', '林肯', '51', '林肯', '56', '航海家', '4635', '0', '2019-04-10 21:37:34', '进口', '3', '');
 INSERT INTO `tbl_car_system` VALUES ('1998', '林肯', '51', '林肯', '56', '飞行家', '4749', '0', '2019-04-10 21:37:34', '进口', '3', '');
 INSERT INTO `tbl_car_system` VALUES ('1999', '林肯', '51', '林肯', '56', '飞行家新能源', '5045', '0', '2019-04-10 21:37:34', '进口', '3', '');
+INSERT INTO `tbl_car_system` VALUES ('1AD068D388913833EB53551729369807', null, null, null, null, null, null, '0', '2019-06-21 14:41:13', null, null, null);
 INSERT INTO `tbl_car_system` VALUES ('2', 'AC Schnitzer', '117', 'AC Schnitzer', '305', 'AC Schnitzer X5', '2097', '0', '2019-04-10 21:37:32', '进口', '3', '宝马改装车');
 INSERT INTO `tbl_car_system` VALUES ('20', 'ALPINA', '276', 'ALPINA', '460', 'ALPINA D5', '4534', '0', '2019-04-10 21:37:32', '进口', '3', '宝马改装车');
 INSERT INTO `tbl_car_system` VALUES ('200', '奥迪', '33', '奥迪(进口)', '79', '奥迪A9', '3313', '0', '2019-04-10 21:37:33', '进口', '3', '');
@@ -3657,6 +3690,7 @@ INSERT INTO `tbl_car_system` VALUES ('866', '大众', '1', '上汽大众', '58',
 INSERT INTO `tbl_car_system` VALUES ('867', '大众', '1', '上汽大众', '58', '桑塔纳志俊', '207', '0', '2019-04-10 21:37:33', '合资', '2', '');
 INSERT INTO `tbl_car_system` VALUES ('868', '大众', '1', '上汽大众', '58', '桑塔纳', '2922', '0', '2019-04-10 21:37:33', '合资', '2', '');
 INSERT INTO `tbl_car_system` VALUES ('869', '大众', '1', '上汽大众', '58', '朗行', '3103', '0', '2019-04-10 21:37:33', '合资', '2', '');
+INSERT INTO `tbl_car_system` VALUES ('86B69B1D6D286D65DFDD1F37DFA2F38D', null, null, null, null, null, null, '0', '2019-06-21 14:38:00', null, null, null);
 INSERT INTO `tbl_car_system` VALUES ('87', 'MINI', '56', 'MINI', '143', 'MINI VAN', '3042', '0', '2019-04-10 21:37:32', '进口', '3', '');
 INSERT INTO `tbl_car_system` VALUES ('870', '大众', '1', '上汽大众', '58', '朗境', '3197', '0', '2019-04-10 21:37:33', '合资', '2', '');
 INSERT INTO `tbl_car_system` VALUES ('871', '大众', '1', '上汽大众', '58', '途安', '333', '0', '2019-04-10 21:37:33', '合资', '2', '');
@@ -3803,6 +3837,7 @@ INSERT INTO `tbl_car_system` VALUES ('997', '东风小康', '142', '东风小康
 INSERT INTO `tbl_car_system` VALUES ('998', '东风小康', '142', '东风小康', '327', '东风小康V29', '2744', '0', '2019-04-10 21:37:33', '国产', '1', '');
 INSERT INTO `tbl_car_system` VALUES ('999', '东风小康', '142', '东风小康', '327', '东风小康C37', '2865', '0', '2019-04-10 21:37:33', '国产', '1', '');
 INSERT INTO `tbl_car_system` VALUES ('A2E3AB62F610AAF4D761454C9BA5C17A', '123', '123', '123', '123', '123', '123', '0', '2019-04-10 21:41:12', '123', '123', '');
+INSERT INTO `tbl_car_system` VALUES ('ACAB17B22AFF35D7F24D73EDC42CCB9C', null, null, null, null, null, null, '0', '2019-06-21 14:39:32', null, null, null);
 INSERT INTO `tbl_car_system` VALUES ('B988EE7E8B90549429BC54C40EC8EE7F', '3333a', '3333a', '3333a', '3333', '3333a', '3333', '0', '2019-04-11 21:28:03', '进口', '3', '');
 INSERT INTO `tbl_car_system` VALUES ('E39B0F3D84F3E4157A9A407F219158DA', '4', '4', '4', '4', '4', '4', '0', '2019-04-11 21:28:10', '国产', '1', '');
 INSERT INTO `tbl_car_system` VALUES ('F4212EF6FBEB52969A6C7270D56F7EC4', '威马汽车', '291', '威马汽车', '475', ' 威马EX5', '4652', '1', '2019-04-11 19:14:44', '国产', '1', '');
@@ -3831,22 +3866,23 @@ CREATE TABLE `tbl_file` (
   `brand_count` varchar(255) DEFAULT '0' COMMENT '品牌重复次数',
   `housi_count` varchar(255) DEFAULT '0' COMMENT '后四连号',
   `qianliu_count` varchar(255) DEFAULT '0' COMMENT '前六重复',
+  `SOURCE_TAG` varchar(255) DEFAULT NULL COMMENT '来源标签',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Records of tbl_file
 -- ----------------------------
-INSERT INTO `tbl_file` VALUES ('45376FF0D5D8FCC0265D792B7E3494E7', '2213220190414160647727', '0114(1).zip', 'D:/car/uploader/bak/2213220190414160647727', '2019-04-14 16:06:48', '1', '1', '219', '1', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0');
-INSERT INTO `tbl_file` VALUES ('5EF1B02E59E8A4511B725AB8B75B8892', '3553620190324004436541', '0312-bmw2.zip', 'D:/car/uploader/bak/3553620190324004436541', '2019-03-24 00:44:37', '1', '2', '1135', '0', '0', '0', '0', '0', '0', '0', '0', '1', '0', '2');
-INSERT INTO `tbl_file` VALUES ('634112EB7389A042C28B0A9D5E4A80B9', '3176220190411190819678', 'TG.zip', 'D:/car/uploader/bak/3176220190411190819678', '2019-04-11 19:08:20', '1', '1', '159', '5', '0', '0', '0', '0', '0', '5', '0', '0', '0', '0');
-INSERT INTO `tbl_file` VALUES ('6521267F238DD45C91B3F0AA3603B375', '4068920190414164834105', '异常.zip', 'D:/car/uploader/bak/4068920190414164834105', '2019-04-14 16:48:34', '1', '1', '40', '160', '160', '0', '0', '0', '0', '0', '0', '0', '0', '40');
-INSERT INTO `tbl_file` VALUES ('7496E0C582CC446FF19AA50C45B02A2C', '5561520190411184429597', '0403.zip', 'D:/car/uploader/bak/5561520190411184429597', '2019-04-11 18:44:30', '1', '1', '33', '29', '0', '0', '0', '0', '0', '29', '0', '0', '3', '4');
-INSERT INTO `tbl_file` VALUES ('95417E96334C2D3559BA760945373760', '8173920190414163318474', '0414.zip', 'D:/car/uploader/bak/8173920190414163318474', '2019-04-14 16:33:18', '1', '3', '457', '353', '351', '0', '0', '2', '0', '0', '0', '0', '0', '285');
-INSERT INTO `tbl_file` VALUES ('E6E092C95C373173492F815EF7EF6E58', '8092020190414164435583', '0114(1).zip', 'D:/car/uploader/bak/8092020190414164435583', '2019-04-14 16:44:36', '1', '1', '219', '438', '436', '0', '0', '2', '0', '0', '0', '0', '0', '0');
-INSERT INTO `tbl_file` VALUES ('EC305B9501F5897055B1CDFE8E62D6DF', '6618920190411191652772', 'TG0411.zip', 'D:/car/uploader/bak/6618920190411191652772', '2019-04-11 19:16:53', '1', '1', '5', '5', '5', '0', '0', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `tbl_file` VALUES ('F64E40A107DCC81B2B30E0DAD638C1DB', '3404120190414160712732', '0414(2).zip', 'D:/car/uploader/bak/3404120190414160712732', '2019-04-14 16:07:13', '1', '1', '133', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `tbl_file` VALUES ('F72C1DA19EF0AF68E2BA76479B375626', '6235620190414161636014', '异常.zip', 'D:/car/uploader/bak/6235620190414161636014', '2019-04-14 16:16:36', '1', '1', '23', '23', '23', '0', '0', '0', '0', '0', '0', '0', '0', '23');
+INSERT INTO `tbl_file` VALUES ('45376FF0D5D8FCC0265D792B7E3494E7', '2213220190414160647727', '0114(1).zip', 'D:/car/uploader/bak/2213220190414160647727', '2019-04-14 16:06:48', '1', '1', '219', '1', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', null);
+INSERT INTO `tbl_file` VALUES ('5EF1B02E59E8A4511B725AB8B75B8892', '3553620190324004436541', '0312-bmw2.zip', 'D:/car/uploader/bak/3553620190324004436541', '2019-03-24 00:44:37', '1', '2', '1135', '0', '0', '0', '0', '0', '0', '0', '0', '1', '0', '2', null);
+INSERT INTO `tbl_file` VALUES ('634112EB7389A042C28B0A9D5E4A80B9', '3176220190411190819678', 'TG.zip', 'D:/car/uploader/bak/3176220190411190819678', '2019-04-11 19:08:20', '1', '1', '159', '5', '0', '0', '0', '0', '0', '5', '0', '0', '0', '0', null);
+INSERT INTO `tbl_file` VALUES ('6521267F238DD45C91B3F0AA3603B375', '4068920190414164834105', '异常.zip', 'D:/car/uploader/bak/4068920190414164834105', '2019-06-21 17:43:37', '1', '1', '40', '160', '160', '0', '0', '0', '0', '0', '0', '0', '0', '40', '13test13');
+INSERT INTO `tbl_file` VALUES ('7496E0C582CC446FF19AA50C45B02A2C', '5561520190411184429597', '0403.zip', 'D:/car/uploader/bak/5561520190411184429597', '2019-04-11 18:44:30', '1', '1', '33', '29', '0', '0', '0', '0', '0', '29', '0', '0', '3', '4', null);
+INSERT INTO `tbl_file` VALUES ('95417E96334C2D3559BA760945373760', '8173920190414163318474', '0414.zip', 'D:/car/uploader/bak/8173920190414163318474', '2019-04-14 16:33:18', '1', '3', '457', '353', '351', '0', '0', '2', '0', '0', '0', '0', '0', '285', null);
+INSERT INTO `tbl_file` VALUES ('E6E092C95C373173492F815EF7EF6E58', '8092020190414164435583', '0114(1).zip', 'D:/car/uploader/bak/8092020190414164435583', '2019-06-21 17:44:30', '1', '1', '219', '438', '436', '0', '0', '2', '0', '0', '0', '0', '0', '0', 'test12');
+INSERT INTO `tbl_file` VALUES ('EC305B9501F5897055B1CDFE8E62D6DF', '6618920190411191652772', 'TG0411.zip', 'D:/car/uploader/bak/6618920190411191652772', '2019-04-11 19:16:53', '1', '1', '5', '5', '5', '0', '0', '0', '0', '0', '0', '0', '0', '0', null);
+INSERT INTO `tbl_file` VALUES ('F64E40A107DCC81B2B30E0DAD638C1DB', '3404120190414160712732', '0414(2).zip', 'D:/car/uploader/bak/3404120190414160712732', '2019-04-14 16:07:13', '1', '1', '133', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', null);
+INSERT INTO `tbl_file` VALUES ('F72C1DA19EF0AF68E2BA76479B375626', '6235620190414161636014', '异常.zip', 'D:/car/uploader/bak/6235620190414161636014', '2019-04-14 16:16:36', '1', '1', '23', '23', '23', '0', '0', '0', '0', '0', '0', '0', '0', '23', null);
 
 -- ----------------------------
 -- Table structure for tbl_file_detail
@@ -6685,6 +6721,7 @@ CREATE TABLE `tbl_function` (
 INSERT INTO `tbl_function` VALUES ('F001', '数据管理', '数据管理', '1', '#', '4');
 INSERT INTO `tbl_function` VALUES ('F001001', '上传数据', '上传数据', '2', '/car/uploader', '4');
 INSERT INTO `tbl_function` VALUES ('F001002', '数据列表', '数据列表', '2', '/car/list', '4');
+INSERT INTO `tbl_function` VALUES ('F001003', '数据查询', '数据查询', '2', '/car/find', '4');
 INSERT INTO `tbl_function` VALUES ('F002', '数据统计', '数据统计', '1', '#', '4');
 INSERT INTO `tbl_function` VALUES ('F002001', '数据统计', '数据统计', '2', '/car/dataStatistics', '4');
 INSERT INTO `tbl_function` VALUES ('F003', '检测预警', '检测预警', '1', '/car/warning', '4');
@@ -6821,6 +6858,7 @@ INSERT INTO `tbl_rolefunction` VALUES ('1', 'F014');
 INSERT INTO `tbl_rolefunction` VALUES ('1', 'F015');
 INSERT INTO `tbl_rolefunction` VALUES ('1', 'F008');
 INSERT INTO `tbl_rolefunction` VALUES ('1', 'F016');
+INSERT INTO `tbl_rolefunction` VALUES ('1', 'F001003');
 
 -- ----------------------------
 -- Table structure for tbl_show

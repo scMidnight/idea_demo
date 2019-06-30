@@ -1,0 +1,132 @@
+<#include "/common/head.html">
+<#include "/common/bodyStart.html">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-body">
+        <div style="padding: 15px;">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>
+                    来源标签列表&emsp;
+                    <button class="layui-btn layui-btn-normal" onclick="carSystemAdd()"><i class="layui-icon layui-icon-add-1"></i>新建来源标签</button>
+                </legend>
+            </fieldset>
+            <table class="layui-hide" id="sourcesList" lay-filter="sourcesList"></table>
+            <script type="text/html" id="caozuo">
+                <a class="layui-btn layui-btn-sm layui-btn-xs" lay-event="edit">编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+            </script>
+        </div>
+    </div>
+</div>
+<#include "/common/js.html">
+<!-- 自定义 js -->
+<script type="text/html" id="insertDate">
+    {{util.toDateString(d.insertDate,'yyyy-MM-dd')}}
+</script>
+<script>
+    $().ready(function () {
+        $("div .layui-body").css("position","inherit");
+    });
+    var loading,index;
+    layui.use(['table','form','layer'], function(){
+        var table = layui.table;
+        var form = layui.form;
+        var layer = layui.layer;
+        //展示已知数据
+        var tableIns = table.render({
+            id: 'sourcesDatas'
+            ,elem: '#sourcesList'
+            ,url:'${base}/car/sources/list'
+            ,method:'post'
+            ,cols: [[ //标题栏
+                {field: 'sourceTag', title: '来源标签', align:'center'}
+                ,{field: 'insertDate', title: '插入时间', align:'center', templet:'#insertDate'}
+                ,{fixed: 'right', title:'操作', toolbar: '#caozuo', width:120, align:'center'}
+            ]]
+            //,skin: 'line' //表格风格
+            ,even: true //隔行换色
+            ,page: true //是否显示分页
+            //,limits: [5, 7, 10]
+            //,limit: 5 //每页默认显示的数量
+        });
+        form.on('submit(baocun)', function (data) {
+            index = layer.load(0,{shade: [0.4,'#000']});
+            var fields = data.field; //当前容器的全部表单字段，名值对形式：{name: value}
+            console.log(JSON.stringify(fields));
+            $.ajax({
+                url:"${base}/carSystem/info/edit",
+                type:'post',
+                dataType:'json',
+                data:JSON.stringify(fields),
+                contentType: "application/json; charset=utf-8",
+                success:function (result) {
+                    layer.close(index);
+                    if(result.status=="Y"){
+                        layer.msg('修改成功！', {
+                            icon: 1,
+                            time: 1000 //1秒关闭（如果不配置，默认是3秒）
+                        });
+                        tableIns.reload();
+                    }else{
+                        layer.alert(result.msg);
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        table.on('tool(sourcesList)', function(obj) {
+            var $data = obj.data;
+            if(obj.event == 'del') {
+                layer.confirm('您确定要删除此条数据吗？', {icon: 3}, function(index){
+                    $.ajax({
+                        url:"${base}/car/sources/del",
+                        data:{id:$data.id},
+                        dataType:"json",
+                        type:"post",
+                        success:function (result) {
+                            obj.del();
+                            layer.close(index);
+                            if(result.status=="Y"){
+                                layer.msg('删除成功！', {
+                                    icon: 1,
+                                    time: 1000 //1秒关闭（如果不配置，默认是3秒）
+                                });
+                            }else{
+                                layer.alert(result.msg);
+                            }
+                        }
+                    });
+                });
+            }
+            if(obj.event == 'edit') {
+                loading = layer.open({
+                    type: 2,
+                    title: '编辑来源标签',
+                    closeBtn: 0,
+                    area: ['400px', '250px'],
+                    content: "${base}/car/sources/add?type=edit&id=" + $data.id
+                });
+            }
+        });
+    });
+    function carSystemAdd() {
+        layer.open({
+            title: '来源标签添加'
+            ,type: 2
+            ,closeBtn: 0
+            ,area: ['400px', '250px']
+            ,content: "${base}/car/sources/add?type=add"
+        });
+    }
+
+    function iframeMsg(flag,str) {
+        if(flag == "Y") {
+            layer.msg(str, {
+                icon: 1,
+                time: 1000 //1秒关闭（如果不配置，默认是3秒）
+            });
+        }else {
+            layer.msg(str, {icon: 5});
+        }
+    }
+</script>
+<#include "/common/bodyEnd.html">

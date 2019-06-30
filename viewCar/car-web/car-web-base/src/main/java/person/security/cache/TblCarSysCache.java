@@ -15,6 +15,10 @@ public class TblCarSysCache {
     private static Map<String, TblCarSystemBean> cacheMapBean = new HashMap<String, TblCarSystemBean>();
     private static List<TblCarSystemBean> cacheList = new ArrayList<TblCarSystemBean>();
     private static Map<String, TblCarSystemBean> cacheMapBeanName = new HashMap<String, TblCarSystemBean>();
+    private static Map<String, TblCarSystemBean> cacheMapBeanNameBrandId = new HashMap<String, TblCarSystemBean>();
+    private static Map<String, TblCarSystemBean> cacheMapBeanNameBrandName = new HashMap<String, TblCarSystemBean>();
+    private static Map<String, TblCarSystemBean> cacheMapBeanNameTradeId = new HashMap<String, TblCarSystemBean>();
+    private static Map<String, TblCarSystemBean> cacheMapBeanNameTradeName = new HashMap<String, TblCarSystemBean>();
     private static TblCarSysCache cache = null;
 
     public static TblCarSysCache getInstance() {
@@ -33,6 +37,10 @@ public class TblCarSysCache {
                 cacheMap.put(carSystemBean.getCarSysId(), carSystemBean.getCarSysName());
                 cacheMapBean.put(carSystemBean.getCarSysId(), carSystemBean);
                 cacheMapBeanName.put(carSystemBean.getCarSysName(), carSystemBean);
+                cacheMapBeanNameBrandId.put(carSystemBean.getBrandId(), carSystemBean);
+                cacheMapBeanNameBrandName.put(carSystemBean.getBrandName(), carSystemBean);
+                cacheMapBeanNameTradeId.put(carSystemBean.getTradeId(), carSystemBean);
+                cacheMapBeanNameTradeName.put(carSystemBean.getTradeName(), carSystemBean);
                 cacheList.add(carSystemBean);
             }
         }
@@ -44,6 +52,12 @@ public class TblCarSysCache {
     public void clear(){
         cacheList.clear();
         cacheMap.clear();
+        cacheMapBean.clear();
+        cacheMapBeanName.clear();
+        cacheMapBeanNameBrandId.clear();
+        cacheMapBeanNameBrandName.clear();
+        cacheMapBeanNameTradeId.clear();
+        cacheMapBeanNameTradeName.clear();
     }
 
     /**
@@ -72,5 +86,17 @@ public class TblCarSysCache {
     }
     public Map<String, TblCarSystemBean> getMapBeanName() {
         return cacheMapBeanName;
+    }
+    public Map<String, TblCarSystemBean> getMapBeanNameBrandId() {
+        return cacheMapBeanNameBrandId;
+    }
+    public Map<String, TblCarSystemBean> getMapBeanNameBrandName() {
+        return cacheMapBeanNameBrandName;
+    }
+    public Map<String, TblCarSystemBean> getMapBeanNameTradeId() {
+        return cacheMapBeanNameTradeId;
+    }
+    public Map<String, TblCarSystemBean> getMapBeanNameTradeName() {
+        return cacheMapBeanNameTradeName;
     }
 }

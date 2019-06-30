@@ -1,5 +1,6 @@
 package person.service;
 
+import person.db.bean.CarFindBean;
 import person.db.bean.TblFileBean;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface FileService extends CommonService {
     void deleteFile(String id);
 
     List<TblFileBean> queryByHql(String hql, Object... param);
+
+    List<CarFindBean> queryByhqlFind(String hql, Object... param);
 }

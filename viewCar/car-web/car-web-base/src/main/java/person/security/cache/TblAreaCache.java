@@ -1,7 +1,6 @@
 package person.security.cache;
 
 import person.db.bean.TblAreaBean;
-import person.db.bean.TblFunctionBean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +12,8 @@ import java.util.Map;
  */
 public class TblAreaCache {
     private static Map<String, String> cacheMap = new HashMap<String, String>();
+    private static Map<String, List<TblAreaBean>> cacheMapProv = new HashMap<String, List<TblAreaBean>>();
+    private static Map<String, TblAreaBean> cacheMapCityName = new HashMap<String, TblAreaBean>();
     private static List<TblAreaBean> cacheList = new ArrayList<TblAreaBean>();
     private static TblAreaCache cache = null;
 
@@ -29,9 +30,23 @@ public class TblAreaCache {
 
     public void init(List<TblAreaBean> list) {
         if(null != list && !list.isEmpty()) {
+            List<String> provList = new ArrayList<>();
             for (TblAreaBean areaBean : list) {
                 cacheMap.put(areaBean.getAreaCode(), areaBean.getCityName());
                 cacheList.add(areaBean);
+                cacheMapCityName.put(areaBean.getCityName(), areaBean);
+                if(!provList.contains(areaBean.getProvName())) {
+                    provList.add(areaBean.getProvName());
+                }
+            }
+            for (String s : provList) {
+                List<TblAreaBean> list1 = new ArrayList<>();
+                for (TblAreaBean tblAreaBean : list) {
+                    if(tblAreaBean.getProvName().equals(s)) {
+                        list1.add(tblAreaBean);
+                    }
+                }
+                cacheMapProv.put(s, list1);
             }
         }
     }
@@ -41,6 +56,8 @@ public class TblAreaCache {
     public void clear(){
         cacheList.clear();
         cacheMap.clear();
+        cacheMapProv.clear();
+        cacheMapCityName.clear();
     }
 
     /**
@@ -62,5 +79,12 @@ public class TblAreaCache {
 
     public Map<String, String> getMapAll() {
         return cacheMap;
+    }
+
+    public Map<String, List<TblAreaBean>> getMapProv() {
+        return cacheMapProv;
+    }
+    public Map<String, TblAreaBean> getMapCityName() {
+        return cacheMapCityName;
     }
 }

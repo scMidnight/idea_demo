@@ -137,4 +137,22 @@ public class CacheManager {
     public Map<String, TblCarSystemBean> getCarMapBeanName() {
         return TblCarSysCache.getInstance().getMapBeanName();
     }
+    public Map<String, TblCarSystemBean> getCarMapBeanNameBrandId() {
+        return TblCarSysCache.getInstance().getMapBeanNameBrandId();
+    }
+    public Map<String, TblCarSystemBean> getCarMapBeanNameBrandName() {
+        return TblCarSysCache.getInstance().getMapBeanNameBrandName();
+    }
+    public Map<String, TblCarSystemBean> getCarMapBeanNameTradeId() {
+        return TblCarSysCache.getInstance().getMapBeanNameTradeId();
+    }
+    public Map<String, TblCarSystemBean> getCarMapBeanNameTradeName() {
+        return TblCarSysCache.getInstance().getMapBeanNameTradeName();
+    }
+    public Map<String, List<TblAreaBean>> getAreaMapProv() {
+        return TblAreaCache.getInstance().getMapProv();
+    }
+    public Map<String, TblAreaBean> getgetMapCityName() {
+        return TblAreaCache.getInstance().getMapCityName();
+    }
 }

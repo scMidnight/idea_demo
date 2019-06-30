@@ -23,6 +23,7 @@ public class TblFileBean implements Serializable {
     private String brandCount;//品牌重复次数
     private String housiCount;//后四连号
     private String qianliuCount;//前六重复
+    private String sourceTag;//来源
 
     public String getId() {
         return id;
@@ -174,5 +175,13 @@ public class TblFileBean implements Serializable {
 
     public void setQianliuCount(String qianliuCount) {
         this.qianliuCount = qianliuCount;
+    }
+
+    public String getSourceTag() {
+        return sourceTag;
+    }
+
+    public void setSourceTag(String sourceTag) {
+        this.sourceTag = sourceTag;
     }
 }

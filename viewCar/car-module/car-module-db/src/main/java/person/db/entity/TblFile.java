@@ -27,6 +27,7 @@ public class TblFile extends IdEntity {
     private String brandCount;//品牌重复次数
     private String housiCount;//后四连号
     private String qianliuCount;//前六重复
+    private String sourceTag;//来源
 
     @Column(name = "FILE_NAME")
     public String getFileName() {
@@ -188,5 +189,14 @@ public class TblFile extends IdEntity {
 
     public void setQianliuCount(String qianliuCount) {
         this.qianliuCount = qianliuCount;
+    }
+
+    @Column(name = "SOURCE_TAG")
+    public String getSourceTag() {
+        return sourceTag;
+    }
+
+    public void setSourceTag(String sourceTag) {
+        this.sourceTag = sourceTag;
     }
 }

@@ -1,5 +1,6 @@
 package com.car.web.controller.car;
 
+import com.car.web.controller.source.SourcesController;
 import com.car.web.utils.Constants;
 import jodd.util.StringUtil;
 import net.sf.json.JSONObject;
@@ -7,10 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import person.Thread.CheckPackageThread;
 import person.db.bean.*;
@@ -47,6 +45,9 @@ public class CarListController {
 
     @Autowired
     CarSystemHandler carSystemHandler;
+
+    @Autowired
+    SourcesController sourcesController;
 
     /**
      * @Author SunChang
@@ -1008,6 +1009,33 @@ public class CarListController {
         Page<TblShowBean> pageResult = showHandler.queryByPageFilter(page,hql + orderSql, null);
         JsonBean jsonBean = new JsonBean("0", "", String.valueOf(pageResult.getTotalCount()), pageResult.getResult());
         return JsonUtil.beanToJsonString(jsonBean);
+    }
+
+    @RequestMapping(value = "/car/addsources/list", method = RequestMethod.GET)
+    public String addsourcesListGet(HttpServletRequest request, ModelMap modelMap) {
+        modelMap.put("id", request.getParameter("id"));
+        return "/car/sourceList";
+    }
+
+    @RequestMapping(value = "/car/addsources/list", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
+    @ResponseBody
+    public Object addsourcesListPost(Page<SourcesBean> page, HttpServletRequest request, ModelMap map) {
+        return sourcesController.listPost(page, request, map);
+    }
+
+    @RequestMapping(value = "/car/addsources/add", method = RequestMethod.POST)
+    @ResponseBody
+    public Object delPost(@RequestBody JSONObject data, HttpServletRequest request) {
+        try {
+            String sourceTag = data.getString("sourceTag");
+            String id = data.getString("id");
+            TblFileBean fileBean = fileHandler.queryById(id);
+            fileBean.setSourceTag(sourceTag);
+            fileHandler.addAttachment(fileBean);
+            return JsonUtil.toString("Y", "添加成功！");
+        } catch (Exception e) {
+            return JsonUtil.toString("N", "失败异常：" + e.getMessage());
+        }
     }
 
     public static void main(String[] args) {

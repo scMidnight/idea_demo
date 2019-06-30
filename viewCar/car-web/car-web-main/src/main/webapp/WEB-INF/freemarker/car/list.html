@@ -10,6 +10,7 @@
                 <legend>
                     数据列表&emsp;
                     <a class="layui-btn layui-btn-normal" href="${base}/car/uploader"><i class="layui-icon layui-icon-add-1"></i>参数传档</a>
+                    <a class="layui-btn layui-btn-normal" href="javascript:void(0);" onclick="editSources()"><i class="layui-icon layui-icon-survey"></i>来源管理</a>
                 </legend>
             </fieldset>
             <blockquote class="layui-elem-quote">
@@ -82,7 +83,6 @@
                 </div>
                 <button id="close" type="button" class="layui-btn layui-btn-danger" style="margin-top:45px;">取消</button>
             </div>
-
         </div>
     </div>
     <#include "/common/footer.html">
@@ -92,14 +92,18 @@
     {{util.toDateString(d.uploadDate)}}
 </script>
 <script type="text/html" id="operate">
-    {{# if (d.status == '0')  { }}
-        <a class="layui-btn layui-btn-xs" lay-event="checkPackage">检查整理</a>
-    {{# } else { }}
-        <a class="layui-btn layui-btn-xs" lay-event="checkAgainPackage">重新检查</a>
-        <a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
-        <a class="layui-btn layui-btn-xs" lay-event="exportPackage">导出</a>
-    {{# } }}
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delPackage">删除</a>
+    {{# if(d.sourceTag != undefined && d.sourceTag != '') {}}
+        {{# if (d.status == '0')  { }}
+            <a class="layui-btn layui-btn-xs" lay-event="checkPackage">检查整理</a>
+        {{# } else { }}
+            <a class="layui-btn layui-btn-xs" lay-event="checkAgainPackage">重新检查</a>
+            <a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
+            <a class="layui-btn layui-btn-xs" lay-event="exportPackage">导出</a>
+        {{# } }}
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delPackage">删除</a>
+    {{# }else { }}
+        <a class="layui-btn layui-btn-xs" lay-event="addSource">添加来源</a>
+    {{#} }}
 </script>
 <!-- 自定义 js -->
 <script>
@@ -139,6 +143,7 @@
         layer.close(index);
         clearTimeout(t);
     }
+    var tableIns;
     layui.use(['form','table','laydate','element'], function () {
         var form = layui.form,table = layui.table,laydate = layui.laydate, element = layui.element;
         // 接收服务端数据时触发事件
@@ -191,7 +196,7 @@
             }
         });
         var loadingTable = layer.load(0,{shade: [0.4,'#000']});
-        var tableIns = table.render({
+        tableIns = table.render({
             elem: '#carList'
             ,url: '${base}/car/list'
             ,method:'post'
@@ -206,6 +211,7 @@
                         }
                     }}
                 ,{field:'uploadDate', title:'时间',width:180, align:'center', templet:'#uploadDate'}
+                ,{field:'sourceTag', title:'来源', width:80, align:'center'}
                 ,{field:'fileCount', title:'媒体位总数', width:90, align:'center'}
                 ,{field:'sumCount', title:'合计条数', width:90, align:'center'}
                 ,{field:'housiCount', title:'连号', width:90, align:'center', templet: function (d) {
@@ -379,6 +385,15 @@
                     });
                 });
             }
+            if(layEvent == "addSource") {
+                layer.open({
+                    title: '来源标签'
+                    ,type: 2
+                    ,area: ['700px', '650px']
+                    ,maxmin: true
+                    ,content: "${base}/car/addsources/list?id=" + $data.id
+                });
+            }
         });
         function getExportPackageRes(index) {
             if(!isNull(t)) {
@@ -483,11 +498,33 @@
             });
         })
     });
+    function updateSourceTag(id,str) {
+        $.ajax({
+        url:"${base}/car/addsources/add",
+            type:'post',
+            dataType:'json',
+            data:JSON.stringify({id: id, sourceTag: str}),
+            contentType: "application/json; charset=utf-8",
+            success:function (result) {
+            layer.msg(result.msg,{icon:1});
+            tableIns.reload();
+        }
+    })
+    }
     function errInfo(code, fileId) {
         window.location = "${base}/car/list/errInfo?err=" + code + "&fileId=" + fileId;
     }
     function checkPhoneInfo(code, fileId) {
         window.location = "${base}/car/list/phoneInfo?err=" + code + "&fileId=" + fileId;
+    }
+    function editSources() {
+        layer.open({
+            title: '来源标签'
+            ,type: 2
+            ,area: ['700px', '600px']
+            ,maxmin: true
+            ,content: "${base}/car/sources/list"
+        });
     }
 </script>
 <#include "/common/bodyEnd.html">
