@@ -24,4 +24,6 @@ public interface FileService extends CommonService {
     List<TblFileBean> queryByHql(String hql, Object... param);
 
     List<CarFindBean> queryByhqlFind(String hql, Object... param);
+
+    void updateBean(TblFileBean fileBean);
 }

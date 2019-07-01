@@ -91,4 +91,11 @@ public class FileServiceImpl extends CommonServiceImpl implements FileService {
         }
         return carFindBeans;
     }
+
+    @Override
+    public void updateBean(TblFileBean fileBean) {
+        TblFile file = new TblFile();
+        BeanUtils.copyProperties(fileBean, file);
+        super.updateEntitie(file);
+    }
 }

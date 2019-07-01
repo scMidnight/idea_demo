@@ -1031,7 +1031,7 @@ public class CarListController {
             String id = data.getString("id");
             TblFileBean fileBean = fileHandler.queryById(id);
             fileBean.setSourceTag(sourceTag);
-            fileHandler.addAttachment(fileBean);
+            fileHandler.updateBean(fileBean);
             return JsonUtil.toString("Y", "添加成功！");
         } catch (Exception e) {
             return JsonUtil.toString("N", "失败异常：" + e.getMessage());

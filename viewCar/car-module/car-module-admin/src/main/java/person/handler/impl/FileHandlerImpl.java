@@ -94,6 +94,11 @@ public class FileHandlerImpl implements FileHandler {
     }
 
     @Override
+    public void updateBean(TblFileBean fileBean) {
+        fileService.updateBean(fileBean);
+    }
+
+    @Override
     public void batchAddAttachment(List<TblFileBean> fileBeans) {
         fileService.batchAddAttachment(fileBeans);
     }
