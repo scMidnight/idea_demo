@@ -75,11 +75,11 @@ public class CarfindController {
         }
         if(StringUtil.isNotBlank(phones)) {
             where += " AND t.phone in (";
-            filterWhere(where, phones, "\n");
+            where = filterWhere(where, phones, "\n");
         }
         if(StringUtil.isNotBlank(taskIds)) {
             where += " AND t.taskId in (";
-            filterWhere(where, taskIds, ",");
+            where = filterWhere(where, taskIds, ",");
         }
         if(StringUtil.isNotBlank(carSysNames)) {
             Map<String, TblCarSystemBean> carMap = CacheManager.getInstance().getCarMapBeanName();
@@ -108,7 +108,7 @@ public class CarfindController {
                     String temp = "";
                     for (String s : brandNames.split(",")) {
                         if(carMap.get(s) != null) {
-                            temp += "'" + carMap.get(s).getBrandName() + "',";
+                            temp += "'" + carMap.get(s).getBrandId() + "',";
                         }
                     }
                     temp = temp.substring(0, temp.length() - 1);
@@ -142,11 +142,11 @@ public class CarfindController {
         }
         if(StringUtil.isNotBlank(packageNames)) {
             where += " AND t1.fileNameBak in (";
-            filterWhere(where, packageNames, ",");
+            where = filterWhere(where, packageNames, ",");
         }
         if(StringUtil.isNotBlank(sourceTags)) {
             where += " AND t1.sourceTag in (";
-            filterWhere(where, sourceTags, ",");
+            where = filterWhere(where, sourceTags, ",");
         }
         String order = " order by t.uploadDate desc";
         page.setPageNo(Integer.parseInt(pageNo));
@@ -162,6 +162,7 @@ public class CarfindController {
                 carFindBean.setCarSys(carSysMap.get(carFindBean.getCarSys()).getCarSysName());
             }
             if(brandIdMap.get(carFindBean.getBrand()) != null) {
+                System.out.println("======id:" + carFindBean.getId() + "=========brand:" + carFindBean.getBrand());
                 carFindBean.setBrand(brandIdMap.get(carFindBean.getBrand()).getBrandName());
             }
             if(tradeIdMap.get(carFindBean.getTrade()) != null) {
@@ -243,12 +244,12 @@ public class CarfindController {
         }
     }
 
-    public void filterWhere(String where, String val, String str) {
+    public String filterWhere(String where, String val, String str) {
         String strs[] = val.split(str);
         for (String s : strs) {
             where += "'" + s + "',";
         }
         where = where.substring(0, where.length() - 1);
-        where += ")";
+        return where += ")";
     }
 }
