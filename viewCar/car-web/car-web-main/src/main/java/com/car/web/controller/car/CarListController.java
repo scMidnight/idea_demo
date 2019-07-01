@@ -261,17 +261,21 @@ public class CarListController {
                                 break;
                             }
                             if(!fileDetailBean.getCarSys().equals(detailBean.getCarSys()) && fileDetailBean.getPhone().equals(detailBean.getPhone())) {//品牌重复
-                                if(fileDetailBean.getBrand().equals(detailBean.getBrand())) {
-                                    fileDetailBean.setStatus("7");
-                                    fileDetailBean.setErrInfo(fileDetailBean.getErrInfo() + "错误，状态：品牌重复");
-                                    break;
+                                if(fileDetailBean.getBrand() != null && detailBean.getBrand() != null) {
+                                    if (fileDetailBean.getBrand().equals(detailBean.getBrand())) {
+                                        fileDetailBean.setStatus("7");
+                                        fileDetailBean.setErrInfo(fileDetailBean.getErrInfo() + "错误，状态：品牌重复");
+                                        break;
+                                    }
                                 }
                             }
                             if(!fileDetailBean.getCarSys().equals(detailBean.getCarSys()) && fileDetailBean.getPhone().equals(detailBean.getPhone())) {//厂商重复
-                                if(!fileDetailBean.getBrand().equals(detailBean.getBrand()) && fileDetailBean.getTrade().equals(detailBean.getTrade())) {
-                                    fileDetailBean.setStatus("8");
-                                    fileDetailBean.setErrInfo(fileDetailBean.getErrInfo() + "错误，状态：厂商重复");
-                                    break;
+                                if(fileDetailBean.getBrand() != null && detailBean.getBrand() != null) {
+                                    if (!fileDetailBean.getBrand().equals(detailBean.getBrand()) && fileDetailBean.getTrade().equals(detailBean.getTrade())) {
+                                        fileDetailBean.setStatus("8");
+                                        fileDetailBean.setErrInfo(fileDetailBean.getErrInfo() + "错误，状态：厂商重复");
+                                        break;
+                                    }
                                 }
                             }
                             if (fileDetailBean.getPhone().equals(detailBean.getPhone())) {//大库重复
@@ -284,12 +288,14 @@ public class CarListController {
                 }
                 fileDetailHandler.batchSaveFileDetailBeansAndUpdateFileStatus(fileDetailBeans);
                 for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
-                    if(!fileDetailBean.getStatus().equals("4") && !fileDetailBean.getStatus().equals("6")) {
-                        if (CarUtil.check4(fileDetailBean, fileDetailHandler)) {
-                            fileDetailBean.setIsLian("1");
-                        }
-                        if (CarUtil.check6(fileDetailBean, fileDetailHandler)) {
-                            fileDetailBean.setIsChong("1");
+                    if(fileDetailBean.getBrand() != null) {
+                        if (!fileDetailBean.getStatus().equals("4") && !fileDetailBean.getStatus().equals("6")) {
+                            if (CarUtil.check4(fileDetailBean, fileDetailHandler)) {
+                                fileDetailBean.setIsLian("1");
+                            }
+                            if (CarUtil.check6(fileDetailBean, fileDetailHandler)) {
+                                fileDetailBean.setIsChong("1");
+                            }
                         }
                     }
                 }
@@ -302,6 +308,7 @@ public class CarListController {
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             return JsonUtil.toString("N", "失败异常：" + e.getMessage());
         }
     }
