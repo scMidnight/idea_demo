@@ -25,6 +25,7 @@ public class FileDetailServiceImpl extends CommonServiceImpl implements FileDeta
         List<TblFileDetail> fileDetails = super.findByProperty(TblFileDetail.class, propertyName, value);
         List<TblFileDetailBean> fileDetailBeans = new ArrayList<TblFileDetailBean>();
         if(null != fileDetails && !fileDetails.isEmpty()) {
+            System.out.println("查到的对应结果是：" + fileDetails.size());
             for (TblFileDetail fileDetail : fileDetails) {
                 TblFileDetailBean fileDetailBean = new TblFileDetailBean();
                 BeanUtils.copyProperties(fileDetail, fileDetailBean);

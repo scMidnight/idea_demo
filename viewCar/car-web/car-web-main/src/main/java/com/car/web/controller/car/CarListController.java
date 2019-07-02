@@ -621,96 +621,114 @@ public class CarListController {
     @RequestMapping(value = "/car/list/errInfo", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
     @ResponseBody
     public String carerrInfoPost(HttpServletRequest request, ModelMap modelMap) {
-        String errCode = request.getParameter("errCode");
-        String fileId = request.getParameter("fileId");
-        List<TblCarSystemBean> carSystemBeans = carSystemHandler.queryByHql("FROM TblCarSystem t WHERE t.isDel = '0'");
-        if(StringUtil.isNotBlank(errCode)) {
-            if(StringUtil.isBlank(errCode) || StringUtil.isBlank(fileId)) {
+        try {
+            String errCode = request.getParameter("errCode");
+            String fileId = request.getParameter("fileId");
+            List<TblCarSystemBean> carSystemBeans = carSystemHandler.queryByHql("FROM TblCarSystem t WHERE t.isDel = '0'");
+            if(StringUtil.isNotBlank(errCode)) {
+                if(StringUtil.isBlank(errCode) || StringUtil.isBlank(fileId)) {
+                    JsonBean jsonBean = new JsonBean("0", "", "0", null);
+                    return JsonUtil.beanToJsonString(jsonBean);
+                }
+                String hql = "FROM TblFileDetail t where t.fileId = ? and t.status = ?";
+                List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.queryByHql(hql, fileId, errCode);
+                System.out.println("============包含的文件详情数:" + fileDetailBeans.size());
+                LinkedList<TblFileDetailBean> linkedList = new LinkedList<>();
+                if(null != fileDetailBeans && !fileDetailBeans.isEmpty()) {
+                    for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
+                        String errInfo = fileDetailBean.getErrInfo();
+                        if(fileDetailBean.getStatus().equals("6")) {
+                            String temp = "";
+                            if(errInfo.indexOf("行错误") != -1) {
+                                temp = errInfo.substring(errInfo.indexOf("行错误") + 7);
+                            }else {
+                                temp = errInfo.substring(errInfo.indexOf("行") + 1);
+                            }
+                            fileDetailBean.setStatusDesc(temp);
+                        }
+                        fileDetailBean.setErrInfo("本包数据");
+                        if(errCode.equals("1")) {//大库重复
+                            fileDetailBean.setColor("shenlan");
+                            linkedList.add(fileDetailBean);
+                            List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("phone", fileDetailBean.getPhone());
+                            for (TblFileDetailBean temp : temps) {
+                                if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
+                                    temp.setStatus("1");
+                                    temp.setErrInfo("历史数据");
+                                    temp.setColor("qianlan");
+                                    linkedList.add(temp);
+                                }
+                            }
+                        }else if(errCode.equals("3")) { //车系重复
+                            System.out.println("=====进入车系重复了");
+                            System.out.println("=====进入车系重复了");
+                            System.out.println("=====进入车系重复了");
+                            System.out.println("=====进入车系重复了");
+                            System.out.println("=====进入车系重复了");
+                            System.out.println("=====当前的车系：" + fileDetailBean.getCarSys());
+                            fileDetailBean.setColor("shenhuang");
+                            linkedList.add(fileDetailBean);
+                            //List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("carSys", fileDetailBean.getCarSys());
+                            List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys = ?", fileDetailBean.getCarSys());
+                            System.out.println("===================:" + temps);
+                            if(temps != null) {
+                                System.out.println("=======车系查到的数据是：" + temps.size());
+                                for (TblFileDetailBean temp : temps) {
+                                    if(!temp.getFileId().equals(fileDetailBean.getFileId()) && fileDetailBean.getPhone().equals(temp.getPhone())) {
+                                        temp.setStatus("3");
+                                        temp.setErrInfo("历史数据");
+                                        temp.setColor("qianhuang");
+                                        linkedList.add(temp);
+                                    }
+                                }
+                            }
+                        }else if(errCode.equals("7")) {//品牌重复
+                            fileDetailBean.setColor("shenlv");
+                            linkedList.add(fileDetailBean);
+                            List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys in (select carSysId from TblCarSystem where brandId = ? and carSysId != ?) and t.phone = ? and t.fileId != ?", fileDetailBean.getBrand(), fileDetailBean.getCarSys(), fileDetailBean.getPhone(), fileDetailBean.getFileId());
+                            for (TblFileDetailBean temp : temps) {
+                                temp.setStatus("7");
+                                temp.setErrInfo("历史数据");
+                                temp.setColor("qianlv");
+                                linkedList.add(temp);
+                            }
+                        }else if(errCode.equals("8")) {//厂商重复
+                            fileDetailBean.setColor("shenlv");
+                            linkedList.add(fileDetailBean);
+                            List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys in (select carSysId from TblCarSystem where tradeId = ? and carSysId != ? and brandId != ?) and t.phone = ? and t.fileId != ?", fileDetailBean.getTrade(), fileDetailBean.getCarSys(), fileDetailBean.getBrand(), fileDetailBean.getPhone(), fileDetailBean.getFileId());
+                            for (TblFileDetailBean temp : temps) {
+                                temp.setStatus("8");
+                                temp.setErrInfo("历史数据");
+                                temp.setColor("qianlv");
+                                linkedList.add(temp);
+                            }
+                        }else if(errCode.equals("2")) {//任务重复
+                            fileDetailBean.setColor("hong");
+                            linkedList.add(fileDetailBean);
+                            List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.taskId = ? and t.phone = ?", fileDetailBean.getTaskId(), fileDetailBean.getPhone());
+                            for (TblFileDetailBean temp : temps) {
+                                if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
+                                    temp.setStatus("2");
+                                    temp.setErrInfo("历史数据");
+                                    temp.setColor("qianhong");
+                                    linkedList.add(temp);
+                                }
+                            }
+                        }else {
+                            linkedList.add(fileDetailBean);
+                        }
+                    }
+                }
+                CarUtil.updateCarSysAndAreaName(linkedList);
+                JsonBean jsonBean = new JsonBean("0", "", String.valueOf(linkedList.size()), linkedList);
+                return JsonUtil.beanToJsonString(jsonBean);
+            }else {
                 JsonBean jsonBean = new JsonBean("0", "", "0", null);
                 return JsonUtil.beanToJsonString(jsonBean);
             }
-            String hql = "FROM TblFileDetail t where t.fileId = ? and t.status = ?";
-            List<TblFileDetailBean> fileDetailBeans = fileDetailHandler.queryByHql(hql, fileId, errCode);
-            LinkedList<TblFileDetailBean> linkedList = new LinkedList<>();
-            if(null != fileDetailBeans && !fileDetailBeans.isEmpty()) {
-                for (TblFileDetailBean fileDetailBean : fileDetailBeans) {
-                    String errInfo = fileDetailBean.getErrInfo();
-                    if(fileDetailBean.getStatus().equals("6")) {
-                        String temp = "";
-                        if(errInfo.indexOf("行错误") != -1) {
-                            temp = errInfo.substring(errInfo.indexOf("行错误") + 7);
-                        }else {
-                            temp = errInfo.substring(errInfo.indexOf("行") + 1);
-                        }
-                        fileDetailBean.setStatusDesc(temp);
-                    }
-                    fileDetailBean.setErrInfo("本包数据");
-                    if(errCode.equals("1")) {//大库重复
-                        fileDetailBean.setColor("shenlan");
-                        linkedList.add(fileDetailBean);
-                        List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("phone", fileDetailBean.getPhone());
-                        for (TblFileDetailBean temp : temps) {
-                            if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
-                                temp.setStatus("1");
-                                temp.setErrInfo("历史数据");
-                                temp.setColor("qianlan");
-                                linkedList.add(temp);
-                            }
-                        }
-                    }else if(errCode.equals("3")) { //车系重复
-                        fileDetailBean.setColor("shenhuang");
-                        linkedList.add(fileDetailBean);
-                        List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("carSys", fileDetailBean.getCarSys());
-                        for (TblFileDetailBean temp : temps) {
-                            if(!temp.getFileId().equals(fileDetailBean.getFileId()) && fileDetailBean.getPhone().equals(temp.getPhone())) {
-                                temp.setStatus("3");
-                                temp.setErrInfo("历史数据");
-                                temp.setColor("qianhuang");
-                                linkedList.add(temp);
-                            }
-                        }
-                    }else if(errCode.equals("7")) {//品牌重复
-                        fileDetailBean.setColor("shenlv");
-                        linkedList.add(fileDetailBean);
-                        List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys in (select carSysId from TblCarSystem where brandId = ? and carSysId != ?) and t.phone = ? and t.fileId != ?", fileDetailBean.getBrand(), fileDetailBean.getCarSys(), fileDetailBean.getPhone(), fileDetailBean.getFileId());
-                        for (TblFileDetailBean temp : temps) {
-                            temp.setStatus("7");
-                            temp.setErrInfo("历史数据");
-                            temp.setColor("qianlv");
-                            linkedList.add(temp);
-                        }
-                    }else if(errCode.equals("8")) {//厂商重复
-                        fileDetailBean.setColor("shenlv");
-                        linkedList.add(fileDetailBean);
-                        List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys in (select carSysId from TblCarSystem where tradeId = ? and carSysId != ? and brandId != ?) and t.phone = ? and t.fileId != ?", fileDetailBean.getTrade(), fileDetailBean.getCarSys(), fileDetailBean.getBrand(), fileDetailBean.getPhone(), fileDetailBean.getFileId());
-                        for (TblFileDetailBean temp : temps) {
-                            temp.setStatus("8");
-                            temp.setErrInfo("历史数据");
-                            temp.setColor("qianlv");
-                            linkedList.add(temp);
-                        }
-                    }else if(errCode.equals("2")) {//任务重复
-                        fileDetailBean.setColor("hong");
-                        linkedList.add(fileDetailBean);
-                        List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.taskId = ? and t.phone = ?", fileDetailBean.getTaskId(), fileDetailBean.getPhone());
-                        for (TblFileDetailBean temp : temps) {
-                            if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
-                                temp.setStatus("2");
-                                temp.setErrInfo("历史数据");
-                                temp.setColor("qianhong");
-                                linkedList.add(temp);
-                            }
-                        }
-                    }else {
-                        linkedList.add(fileDetailBean);
-                    }
-                }
-            }
-            CarUtil.updateCarSysAndAreaName(linkedList);
-            JsonBean jsonBean = new JsonBean("0", "", String.valueOf(linkedList.size()), linkedList);
-            return JsonUtil.beanToJsonString(jsonBean);
-        }else {
-            JsonBean jsonBean = new JsonBean("0", "", "0", null);
+        }catch (Exception e) {
+            e.printStackTrace();
+            JsonBean jsonBean = new JsonBean("0", "错误", "0", null);
             return JsonUtil.beanToJsonString(jsonBean);
         }
     }
