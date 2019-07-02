@@ -819,7 +819,8 @@ public class CarListController {
                         fileDetailBean.setColor("shenhuang");
                         linkedList.add(fileDetailBean);
                         if(arrs.contains("history")) {
-                            List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("carSys", fileDetailBean.getCarSys());
+                            //List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("carSys", fileDetailBean.getCarSys());
+                            List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys = ?", fileDetailBean.getCarSys());
                             for (TblFileDetailBean temp : temps) {
                                 if(!temp.getFileId().equals(fileDetailBean.getFileId()) && fileDetailBean.getPhone().equals(temp.getPhone())) {
                                     temp.setStatus("3");
