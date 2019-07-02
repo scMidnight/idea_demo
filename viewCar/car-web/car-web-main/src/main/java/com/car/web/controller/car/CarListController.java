@@ -669,12 +669,12 @@ public class CarListController {
                             fileDetailBean.setColor("shenhuang");
                             linkedList.add(fileDetailBean);
                             //List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("carSys", fileDetailBean.getCarSys());
-                            List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys = ?", fileDetailBean.getCarSys());
-                            System.out.println("===================:" + temps);
+                            //List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys = ?", fileDetailBean.getCarSys());
+                            List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("from TblFileDetail t where t.carSys = ? and t.phone = ?", fileDetailBean.getCarSys(), fileDetailBean.getPhone());
                             if(temps != null) {
                                 System.out.println("=======车系查到的数据是：" + temps.size());
                                 for (TblFileDetailBean temp : temps) {
-                                    if(!temp.getFileId().equals(fileDetailBean.getFileId()) && fileDetailBean.getPhone().equals(temp.getPhone())) {
+                                    if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
                                         temp.setStatus("3");
                                         temp.setErrInfo("历史数据");
                                         temp.setColor("qianhuang");
@@ -820,9 +820,10 @@ public class CarListController {
                         linkedList.add(fileDetailBean);
                         if(arrs.contains("history")) {
                             //List<TblFileDetailBean> temps = fileDetailHandler.findByProperty("carSys", fileDetailBean.getCarSys());
-                            List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys = ?", fileDetailBean.getCarSys());
+                            //List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("FROM TblFileDetail t where t.carSys = ?", fileDetailBean.getCarSys());
+                            List<TblFileDetailBean> temps = fileDetailHandler.queryByHql("from TblFileDetail t where t.carSys = ? and t.phone = ?", fileDetailBean.getCarSys(), fileDetailBean.getPhone());
                             for (TblFileDetailBean temp : temps) {
-                                if(!temp.getFileId().equals(fileDetailBean.getFileId()) && fileDetailBean.getPhone().equals(temp.getPhone())) {
+                                if(!temp.getFileId().equals(fileDetailBean.getFileId())) {
                                     temp.setStatus("3");
                                     temp.setErrInfo("历史数据");
                                     temp.setColor("qianhuang");
